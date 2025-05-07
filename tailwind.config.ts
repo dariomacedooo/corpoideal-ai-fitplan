@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom colors for CorpoIdeal AI
+				corpoideal: {
+					purple: '#8B5CF6',
+					darkpurple: '#6E59A5',
+					lightpurple: '#D6BCFA',
+					gray: '#8E9196',
+					dark: '#1A1F2C',
 				}
+			},
+			fontFamily: {
+				sans: ['Poppins', 'sans-serif'],
+				body: ['Roboto', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +97,33 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+				'fade-in': {
+					'0%': {
+					  opacity: '0',
+					  transform: 'translateY(10px)'
+					},
+					'100%': {
+					  opacity: '1',
+					  transform: 'translateY(0)'
+					}
+				},
+				'scale-in': {
+					'0%': {
+					  transform: 'scale(0.95)',
+					  opacity: '0'
+					},
+					'100%': {
+					  transform: 'scale(1)',
+					  opacity: '1'
+					}
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'scale-in': 'scale-in 0.2s ease-out',
 			}
 		}
 	},
