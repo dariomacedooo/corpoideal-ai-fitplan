@@ -6,9 +6,10 @@ interface BodyAnalysisProps {
   posture: string;
   fatPercentage: string;
   symmetry: string;
+  bmi?: string;  // Adding the optional bmi prop
 }
 
-export function BodyAnalysis({ posture, fatPercentage, symmetry }: BodyAnalysisProps) {
+export function BodyAnalysis({ posture, fatPercentage, symmetry, bmi }: BodyAnalysisProps) {
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
@@ -58,6 +59,27 @@ export function BodyAnalysis({ posture, fatPercentage, symmetry }: BodyAnalysisP
             </p>
           </div>
         </div>
+        
+        {/* Add BMI display if provided */}
+        {bmi && (
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Índice de Massa Corporal (IMC)</h3>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline">
+                IMC: {bmi}
+              </Badge>
+              <p className="text-sm text-gray-700">
+                {parseFloat(bmi) < 18.5 
+                  ? 'Seu IMC indica que você está abaixo do peso ideal.' 
+                  : parseFloat(bmi) < 25 
+                    ? 'Seu IMC está na faixa considerada saudável.' 
+                    : parseFloat(bmi) < 30
+                      ? 'Seu IMC indica sobrepeso.'
+                      : 'Seu IMC indica obesidade.'}
+              </p>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

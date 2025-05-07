@@ -14,12 +14,12 @@ import { useNavigate } from "react-router-dom";
 import { 
   User, 
   Weight, 
-  Height, 
+  Ruler, 
   Calendar,
   Activity, 
   Dumbbell,
-  HeartOff,
-  Diabetes,
+  Heart,
+  CircleDashed,
   Thermometer,
 } from "lucide-react";
 
@@ -104,7 +104,7 @@ const ProfilePage = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="height" className="flex items-center gap-2">
-                <Height className="h-4 w-4" /> Altura (cm)
+                <Ruler className="h-4 w-4" /> Altura (cm)
               </Label>
               <Input
                 id="height"
@@ -227,7 +227,7 @@ const ProfilePage = () => {
           {/* Problemas de saúde */}
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
-              <HeartOff className="h-4 w-4" /> Problemas de Saúde
+              <Heart className="h-4 w-4" /> Problemas de Saúde
             </Label>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex items-center space-x-2">
@@ -237,7 +237,7 @@ const ProfilePage = () => {
                   onCheckedChange={() => toggleHealthIssue('diabetes')}
                 />
                 <Label htmlFor="diabetes" className="flex items-center gap-1">
-                  <Diabetes className="h-4 w-4" /> Diabetes
+                  <CircleDashed className="h-4 w-4" /> Diabetes
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
