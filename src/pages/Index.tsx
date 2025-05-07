@@ -10,8 +10,16 @@ const Index = () => {
     const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     
     if (isLoggedIn) {
-      // Redirect to home page
-      navigate('/home');
+      // Check if profile is completed
+      const userProfile = localStorage.getItem('userProfile');
+      
+      if (userProfile) {
+        // Profile exists, go to home
+        navigate('/home');
+      } else {
+        // Profile doesn't exist, go to profile page
+        navigate('/profile');
+      }
     } else {
       // Redirect to auth page
       navigate('/auth');

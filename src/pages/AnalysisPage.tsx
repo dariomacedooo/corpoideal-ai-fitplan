@@ -11,23 +11,41 @@ import { useToast } from "@/components/ui/use-toast";
 const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);
   const [showGoals, setShowGoals] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [analysis, setAnalysis] = useState({
     posture: '',
     fatPercentage: '',
     symmetry: '',
+    bmi: '',
   });
   const navigate = useNavigate();
   const { toast } = useToast();
   
   useEffect(() => {
+    // Get user profile data
+    const profileData = localStorage.getItem('userProfile');
+    if (profileData) {
+      setUserProfile(JSON.parse(profileData));
+    }
+    
     // Simulate loading and analysis
     const timer = setTimeout(() => {
-      // Mock analysis result
-      // In a real app, this would come from an AI analysis of the uploaded photos
+      // Mock analysis result with profile data if available
+      const profile = profileData ? JSON.parse(profileData) : null;
+      let bmi = '';
+      
+      if (profile && profile.height && profile.weight) {
+        const heightInMeters = parseInt(profile.height) / 100;
+        const weightInKg = parseInt(profile.weight);
+        const calculatedBmi = (weightInKg / (heightInMeters * heightInMeters)).toFixed(1);
+        bmi = calculatedBmi;
+      }
+      
       setAnalysis({
         posture: Math.random() > 0.5 ? 'Alinhada' : 'Ombro esquerdo mais elevado',
         fatPercentage: ['Baixa', 'Moderada', 'Alta'][Math.floor(Math.random() * 3)],
         symmetry: Math.random() > 0.5 ? 'Equilibrado' : 'Assimétrico',
+        bmi: bmi,
       });
       
       setLoading(false);
@@ -77,6 +95,27 @@ const AnalysisPage = () => {
           </div>
         </div>
         
+        {/* Mostrar dados do perfil se disponíveis */}
+        {userProfile && (
+          <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <h3 className="font-medium text-corpoideal-purple mb-2">Seus dados</h3>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {userProfile.height && userProfile.weight && (
+                <>
+                  <div>Altura: {userProfile.height} cm</div>
+                  <div>Peso: {userProfile.weight} kg</div>
+                </>
+              )}
+              {userProfile.age && (
+                <div>Idade: {userProfile.age} anos</div>
+              )}
+              {userProfile.sex && (
+                <div>Sexo: {userProfile.sex === 'masculino' ? 'Masculino' : 'Feminino'}</div>
+              )}
+            </div>
+          </div>
+        )}
+        
         {loading ? (
           <div className="flex flex-col items-center py-8">
             <div className="w-16 h-16 border-4 border-corpoideal-purple border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -90,6 +129,7 @@ const AnalysisPage = () => {
                   posture={analysis.posture}
                   fatPercentage={analysis.fatPercentage}
                   symmetry={analysis.symmetry}
+                  bmi={analysis.bmi}
                 />
                 
                 <div className="mt-6">

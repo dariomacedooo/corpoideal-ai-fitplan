@@ -13,6 +13,7 @@ import AnalysisPage from "./pages/AnalysisPage";
 import TrainingPage from "./pages/TrainingPage";
 import NutritionPage from "./pages/NutritionPage";
 import ProgressPage from "./pages/ProgressPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/training" element={<TrainingPage />} />
           <Route path="/nutrition" element={<NutritionPage />} />
           <Route path="/progress" element={<ProgressPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
