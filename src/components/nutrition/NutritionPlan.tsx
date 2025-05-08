@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +18,7 @@ interface Meal {
 
 interface Diet {
   type: string;
+  budget: string;
   meals: Meal[];
   recipe: {
     name: string;
@@ -31,27 +32,84 @@ interface NutritionPlanProps {
 }
 
 export function NutritionPlan({ diets }: NutritionPlanProps) {
-  const [selectedDiet, setSelectedDiet] = useState<string>(diets[0].type);
+  const [selectedDiet, setSelectedDiet] = useState<string>('');
+  const [filteredDiets, setFilteredDiets] = useState<Diet[]>([]);
+  const [userBudget, setUserBudget] = useState<string>('');
   
-  const currentDiet = diets.find(diet => diet.type === selectedDiet) || diets[0];
+  // Carregar o orçamento do usuário do localStorage
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile);
+      setUserBudget(profile.budget || '');
+    }
+  }, []);
+  
+  // Filtrar dietas com base no orçamento
+  useEffect(() => {
+    if (!userBudget) {
+      setFilteredDiets(diets);
+    } else {
+      // Filtra as dietas que são compatíveis com o orçamento do usuário
+      const compatible = diets.filter(diet => {
+        if (!diet.budget) return true; // Se a dieta não tem informação de orçamento, mostra para todos
+        
+        // Lógica para compatibilidade de orçamento
+        if (userBudget === '100-300' && diet.budget === '100-300') return true;
+        if (userBudget === '301-500' && (diet.budget === '100-300' || diet.budget === '301-500')) return true;
+        if (userBudget === '501-800' && diet.budget !== '801+') return true;
+        if (userBudget === '801+') return true; // Usuários com alto orçamento podem ver todas as dietas
+        
+        return false;
+      });
+      
+      setFilteredDiets(compatible.length > 0 ? compatible : diets);
+    }
+    
+    // Seleciona a primeira dieta filtrada como padrão
+    if (filteredDiets.length > 0 && !selectedDiet) {
+      setSelectedDiet(filteredDiets[0].type);
+    }
+  }, [diets, userBudget]);
+  
+  // Atualiza a dieta selecionada quando as dietas filtradas mudam
+  useEffect(() => {
+    if (filteredDiets.length > 0 && (!selectedDiet || !filteredDiets.find(d => d.type === selectedDiet))) {
+      setSelectedDiet(filteredDiets[0].type);
+    }
+  }, [filteredDiets]);
+  
+  const currentDiet = filteredDiets.find(diet => diet.type === selectedDiet) || (filteredDiets[0] || diets[0]);
   
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl text-corpoideal-purple">Plano Alimentar</CardTitle>
-          <Select value={selectedDiet} onValueChange={setSelectedDiet}>
-            <SelectTrigger className="w-36">
-              <SelectValue placeholder="Estilo" />
-            </SelectTrigger>
-            <SelectContent>
-              {diets.map(diet => (
-                <SelectItem key={diet.type} value={diet.type}>
-                  {diet.type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-2 items-end">
+            {userBudget && (
+              <Badge variant="outline" className="mb-1">
+                Orçamento: {
+                  userBudget === '100-300' ? 'R$100-R$300' :
+                  userBudget === '301-500' ? 'R$301-R$500' :
+                  userBudget === '501-800' ? 'R$501-R$800' :
+                  'Acima de R$800'
+                }
+              </Badge>
+            )}
+            <Select value={selectedDiet} onValueChange={setSelectedDiet}>
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Estilo" />
+              </SelectTrigger>
+              <SelectContent>
+                {filteredDiets.map(diet => (
+                  <SelectItem key={diet.type} value={diet.type}>
+                    {diet.type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

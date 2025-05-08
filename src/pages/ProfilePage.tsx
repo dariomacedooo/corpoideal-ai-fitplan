@@ -12,6 +12,7 @@ import { LifestyleForm } from "@/components/profile/LifestyleForm";
 import { TrainingExperienceForm } from "@/components/profile/TrainingExperienceForm";
 import { HealthIssuesForm } from "@/components/profile/HealthIssuesForm";
 import { AdditionalInfoForm } from "@/components/profile/AdditionalInfoForm";
+import { BudgetForm } from "@/components/profile/BudgetForm";
 
 const ProfilePage = () => {
   const [height, setHeight] = useState('');
@@ -23,7 +24,8 @@ const ProfilePage = () => {
   const [trainingLocation, setTrainingLocation] = useState('');
   const [healthIssues, setHealthIssues] = useState<string[]>([]);
   const [additionalInfo, setAdditionalInfo] = useState('');
-  const [bodyFat, setBodyFat] = useState(''); // Added body fat percentage field
+  const [bodyFat, setBodyFat] = useState(''); 
+  const [budget, setBudget] = useState('');
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -43,6 +45,7 @@ const ProfilePage = () => {
       setHealthIssues(profile.healthIssues || []);
       setAdditionalInfo(profile.additionalInfo || '');
       setBodyFat(profile.bodyFat || '');
+      setBudget(profile.budget || '');
     }
   }, []);
   
@@ -79,6 +82,7 @@ const ProfilePage = () => {
       trainingLocation,
       healthIssues,
       additionalInfo,
+      budget,
       profileCompleted: true,
     };
     
@@ -130,6 +134,12 @@ const ProfilePage = () => {
             setTrainingExperience={setTrainingExperience}
             trainingLocation={trainingLocation}
             setTrainingLocation={setTrainingLocation}
+          />
+          
+          {/* Orçamento para alimentação */}
+          <BudgetForm
+            budget={budget}
+            setBudget={setBudget}
           />
           
           {/* Problemas de saúde */}
