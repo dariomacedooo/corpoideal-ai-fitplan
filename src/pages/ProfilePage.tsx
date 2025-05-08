@@ -23,6 +23,7 @@ const ProfilePage = () => {
   const [trainingLocation, setTrainingLocation] = useState('');
   const [healthIssues, setHealthIssues] = useState<string[]>([]);
   const [additionalInfo, setAdditionalInfo] = useState('');
+  const [bodyFat, setBodyFat] = useState(''); // Added body fat percentage field
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const ProfilePage = () => {
       setTrainingLocation(profile.trainingLocation || '');
       setHealthIssues(profile.healthIssues || []);
       setAdditionalInfo(profile.additionalInfo || '');
+      setBodyFat(profile.bodyFat || '');
     }
   }, []);
   
@@ -55,17 +57,29 @@ const ProfilePage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Basic validation
+    if (!height || !weight || !age || !sex) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha pelo menos altura, peso, idade e sexo.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Save profile data
     const profileData = {
       height,
       weight,
       age,
       sex,
+      bodyFat,
       lifestyle,
       trainingExperience,
       trainingLocation,
       healthIssues,
       additionalInfo,
+      profileCompleted: true,
     };
     
     localStorage.setItem('userProfile', JSON.stringify(profileData));
@@ -75,8 +89,8 @@ const ProfilePage = () => {
       description: "Seus dados foram salvos com sucesso.",
     });
     
-    // Navigate to the home page
-    navigate('/home');
+    // Navigate to the photo upload page
+    navigate('/upload');
   };
 
   return (
@@ -86,7 +100,7 @@ const ProfilePage = () => {
       <div className="px-4 py-6">
         <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Seu Perfil</h1>
         <p className="text-gray-600 mb-6">
-          Complete seu perfil para que possamos personalizar seu plano de forma mais eficiente.
+          Complete seu perfil para que possamos personalizar seu plano de treino e nutrição de forma mais eficiente.
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -100,6 +114,8 @@ const ProfilePage = () => {
             setAge={setAge}
             sex={sex}
             setSex={setSex}
+            bodyFat={bodyFat}
+            setBodyFat={setBodyFat}
           />
           
           {/* Estilo de vida */}
@@ -132,7 +148,7 @@ const ProfilePage = () => {
             type="submit"
             className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
           >
-            Salvar Perfil
+            Salvar e Prosseguir para Fotos
           </Button>
         </form>
       </div>

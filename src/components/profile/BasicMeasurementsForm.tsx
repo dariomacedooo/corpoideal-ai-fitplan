@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Weight, Ruler, Calendar } from "lucide-react";
+import { User, Weight, Ruler, Calendar, Percent } from "lucide-react";
 
 interface BasicMeasurementsProps {
   height: string;
@@ -14,6 +14,8 @@ interface BasicMeasurementsProps {
   setAge: (value: string) => void;
   sex: string;
   setSex: (value: string) => void;
+  bodyFat?: string;
+  setBodyFat?: (value: string) => void;
 }
 
 export function BasicMeasurementsForm({
@@ -24,7 +26,9 @@ export function BasicMeasurementsForm({
   age,
   setAge,
   sex,
-  setSex
+  setSex,
+  bodyFat = '',
+  setBodyFat = () => {}
 }: BasicMeasurementsProps) {
   return (
     <>
@@ -84,6 +88,20 @@ export function BasicMeasurementsForm({
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="bodyFat" className="flex items-center gap-2">
+          <Percent className="h-4 w-4" /> Gordura Corporal (%) - Opcional
+        </Label>
+        <Input
+          id="bodyFat"
+          type="number"
+          placeholder="15"
+          value={bodyFat}
+          onChange={(e) => setBodyFat(e.target.value)}
+        />
+        <p className="text-xs text-gray-500">Deixe em branco se não souber</p>
       </div>
     </>
   );

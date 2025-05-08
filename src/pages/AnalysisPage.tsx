@@ -22,28 +22,59 @@ const AnalysisPage = () => {
   const { toast } = useToast();
   
   useEffect(() => {
+    // Check if user has completed profile and uploaded photos
+    const savedProfile = localStorage.getItem('userProfile');
+    const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+    const sidePhotoUrl = localStorage.getItem('sidePhotoUrl');
+    
+    if (!savedProfile || !JSON.parse(savedProfile).profileCompleted) {
+      toast({
+        title: "Perfil incompleto",
+        description: "Por favor, complete seu perfil antes de prosseguir.",
+      });
+      navigate('/profile');
+      return;
+    }
+    
+    if (!frontPhotoUrl || !sidePhotoUrl) {
+      toast({
+        title: "Fotos necessárias",
+        description: "Por favor, envie suas fotos antes de prosseguir.",
+      });
+      navigate('/upload');
+      return;
+    }
+    
     // Get user profile data
-    const profileData = localStorage.getItem('userProfile');
-    if (profileData) {
-      setUserProfile(JSON.parse(profileData));
+    if (savedProfile) {
+      setUserProfile(JSON.parse(savedProfile));
     }
     
     // Simulate loading and analysis
     const timer = setTimeout(() => {
       // Mock analysis result with profile data if available
-      const profile = profileData ? JSON.parse(profileData) : null;
+      const profile = savedProfile ? JSON.parse(savedProfile) : null;
       let bmi = '';
+      let fatEstimate = '';
       
       if (profile && profile.height && profile.weight) {
         const heightInMeters = parseInt(profile.height) / 100;
         const weightInKg = parseInt(profile.weight);
         const calculatedBmi = (weightInKg / (heightInMeters * heightInMeters)).toFixed(1);
         bmi = calculatedBmi;
+        
+        // Use provided body fat if available, otherwise estimate based on BMI
+        if (profile.bodyFat) {
+          fatEstimate = profile.bodyFat > 20 ? 'Alta' : (profile.bodyFat > 15 ? 'Moderada' : 'Baixa');
+        } else {
+          const bmiNum = parseFloat(calculatedBmi);
+          fatEstimate = bmiNum > 25 ? 'Alta' : (bmiNum > 18.5 ? 'Moderada' : 'Baixa');
+        }
       }
       
       setAnalysis({
         posture: Math.random() > 0.5 ? 'Alinhada' : 'Ombro esquerdo mais elevado',
-        fatPercentage: ['Baixa', 'Moderada', 'Alta'][Math.floor(Math.random() * 3)],
+        fatPercentage: profile?.bodyFat ? fatEstimate : ['Baixa', 'Moderada', 'Alta'][Math.floor(Math.random() * 3)],
         symmetry: Math.random() > 0.5 ? 'Equilibrado' : 'Assimétrico',
         bmi: bmi,
       });
@@ -52,7 +83,7 @@ const AnalysisPage = () => {
     }, 2000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigate, toast]);
   
   const handleGoalSelected = (goal: string) => {
     // Save selected goal
@@ -77,20 +108,30 @@ const AnalysisPage = () => {
         <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Análise Corporal</h1>
         
         <div className="mb-6">
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-2 mb-6">
             <div>
               <img 
                 src={localStorage.getItem('frontPhotoUrl') || ''} 
                 alt="Foto frontal"
-                className="rounded-lg w-full h-48 object-cover"
+                className="rounded-lg w-full h-32 object-cover"
               />
+              <p className="text-xs text-gray-500 mt-1 text-center">Frontal</p>
+            </div>
+            <div>
+              <img 
+                src={localStorage.getItem('backPhotoUrl') || ''} 
+                alt="Foto de costas"
+                className="rounded-lg w-full h-32 object-cover"
+              />
+              <p className="text-xs text-gray-500 mt-1 text-center">Costas</p>
             </div>
             <div>
               <img 
                 src={localStorage.getItem('sidePhotoUrl') || ''} 
                 alt="Foto lateral"
-                className="rounded-lg w-full h-48 object-cover"
+                className="rounded-lg w-full h-32 object-cover"
               />
+              <p className="text-xs text-gray-500 mt-1 text-center">Lateral</p>
             </div>
           </div>
         </div>
@@ -106,11 +147,24 @@ const AnalysisPage = () => {
                   <div>Peso: {userProfile.weight} kg</div>
                 </>
               )}
+              {userProfile.bodyFat && (
+                <div>Gordura corporal: {userProfile.bodyFat}%</div>
+              )}
               {userProfile.age && (
                 <div>Idade: {userProfile.age} anos</div>
               )}
               {userProfile.sex && (
                 <div>Sexo: {userProfile.sex === 'masculino' ? 'Masculino' : 'Feminino'}</div>
+              )}
+              {userProfile.lifestyle && (
+                <div className="col-span-2">
+                  Estilo de vida: {
+                    userProfile.lifestyle === 'sedentario' ? 'Sedentário' :
+                    userProfile.lifestyle === 'leve' ? 'Levemente ativo' :
+                    userProfile.lifestyle === 'moderado' ? 'Moderadamente ativo' :
+                    userProfile.lifestyle === 'ativo' ? 'Muito ativo' : 'Extremamente ativo'
+                  }
+                </div>
               )}
             </div>
           </div>
