@@ -18,7 +18,7 @@ interface Meal {
 
 interface Diet {
   type: string;
-  budget: string;
+  budget?: string;  // Mudamos para opcional para resolver o erro
   meals: Meal[];
   recipe: {
     name: string;
