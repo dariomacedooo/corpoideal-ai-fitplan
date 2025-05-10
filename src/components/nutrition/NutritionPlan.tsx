@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { AlertCircle, Apple } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface Food {
   name: string;
@@ -18,7 +20,7 @@ interface Meal {
 
 interface Diet {
   type: string;
-  budget?: string;  // Mudamos para opcional para resolver o erro
+  budget?: string;  // Opcional para compatibilidade
   meals: Meal[];
   recipe: {
     name: string;
@@ -77,24 +79,32 @@ export function NutritionPlan({ diets }: NutritionPlanProps) {
     if (filteredDiets.length > 0 && (!selectedDiet || !filteredDiets.find(d => d.type === selectedDiet))) {
       setSelectedDiet(filteredDiets[0].type);
     }
-  }, [filteredDiets]);
+  }, [filteredDiets, selectedDiet]);
   
   const currentDiet = filteredDiets.find(diet => diet.type === selectedDiet) || (filteredDiets[0] || diets[0]);
+  
+  const getBudgetLabel = (budget: string) => {
+    switch (budget) {
+      case '100-300': return 'R$100-R$300';
+      case '301-500': return 'R$301-R$500';
+      case '501-800': return 'R$501-R$800';
+      case '801+': return 'Acima de R$800';
+      default: return budget;
+    }
+  };
   
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle className="text-xl text-corpoideal-purple">Plano Alimentar</CardTitle>
+          <CardTitle className="text-xl text-corpoideal-purple flex items-center">
+            <Apple className="h-5 w-5 mr-2" />
+            Plano Alimentar
+          </CardTitle>
           <div className="flex flex-col gap-2 items-end">
             {userBudget && (
               <Badge variant="outline" className="mb-1">
-                Orçamento: {
-                  userBudget === '100-300' ? 'R$100-R$300' :
-                  userBudget === '301-500' ? 'R$301-R$500' :
-                  userBudget === '501-800' ? 'R$501-R$800' :
-                  'Acima de R$800'
-                }
+                Orçamento: {getBudgetLabel(userBudget)}
               </Badge>
             )}
             <Select value={selectedDiet} onValueChange={setSelectedDiet}>
@@ -113,6 +123,16 @@ export function NutritionPlan({ diets }: NutritionPlanProps) {
         </div>
       </CardHeader>
       <CardContent>
+        {currentDiet.budget && (
+          <Alert className="mb-4 bg-corpoideal-purple/5 border-corpoideal-purple/20">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Faixa de orçamento</AlertTitle>
+            <AlertDescription>
+              Este plano alimentar é adequado para orçamentos de {getBudgetLabel(currentDiet.budget)}.
+            </AlertDescription>
+          </Alert>
+        )}
+      
         <Tabs defaultValue="refeicoes">
           <TabsList className="grid grid-cols-2 mb-4">
             <TabsTrigger value="refeicoes">Refeições</TabsTrigger>
@@ -143,10 +163,15 @@ export function NutritionPlan({ diets }: NutritionPlanProps) {
           
           <TabsContent value="receita">
             <div className="nutrition-card">
-              <h3 className="font-medium text-lg mb-3">{currentDiet.recipe.name}</h3>
+              <div className="bg-gradient-to-r from-corpoideal-purple/10 to-corpoideal-lightpurple/10 p-4 rounded-lg mb-4">
+                <h3 className="font-medium text-lg mb-1 text-corpoideal-purple">{currentDiet.recipe.name}</h3>
+                <p className="text-xs text-gray-600">Receita especial para o seu plano alimentar</p>
+              </div>
               
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Ingredientes:</h4>
+                <h4 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                  <span className="mr-1">🥗</span> Ingredientes:
+                </h4>
                 <ul className="list-disc list-inside text-sm space-y-1">
                   {currentDiet.recipe.ingredients.map((ingredient, idx) => (
                     <li key={idx}>{ingredient}</li>
@@ -155,7 +180,9 @@ export function NutritionPlan({ diets }: NutritionPlanProps) {
               </div>
               
               <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Modo de Preparo:</h4>
+                <h4 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                  <span className="mr-1">👨‍🍳</span> Modo de Preparo:
+                </h4>
                 <p className="text-sm">{currentDiet.recipe.instructions}</p>
               </div>
             </div>

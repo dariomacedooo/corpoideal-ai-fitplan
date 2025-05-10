@@ -5,7 +5,8 @@ import {
   Dumbbell, 
   Apple, 
   LineChart,
-  User
+  User,
+  Sparkles
 } from "lucide-react";
 
 export function BottomNav() {
@@ -20,6 +21,7 @@ export function BottomNav() {
     { path: "/training", icon: Dumbbell, label: "Treino" },
     { path: "/nutrition", icon: Apple, label: "Nutrição" },
     { path: "/progress", icon: LineChart, label: "Progresso" },
+    { path: "/features", icon: Sparkles, label: "Recursos" },
     { path: "/profile", icon: User, label: "Perfil" }
   ];
   
@@ -29,7 +31,7 @@ export function BottomNav() {
         <Link
           key={item.path}
           to={item.path}
-          className={`flex flex-col items-center py-1 px-3 rounded-md transition-colors ${
+          className={`flex flex-col items-center py-1 px-1 rounded-md transition-colors ${
             isActive(item.path)
               ? "text-corpoideal-purple"
               : "text-gray-500 hover:text-corpoideal-purple"
