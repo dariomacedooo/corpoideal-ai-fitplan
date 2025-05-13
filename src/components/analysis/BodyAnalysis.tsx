@@ -6,10 +6,15 @@ interface BodyAnalysisProps {
   posture: string;
   fatPercentage: string;
   symmetry: string;
-  bmi?: string;  // Adding the optional bmi prop
+  bmi?: string;
+  measurements?: {
+    waist?: string;
+    thigh?: string;
+    calf?: string;
+  };
 }
 
-export function BodyAnalysis({ posture, fatPercentage, symmetry, bmi }: BodyAnalysisProps) {
+export function BodyAnalysis({ posture, fatPercentage, symmetry, bmi, measurements }: BodyAnalysisProps) {
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
@@ -77,6 +82,33 @@ export function BodyAnalysis({ posture, fatPercentage, symmetry, bmi }: BodyAnal
                       ? 'Seu IMC indica sobrepeso.'
                       : 'Seu IMC indica obesidade.'}
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Add body measurements if provided */}
+        {measurements && (measurements.waist || measurements.thigh || measurements.calf) && (
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Medidas Corporais</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {measurements.waist && (
+                <div className="bg-gray-50 p-2 rounded-md text-center">
+                  <span className="text-xs text-gray-500 block">Cintura</span>
+                  <span className="text-sm font-medium">{measurements.waist} cm</span>
+                </div>
+              )}
+              {measurements.thigh && (
+                <div className="bg-gray-50 p-2 rounded-md text-center">
+                  <span className="text-xs text-gray-500 block">Coxa</span>
+                  <span className="text-sm font-medium">{measurements.thigh} cm</span>
+                </div>
+              )}
+              {measurements.calf && (
+                <div className="bg-gray-50 p-2 rounded-md text-center">
+                  <span className="text-xs text-gray-500 block">Panturrilha</span>
+                  <span className="text-sm font-medium">{measurements.calf} cm</span>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -7,16 +7,23 @@ import { GoalSelector } from "@/components/goals/GoalSelector";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { ResultProjection } from "@/components/analysis/ResultProjection";
 
 const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);
   const [showGoals, setShowGoals] = useState(false);
+  const [showProjection, setShowProjection] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [analysis, setAnalysis] = useState({
     posture: '',
     fatPercentage: '',
     symmetry: '',
     bmi: '',
+    measurements: {
+      waist: '',
+      thigh: '',
+      calf: '',
+    }
   });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -72,11 +79,17 @@ const AnalysisPage = () => {
         }
       }
       
+      // Set analysis state with all measurements if available
       setAnalysis({
         posture: Math.random() > 0.5 ? 'Alinhada' : 'Ombro esquerdo mais elevado',
         fatPercentage: profile?.bodyFat ? fatEstimate : ['Baixa', 'Moderada', 'Alta'][Math.floor(Math.random() * 3)],
         symmetry: Math.random() > 0.5 ? 'Equilibrado' : 'Assimétrico',
         bmi: bmi,
+        measurements: {
+          waist: profile?.waist || '',
+          thigh: profile?.thigh || '',
+          calf: profile?.calf || '',
+        }
       });
       
       setLoading(false);
@@ -166,6 +179,24 @@ const AnalysisPage = () => {
                   }
                 </div>
               )}
+              
+              {/* Mostrar medidas adicionais se disponíveis */}
+              {(userProfile.waist || userProfile.thigh || userProfile.calf) && (
+                <div className="col-span-2 mt-2 border-t pt-2">
+                  <span className="font-medium">Medidas corporais:</span>
+                  <div className="grid grid-cols-3 gap-2 mt-1">
+                    {userProfile.waist && (
+                      <div>Cintura: {userProfile.waist} cm</div>
+                    )}
+                    {userProfile.thigh && (
+                      <div>Coxa: {userProfile.thigh} cm</div>
+                    )}
+                    {userProfile.calf && (
+                      <div>Panturrilha: {userProfile.calf} cm</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -177,21 +208,45 @@ const AnalysisPage = () => {
           </div>
         ) : (
           <>
-            {!showGoals ? (
+            {!showGoals && !showProjection ? (
               <>
                 <BodyAnalysis 
                   posture={analysis.posture}
                   fatPercentage={analysis.fatPercentage}
                   symmetry={analysis.symmetry}
                   bmi={analysis.bmi}
+                  measurements={analysis.measurements}
                 />
                 
-                <div className="mt-6">
+                <div className="mt-6 grid grid-cols-2 gap-4">
+                  <Button 
+                    onClick={() => setShowProjection(true)}
+                    className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
+                  >
+                    Ver projeção de resultados
+                  </Button>
+                  
                   <Button 
                     onClick={() => setShowGoals(true)}
                     className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
                   >
                     Definir meu objetivo
+                  </Button>
+                </div>
+              </>
+            ) : showProjection ? (
+              <>
+                <ResultProjection 
+                  originalPhotoUrl={localStorage.getItem('frontPhotoUrl') || ''} 
+                />
+                
+                <div className="mt-6">
+                  <Button 
+                    onClick={() => setShowProjection(false)}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Voltar para análise
                   </Button>
                 </div>
               </>
@@ -205,6 +260,6 @@ const AnalysisPage = () => {
       <BottomNav />
     </div>
   );
-};
+}
 
 export default AnalysisPage;

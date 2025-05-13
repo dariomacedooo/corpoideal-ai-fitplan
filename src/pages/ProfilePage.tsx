@@ -26,6 +26,9 @@ const ProfilePage = () => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [bodyFat, setBodyFat] = useState(''); 
   const [budget, setBudget] = useState('');
+  const [waist, setWaist] = useState('');
+  const [thigh, setThigh] = useState('');
+  const [calf, setCalf] = useState('');
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -46,6 +49,9 @@ const ProfilePage = () => {
       setAdditionalInfo(profile.additionalInfo || '');
       setBodyFat(profile.bodyFat || '');
       setBudget(profile.budget || '');
+      setWaist(profile.waist || '');
+      setThigh(profile.thigh || '');
+      setCalf(profile.calf || '');
     }
   }, []);
   
@@ -83,6 +89,9 @@ const ProfilePage = () => {
       healthIssues,
       additionalInfo,
       budget,
+      waist,
+      thigh,
+      calf,
       profileCompleted: true,
     };
     
@@ -108,7 +117,7 @@ const ProfilePage = () => {
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Medidas básicas */}
+          {/* Medidas básicas e medidas corporais */}
           <BasicMeasurementsForm 
             height={height}
             setHeight={setHeight}
@@ -120,6 +129,12 @@ const ProfilePage = () => {
             setSex={setSex}
             bodyFat={bodyFat}
             setBodyFat={setBodyFat}
+            waist={waist}
+            setWaist={setWaist}
+            thigh={thigh}
+            setThigh={setThigh}
+            calf={calf}
+            setCalf={setCalf}
           />
           
           {/* Estilo de vida */}
