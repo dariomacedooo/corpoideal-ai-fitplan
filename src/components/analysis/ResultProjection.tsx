@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Scale } from "lucide-react";
+import { Scale, Dumbbell } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ResultProjectionProps {
   originalPhotoUrl: string;
@@ -12,8 +13,11 @@ interface ResultProjectionProps {
 
 export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
   const [weightLoss, setWeightLoss] = useState([5]);
+  const [muscleMass, setMuscleMass] = useState([5]);
   const [processingImage, setProcessingImage] = useState(false);
   const [projectedImageUrl, setProjectedImageUrl] = useState<string | null>(null);
+  const [projectionType, setProjectionType] = useState<'weightLoss' | 'muscleGain'>('weightLoss');
+  const [targetArea, setTargetArea] = useState<string>('full');
   const { toast } = useToast();
 
   const handleGenerateProjection = () => {
@@ -26,42 +30,162 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
       setProjectedImageUrl(originalPhotoUrl);
       setProcessingImage(false);
       
-      toast({
-        title: "Projeção gerada",
-        description: `Visualização de como você ficará perdendo ${weightLoss[0]}kg.`,
-      });
+      if (projectionType === 'weightLoss') {
+        toast({
+          title: "Projeção gerada",
+          description: `Visualização de como você ficará perdendo ${weightLoss[0]}kg.`,
+        });
+      } else {
+        toast({
+          title: "Projeção gerada",
+          description: `Visualização de como você ficará ganhando ${muscleMass[0]}kg de massa muscular${targetArea !== 'full' ? ` no ${getTargetAreaName(targetArea)}` : ''}.`,
+        });
+      }
     }, 2000);
+  };
+
+  const getTargetAreaName = (area: string) => {
+    switch (area) {
+      case 'chest': return 'peitoral';
+      case 'abs': return 'abdômen';
+      case 'shoulders': return 'ombros';
+      case 'arms': return 'braços';
+      case 'legs': return 'pernas';
+      default: return 'corpo todo';
+    }
+  };
+
+  // Função para aplicar os filtros de acordo com o tipo de projeção
+  const getImageStyle = () => {
+    if (projectionType === 'weightLoss') {
+      return {
+        filter: 'contrast(105%) brightness(110%) saturate(105%)',
+        transform: `scale(0.${95 - weightLoss[0]})`
+      };
+    } else {
+      // Estilos para ganho muscular - aumentamos partes específicas
+      let muscleFilter = 'contrast(110%) brightness(105%) saturate(110%)';
+      let muscleTransform = `scale(1.${Math.min(15, muscleMass[0])})`;
+      
+      return {
+        filter: muscleFilter,
+        transform: muscleTransform,
+      };
+    }
   };
 
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
         <CardTitle className="text-xl text-corpoideal-purple flex items-center">
-          <Scale className="h-5 w-5 mr-2" />
+          {projectionType === 'weightLoss' ? (
+            <Scale className="h-5 w-5 mr-2" />
+          ) : (
+            <Dumbbell className="h-5 w-5 mr-2" />
+          )}
           Projeção de Resultados
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            Visualize como seu corpo pode ficar após perder peso. Escolha a quantidade de quilos e 
-            gere uma projeção baseada na sua foto atual.
+            Visualize como seu corpo pode ficar após perder peso ou ganhar massa muscular.
           </p>
           
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Perda de peso desejada:</span>
-              <span className="text-sm font-bold text-corpoideal-purple">{weightLoss[0]} kg</span>
-            </div>
-            <Slider
-              value={weightLoss}
-              onValueChange={setWeightLoss}
-              min={1}
-              max={20}
-              step={1}
-              className="py-4"
-            />
-          </div>
+          <Tabs defaultValue="weightLoss" onValueChange={(value) => setProjectionType(value as 'weightLoss' | 'muscleGain')}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="weightLoss" className="text-sm">Perda de Peso</TabsTrigger>
+              <TabsTrigger value="muscleGain" className="text-sm">Ganho de Massa</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="weightLoss" className="space-y-4 mt-2">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Perda de peso desejada:</span>
+                  <span className="text-sm font-bold text-corpoideal-purple">{weightLoss[0]} kg</span>
+                </div>
+                <Slider
+                  value={weightLoss}
+                  onValueChange={setWeightLoss}
+                  min={1}
+                  max={20}
+                  step={1}
+                  className="py-4"
+                />
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="muscleGain" className="space-y-4 mt-2">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Ganho de massa desejado:</span>
+                  <span className="text-sm font-bold text-corpoideal-purple">{muscleMass[0]} kg</span>
+                </div>
+                <Slider
+                  value={muscleMass}
+                  onValueChange={setMuscleMass}
+                  min={1}
+                  max={15}
+                  step={1}
+                  className="py-4"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <span className="text-sm font-medium">Área de foco:</span>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button 
+                    variant={targetArea === 'full' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setTargetArea('full')}
+                    className="text-xs"
+                  >
+                    Corpo todo
+                  </Button>
+                  <Button 
+                    variant={targetArea === 'chest' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setTargetArea('chest')}
+                    className="text-xs"
+                  >
+                    Peitoral
+                  </Button>
+                  <Button 
+                    variant={targetArea === 'abs' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setTargetArea('abs')}
+                    className="text-xs"
+                  >
+                    Abdômen
+                  </Button>
+                  <Button 
+                    variant={targetArea === 'shoulders' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setTargetArea('shoulders')}
+                    className="text-xs"
+                  >
+                    Ombros
+                  </Button>
+                  <Button 
+                    variant={targetArea === 'arms' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setTargetArea('arms')}
+                    className="text-xs"
+                  >
+                    Braços
+                  </Button>
+                  <Button 
+                    variant={targetArea === 'legs' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setTargetArea('legs')}
+                    className="text-xs"
+                  >
+                    Pernas
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
           
           <Button 
             onClick={handleGenerateProjection}
@@ -73,7 +197,11 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
           
           {projectedImageUrl && (
             <div className="mt-6">
-              <h3 className="text-sm font-medium mb-3">Projeção com -{weightLoss[0]}kg:</h3>
+              <h3 className="text-sm font-medium mb-3">
+                {projectionType === 'weightLoss' 
+                  ? `Projeção com -${weightLoss[0]}kg:` 
+                  : `Projeção com +${muscleMass[0]}kg de massa muscular${targetArea !== 'full' ? ` no ${getTargetAreaName(targetArea)}` : ''}:`}
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-gray-500 mb-1 text-center">Original</p>
@@ -85,17 +213,63 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 mb-1 text-center">Projeção</p>
-                  <img 
-                    src={projectedImageUrl} 
-                    alt="Projeção"
-                    className="rounded-lg w-full object-cover h-48 filter contrast-105 brightness-110 saturate-105"
-                    style={{ transform: `scale(0.${95 - weightLoss[0]})` }}
-                  />
+                  <div className="relative">
+                    <img 
+                      src={projectedImageUrl} 
+                      alt="Projeção"
+                      className={`rounded-lg w-full object-cover h-48 ${targetArea === 'full' ? '' : 'base-image'}`}
+                      style={targetArea === 'full' ? getImageStyle() : undefined}
+                    />
+                    
+                    {/* Overlay para destacar áreas específicas */}
+                    {targetArea !== 'full' && (
+                      <div 
+                        className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-lg"
+                        style={{
+                          WebkitMaskImage: `url('/muscle-masks/${targetArea}.png')`,
+                          maskImage: `url('/muscle-masks/${targetArea}.png')`,
+                          WebkitMaskSize: 'cover',
+                          maskSize: 'cover',
+                          WebkitMaskPosition: 'center',
+                          maskPosition: 'center',
+                          WebkitMaskRepeat: 'no-repeat',
+                          maskRepeat: 'no-repeat',
+                          backgroundColor: 'transparent',
+                          ...getImageStyle()
+                        }}
+                      >
+                        <img 
+                          src={projectedImageUrl} 
+                          alt={`Projeção ${getTargetAreaName(targetArea)}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Esta é uma simulação aproximada. Os resultados reais podem variar.
               </p>
+              
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 className="text-sm font-medium text-corpoideal-purple mb-2">Dicas para atingir esse resultado:</h4>
+                {projectionType === 'weightLoss' ? (
+                  <ul className="text-xs text-gray-600 space-y-1 pl-4 list-disc">
+                    <li>Déficit calórico de aproximadamente 500 calorias por dia</li>
+                    <li>30-45 minutos de exercício cardiovascular 4-5x por semana</li>
+                    <li>Treino de resistência para preservar massa muscular</li>
+                    <li>Dieta rica em proteínas e com baixo teor de açúcares refinados</li>
+                  </ul>
+                ) : (
+                  <ul className="text-xs text-gray-600 space-y-1 pl-4 list-disc">
+                    <li>Superávit calórico de aproximadamente 300-500 calorias por dia</li>
+                    <li>Consumo de proteína de 1.6-2g por kg de peso corporal</li>
+                    <li>Treino de hipertrofia com foco em {targetArea === 'full' ? 'corpo completo' : getTargetAreaName(targetArea)}</li>
+                    <li>Descanso adequado de 7-9h por noite para recuperação muscular</li>
+                  </ul>
+                )}
+              </div>
             </div>
           )}
         </div>

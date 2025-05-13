@@ -7,16 +7,21 @@ import { GoalSelector } from "@/components/goals/GoalSelector";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { ResultProjection } from "@/components/analysis/ResultProjection";
+import { MuscleProjection3D } from "@/components/analysis/MuscleProjection3D";
 import { PhotosGallery } from "@/components/analysis/PhotosGallery";
 import { ProfileSummary } from "@/components/analysis/ProfileSummary";
 import { LoadingAnalysis } from "@/components/analysis/LoadingAnalysis";
 import { AnalysisActions } from "@/components/analysis/AnalysisActions";
 import { BackButton } from "@/components/analysis/BackButton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);
   const [showGoals, setShowGoals] = useState(false);
   const [showProjection, setShowProjection] = useState(false);
+  const [show3DProjection, setShow3DProjection] = useState(false);
+  const [selectedMuscle, setSelectedMuscle] = useState('full');
+  const [muscleGain, setMuscleGain] = useState(5);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [analysis, setAnalysis] = useState({
     posture: '',
@@ -117,6 +122,123 @@ const AnalysisPage = () => {
     }, 1500);
   };
 
+  const renderContent = () => {
+    if (loading) {
+      return <LoadingAnalysis />;
+    }
+
+    if (showGoals) {
+      return (
+        <>
+          <GoalSelector onSelect={handleGoalSelected} />
+          <BackButton onClick={() => setShowGoals(false)} />
+        </>
+      );
+    }
+
+    if (showProjection) {
+      return (
+        <>
+          <ResultProjection originalPhotoUrl={localStorage.getItem('frontPhotoUrl') || ''} />
+          <BackButton onClick={() => setShowProjection(false)} />
+        </>
+      );
+    }
+
+    if (show3DProjection) {
+      return (
+        <>
+          <div className="space-y-6">
+            <Tabs defaultValue="full" onValueChange={setSelectedMuscle}>
+              <TabsList className="grid grid-cols-3 mb-4">
+                <TabsTrigger value="full">Corpo Todo</TabsTrigger>
+                <TabsTrigger value="chest">Peitoral</TabsTrigger>
+                <TabsTrigger value="abs">Abdômen</TabsTrigger>
+              </TabsList>
+              <TabsList className="grid grid-cols-3">
+                <TabsTrigger value="shoulders">Ombros</TabsTrigger>
+                <TabsTrigger value="arms">Braços</TabsTrigger>
+                <TabsTrigger value="legs">Pernas</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Ganho de massa muscular (kg):</span>
+                <span className="text-sm font-bold text-corpoideal-purple">{muscleGain} kg</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="15" 
+                value={muscleGain}
+                onChange={(e) => setMuscleGain(parseInt(e.target.value))}
+                className="w-full" 
+              />
+            </div>
+            
+            <MuscleProjection3D 
+              bodyPart={selectedMuscle} 
+              gainAmount={muscleGain} 
+              userImage={localStorage.getItem('frontPhotoUrl') || ''}
+            />
+          </div>
+          <BackButton onClick={() => setShow3DProjection(false)} />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <BodyAnalysis 
+          posture={analysis.posture}
+          fatPercentage={analysis.fatPercentage}
+          symmetry={analysis.symmetry}
+          bmi={analysis.bmi}
+          measurements={analysis.measurements}
+        />
+        
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button 
+            onClick={() => setShowProjection(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            <img 
+              src="/placeholder.svg" 
+              alt="Perda de peso" 
+              className="w-12 h-12 mb-2"
+            />
+            <span className="text-sm font-medium">Projeção de perda de peso</span>
+          </button>
+          
+          <button 
+            onClick={() => setShow3DProjection(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            <img 
+              src="/placeholder.svg" 
+              alt="Ganho muscular" 
+              className="w-12 h-12 mb-2"
+            />
+            <span className="text-sm font-medium">Projeção de ganho muscular</span>
+          </button>
+          
+          <button 
+            onClick={() => setShowGoals(true)}
+            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            <img 
+              src="/placeholder.svg" 
+              alt="Definir objetivos" 
+              className="w-12 h-12 mb-2"
+            />
+            <span className="text-sm font-medium">Definir meu objetivo</span>
+          </button>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="pb-16 pt-14">
       <AppHeader />
@@ -132,38 +254,7 @@ const AnalysisPage = () => {
         
         <ProfileSummary userProfile={userProfile} />
         
-        {loading ? (
-          <LoadingAnalysis />
-        ) : (
-          <>
-            {!showGoals && !showProjection ? (
-              <>
-                <BodyAnalysis 
-                  posture={analysis.posture}
-                  fatPercentage={analysis.fatPercentage}
-                  symmetry={analysis.symmetry}
-                  bmi={analysis.bmi}
-                  measurements={analysis.measurements}
-                />
-                
-                <AnalysisActions 
-                  onShowProjection={() => setShowProjection(true)}
-                  onShowGoals={() => setShowGoals(true)}
-                />
-              </>
-            ) : showProjection ? (
-              <>
-                <ResultProjection 
-                  originalPhotoUrl={localStorage.getItem('frontPhotoUrl') || ''} 
-                />
-                
-                <BackButton onClick={() => setShowProjection(false)} />
-              </>
-            ) : (
-              <GoalSelector onSelect={handleGoalSelected} />
-            )}
-          </>
-        )}
+        {renderContent()}
       </div>
       
       <BottomNav />
