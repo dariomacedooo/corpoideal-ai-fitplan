@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Weight, Ruler, Calendar, Percent, Body } from "lucide-react";
+import { User, Weight, Ruler, Calendar, Percent, User2 } from "lucide-react";
 
 interface BasicMeasurementsProps {
   height: string;
@@ -103,7 +103,7 @@ export function BasicMeasurementsForm({
       </div>
 
       <h3 className="text-md font-medium text-corpoideal-purple mt-2 mb-3 flex items-center gap-2">
-        <Body className="h-4 w-4" /> Medidas Corporais
+        <User2 className="h-4 w-4" /> Medidas Corporais
       </h3>
       
       <div className="grid grid-cols-2 gap-4">
@@ -123,7 +123,7 @@ export function BasicMeasurementsForm({
         
         <div className="space-y-2">
           <Label htmlFor="waist" className="flex items-center gap-2">
-            <Body className="h-4 w-4" /> Cintura (cm)
+            <User2 className="h-4 w-4" /> Cintura (cm)
           </Label>
           <Input
             id="waist"
@@ -139,7 +139,7 @@ export function BasicMeasurementsForm({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="thigh" className="flex items-center gap-2">
-            <Body className="h-4 w-4" /> Coxa (cm)
+            <User2 className="h-4 w-4" /> Coxa (cm)
           </Label>
           <Input
             id="thigh"
@@ -153,7 +153,7 @@ export function BasicMeasurementsForm({
         
         <div className="space-y-2">
           <Label htmlFor="calf" className="flex items-center gap-2">
-            <Body className="h-4 w-4" /> Panturrilha (cm)
+            <User2 className="h-4 w-4" /> Panturrilha (cm)
           </Label>
           <Input
             id="calf"

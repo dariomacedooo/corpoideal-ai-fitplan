@@ -4,10 +4,14 @@ import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { BodyAnalysis } from "@/components/analysis/BodyAnalysis";
 import { GoalSelector } from "@/components/goals/GoalSelector";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { ResultProjection } from "@/components/analysis/ResultProjection";
+import { PhotosGallery } from "@/components/analysis/PhotosGallery";
+import { ProfileSummary } from "@/components/analysis/ProfileSummary";
+import { LoadingAnalysis } from "@/components/analysis/LoadingAnalysis";
+import { AnalysisActions } from "@/components/analysis/AnalysisActions";
+import { BackButton } from "@/components/analysis/BackButton";
 
 const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);
@@ -120,92 +124,16 @@ const AnalysisPage = () => {
       <div className="px-4 py-6">
         <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Análise Corporal</h1>
         
-        <div className="mb-6">
-          <div className="grid grid-cols-3 gap-2 mb-6">
-            <div>
-              <img 
-                src={localStorage.getItem('frontPhotoUrl') || ''} 
-                alt="Foto frontal"
-                className="rounded-lg w-full h-32 object-cover"
-              />
-              <p className="text-xs text-gray-500 mt-1 text-center">Frontal</p>
-            </div>
-            <div>
-              <img 
-                src={localStorage.getItem('backPhotoUrl') || ''} 
-                alt="Foto de costas"
-                className="rounded-lg w-full h-32 object-cover"
-              />
-              <p className="text-xs text-gray-500 mt-1 text-center">Costas</p>
-            </div>
-            <div>
-              <img 
-                src={localStorage.getItem('sidePhotoUrl') || ''} 
-                alt="Foto lateral"
-                className="rounded-lg w-full h-32 object-cover"
-              />
-              <p className="text-xs text-gray-500 mt-1 text-center">Lateral</p>
-            </div>
-          </div>
-        </div>
+        <PhotosGallery 
+          frontPhotoUrl={localStorage.getItem('frontPhotoUrl')}
+          backPhotoUrl={localStorage.getItem('backPhotoUrl')}
+          sidePhotoUrl={localStorage.getItem('sidePhotoUrl')}
+        />
         
-        {/* Mostrar dados do perfil se disponíveis */}
-        {userProfile && (
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <h3 className="font-medium text-corpoideal-purple mb-2">Seus dados</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {userProfile.height && userProfile.weight && (
-                <>
-                  <div>Altura: {userProfile.height} cm</div>
-                  <div>Peso: {userProfile.weight} kg</div>
-                </>
-              )}
-              {userProfile.bodyFat && (
-                <div>Gordura corporal: {userProfile.bodyFat}%</div>
-              )}
-              {userProfile.age && (
-                <div>Idade: {userProfile.age} anos</div>
-              )}
-              {userProfile.sex && (
-                <div>Sexo: {userProfile.sex === 'masculino' ? 'Masculino' : 'Feminino'}</div>
-              )}
-              {userProfile.lifestyle && (
-                <div className="col-span-2">
-                  Estilo de vida: {
-                    userProfile.lifestyle === 'sedentario' ? 'Sedentário' :
-                    userProfile.lifestyle === 'leve' ? 'Levemente ativo' :
-                    userProfile.lifestyle === 'moderado' ? 'Moderadamente ativo' :
-                    userProfile.lifestyle === 'ativo' ? 'Muito ativo' : 'Extremamente ativo'
-                  }
-                </div>
-              )}
-              
-              {/* Mostrar medidas adicionais se disponíveis */}
-              {(userProfile.waist || userProfile.thigh || userProfile.calf) && (
-                <div className="col-span-2 mt-2 border-t pt-2">
-                  <span className="font-medium">Medidas corporais:</span>
-                  <div className="grid grid-cols-3 gap-2 mt-1">
-                    {userProfile.waist && (
-                      <div>Cintura: {userProfile.waist} cm</div>
-                    )}
-                    {userProfile.thigh && (
-                      <div>Coxa: {userProfile.thigh} cm</div>
-                    )}
-                    {userProfile.calf && (
-                      <div>Panturrilha: {userProfile.calf} cm</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        <ProfileSummary userProfile={userProfile} />
         
         {loading ? (
-          <div className="flex flex-col items-center py-8">
-            <div className="w-16 h-16 border-4 border-corpoideal-purple border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-600">Analisando suas fotos...</p>
-          </div>
+          <LoadingAnalysis />
         ) : (
           <>
             {!showGoals && !showProjection ? (
@@ -218,21 +146,10 @@ const AnalysisPage = () => {
                   measurements={analysis.measurements}
                 />
                 
-                <div className="mt-6 grid grid-cols-2 gap-4">
-                  <Button 
-                    onClick={() => setShowProjection(true)}
-                    className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
-                  >
-                    Ver projeção de resultados
-                  </Button>
-                  
-                  <Button 
-                    onClick={() => setShowGoals(true)}
-                    className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
-                  >
-                    Definir meu objetivo
-                  </Button>
-                </div>
+                <AnalysisActions 
+                  onShowProjection={() => setShowProjection(true)}
+                  onShowGoals={() => setShowGoals(true)}
+                />
               </>
             ) : showProjection ? (
               <>
@@ -240,15 +157,7 @@ const AnalysisPage = () => {
                   originalPhotoUrl={localStorage.getItem('frontPhotoUrl') || ''} 
                 />
                 
-                <div className="mt-6">
-                  <Button 
-                    onClick={() => setShowProjection(false)}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    Voltar para análise
-                  </Button>
-                </div>
+                <BackButton onClick={() => setShowProjection(false)} />
               </>
             ) : (
               <GoalSelector onSelect={handleGoalSelected} />

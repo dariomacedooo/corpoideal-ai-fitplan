@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Scale, Body } from "lucide-react";
+import { Scale } from "lucide-react";
 
 interface ResultProjectionProps {
   originalPhotoUrl: string;
