@@ -1,9 +1,23 @@
-
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { NutritionPlan } from "@/components/nutrition/NutritionPlan";
+import { WaterIntakeCalculator } from "@/components/nutrition/WaterIntakeCalculator";
+import { useState, useEffect } from "react";
 
 const NutritionPage = () => {
+  const [userWeight, setUserWeight] = useState<number>(70);
+  
+  // Get user weight from profile
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile);
+      if (profile.weight) {
+        setUserWeight(parseInt(profile.weight));
+      }
+    }
+  }, []);
+
   // Mock nutrition data
   // In a real app, this would come from a backend based on user analysis and goals
   const diets = [
@@ -495,7 +509,14 @@ const NutritionPage = () => {
           Alimentação balanceada para alcançar seus objetivos de forma saudável.
         </p>
         
-        <NutritionPlan diets={diets} />
+        <div className="space-y-6">
+          <NutritionPlan diets={diets} />
+          
+          <WaterIntakeCalculator 
+            weight={userWeight}
+            activityLevel="moderate"
+          />
+        </div>
       </div>
       
       <BottomNav />

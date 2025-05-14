@@ -12,6 +12,7 @@ import { ProfileSummary } from "@/components/analysis/ProfileSummary";
 import { LoadingAnalysis } from "@/components/analysis/LoadingAnalysis";
 import { AnalysisActions } from "@/components/analysis/AnalysisActions";
 import { BackButton } from "@/components/analysis/BackButton";
+import { PosturalAnalysis } from "@/components/analysis/PosturalAnalysis";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -511,113 +512,13 @@ const AnalysisPage = () => {
     if (showPostureAnalysis) {
       return (
         <>
-          <Card className="w-full mb-6">
-            <CardHeader>
-              <CardTitle className="text-corpoideal-purple">Análise Postural Detalhada</CardTitle>
-              <CardDescription>
-                Análise gerada por IA com base nas suas fotos
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-medium mb-2">Vista Frontal</h3>
-                  <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden">
-                    <canvas 
-                      ref={frontCanvasRef}
-                      className="w-full h-auto"
-                    />
-                    <div className="absolute bottom-0 left-0 w-full bg-black/50 p-2">
-                      <p className="text-xs text-white">{analysis.shoulders}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium mb-2">Vista Posterior</h3>
-                  <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden">
-                    <canvas 
-                      ref={backCanvasRef}
-                      className="w-full h-auto"
-                    />
-                    <div className="absolute bottom-0 left-0 w-full bg-black/50 p-2">
-                      <p className="text-xs text-white">{analysis.spine}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">Perfil Esquerdo</h3>
-                    <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden">
-                      <canvas 
-                        ref={leftSideCanvasRef}
-                        className="w-full h-auto"
-                      />
-                      <div className="absolute bottom-0 left-0 w-full bg-black/50 p-2">
-                        <p className="text-xs text-white">Postura anteriorizada</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">Perfil Direito</h3>
-                    <div className="relative w-full bg-gray-100 rounded-lg overflow-hidden">
-                      <canvas 
-                        ref={rightSideCanvasRef}
-                        className="w-full h-auto"
-                      />
-                      <div className="absolute bottom-0 left-0 w-full bg-black/50 p-2">
-                        <p className="text-xs text-white">Hiperlordose lombar</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <h3 className="text-sm font-medium text-corpoideal-purple">Resumo da Análise Postural</h3>
-                  
-                  <div className="grid grid-cols-2 gap-y-3">
-                    <div>
-                      <h4 className="text-xs font-medium">Ombros:</h4>
-                      <p className="text-xs text-gray-600">{analysis.shoulders}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium">Quadril:</h4>
-                      <p className="text-xs text-gray-600">{analysis.hips}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium">Joelhos:</h4>
-                      <p className="text-xs text-gray-600">{analysis.knees}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium">Coluna:</h4>
-                      <p className="text-xs text-gray-600">{analysis.spine}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium">Pés:</h4>
-                      <p className="text-xs text-gray-600">{analysis.feet}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-medium">Simetria:</h4>
-                      <p className="text-xs text-gray-600">{analysis.symmetry}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-2 pt-2 border-t border-gray-200">
-                    <h4 className="text-xs font-medium">Recomendações:</h4>
-                    <ul className="text-xs text-gray-600 mt-1 ml-4 list-disc">
-                      <li>Exercícios de fortalecimento para correção da postura dos ombros</li>
-                      <li>Alongamentos específicos para melhorar a curvatura lombar</li>
-                      <li>Treino de núcleo para estabilização da coluna</li>
-                      <li>Exercícios específicos para alinhamento do quadril</li>
-                      <li>Fortalecimento de glúteos médio para melhorar alinhamento dos joelhos</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <PosturalAnalysis 
+            frontPhotoUrl={localStorage.getItem('frontPhotoUrl')}
+            backPhotoUrl={localStorage.getItem('backPhotoUrl')}
+            leftSidePhotoUrl={localStorage.getItem('leftSidePhotoUrl')}
+            rightSidePhotoUrl={localStorage.getItem('rightSidePhotoUrl')}
+            analysisData={analysis}
+          />
           <BackButton onClick={() => setShowPostureAnalysis(false)} />
         </>
       );
