@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -15,6 +14,7 @@ import { AnalysisActions } from "@/components/analysis/AnalysisActions";
 import { BackButton } from "@/components/analysis/BackButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);

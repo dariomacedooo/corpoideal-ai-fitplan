@@ -23,10 +23,10 @@ export function ProgressTracker({ entries, onAddProgress }: ProgressTrackerProps
   const [sidePhoto, setSidePhoto] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const handlePhotoUploaded = (file: File, type: 'front' | 'side') => {
+  const handlePhotoUploaded = (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => {
     if (type === 'front') {
       setFrontPhoto(file);
-    } else {
+    } else if (type === 'rightSide') {
       setSidePhoto(file);
     }
   };
@@ -78,7 +78,7 @@ export function ProgressTracker({ entries, onAddProgress }: ProgressTrackerProps
               <div>
                 <h3 className="text-sm font-medium mb-2 text-center">Foto Lateral</h3>
                 <PhotoUpload 
-                  type="side" 
+                  type="rightSide" 
                   onPhotoUploaded={handlePhotoUploaded}
                 />
               </div>

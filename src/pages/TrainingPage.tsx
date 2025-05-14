@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 const TrainingPage = () => {
   const [goal, setGoal] = useState<string>('');
+  const [trainingLocation, setTrainingLocation] = useState<string>('academia');
+  const [experience, setExperience] = useState<string>('intermediario');
   
   useEffect(() => {
     // Get selected goal from localStorage
@@ -15,6 +17,18 @@ const TrainingPage = () => {
     } else {
       // Default to weight loss if no goal is set
       setGoal('perder-peso');
+    }
+    
+    // Get user profile for training location and experience
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile);
+      if (profile.trainingLocation) {
+        setTrainingLocation(profile.trainingLocation);
+      }
+      if (profile.experience) {
+        setExperience(profile.experience);
+      }
     }
   }, []);
   
@@ -631,6 +645,8 @@ const TrainingPage = () => {
           <WorkoutPlan 
             goal={goal}
             workoutDays={workoutPlans[goal as keyof typeof workoutPlans] || workoutPlans['perder-peso']}
+            trainingLocation={trainingLocation}
+            experience={experience}
           />
         )}
       </div>

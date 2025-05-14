@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const PhotoUploadPage = () => {
   const [frontPhoto, setFrontPhoto] = useState<File | null>(null);
   const [sidePhoto, setSidePhoto] = useState<File | null>(null);
-  const [backPhoto, setBackPhoto] = useState<File | null>(null);  // Added back photo
+  const [backPhoto, setBackPhoto] = useState<File | null>(null);
   const [profileCompleted, setProfileCompleted] = useState(false);
   
   const navigate = useNavigate();
@@ -33,13 +33,13 @@ const PhotoUploadPage = () => {
     }
   }, [navigate, toast]);
   
-  const handlePhotoUploaded = (file: File, type: 'front' | 'side' | 'back') => {
+  const handlePhotoUploaded = (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => {
     if (type === 'front') {
       setFrontPhoto(file);
-    } else if (type === 'side') {
-      setSidePhoto(file);
     } else if (type === 'back') {
       setBackPhoto(file);
+    } else if (type === 'rightSide' || type === 'leftSide') {
+      setSidePhoto(file);
     }
   };
   
@@ -93,7 +93,7 @@ const PhotoUploadPage = () => {
           <div>
             <h2 className="text-lg font-medium mb-2">Foto de Costas</h2>
             <PhotoUpload 
-              type="side" 
+              type="back" 
               onPhotoUploaded={(file) => handlePhotoUploaded(file, 'back')}
             />
             <p className="text-xs text-gray-500 mt-2">
@@ -104,8 +104,8 @@ const PhotoUploadPage = () => {
           <div className="md:col-span-2">
             <h2 className="text-lg font-medium mb-2">Foto Lateral</h2>
             <PhotoUpload 
-              type="side" 
-              onPhotoUploaded={(file) => handlePhotoUploaded(file, 'side')}
+              type="rightSide" 
+              onPhotoUploaded={(file) => handlePhotoUploaded(file, 'rightSide')}
             />
             <p className="text-xs text-gray-500 mt-2">
               Fique de lado, olhando para frente, braços relaxados ao lado do corpo.

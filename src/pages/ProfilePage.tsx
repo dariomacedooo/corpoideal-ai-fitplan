@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -7,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Dumbbell } from "lucide-react";
 
 // Import the refactored components
 import { BasicMeasurementsForm } from "@/components/profile/BasicMeasurementsForm";
