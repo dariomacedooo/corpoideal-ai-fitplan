@@ -38,9 +38,9 @@ export const drawPostureLines = (
     const textX = center.x + (radius * 1.5) * Math.cos(middleAngle);
     const textY = center.y + (radius * 1.5) * Math.sin(middleAngle);
     
-    // Convert to degrees for display
-    const angleDegrees = Math.abs(((endAngle - startAngle) * 180 / Math.PI).toFixed(1));
-    drawAngleText(textX, textY, `${angleDegrees}°`, color);
+    // Convert to degrees for display - Fix: Convert to number before formatting
+    const angleDegrees = Math.abs(((endAngle - startAngle) * 180 / Math.PI));
+    drawAngleText(textX, textY, `${angleDegrees.toFixed(1)}°`, color);
   };
   
   if (type === 'front') {
