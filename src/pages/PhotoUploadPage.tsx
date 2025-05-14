@@ -9,8 +9,9 @@ import { useNavigate } from "react-router-dom";
 
 const PhotoUploadPage = () => {
   const [frontPhoto, setFrontPhoto] = useState<File | null>(null);
-  const [sidePhoto, setSidePhoto] = useState<File | null>(null);
   const [backPhoto, setBackPhoto] = useState<File | null>(null);
+  const [leftSidePhoto, setLeftSidePhoto] = useState<File | null>(null);
+  const [rightSidePhoto, setRightSidePhoto] = useState<File | null>(null);
   const [profileCompleted, setProfileCompleted] = useState(false);
   
   const navigate = useNavigate();
@@ -38,13 +39,15 @@ const PhotoUploadPage = () => {
       setFrontPhoto(file);
     } else if (type === 'back') {
       setBackPhoto(file);
-    } else if (type === 'rightSide' || type === 'leftSide') {
-      setSidePhoto(file);
+    } else if (type === 'leftSide') {
+      setLeftSidePhoto(file);
+    } else if (type === 'rightSide') {
+      setRightSidePhoto(file);
     }
   };
   
   const handleAnalyzeClick = () => {
-    if (!frontPhoto || !sidePhoto || !backPhoto) {
+    if (!frontPhoto || !backPhoto || !leftSidePhoto || !rightSidePhoto) {
       toast({
         title: "Fotos necessárias",
         description: "Por favor, envie todas as fotos para análise.",
@@ -56,12 +59,15 @@ const PhotoUploadPage = () => {
     // In a real app, we would upload the photos to a server here
     // For now, we'll just save them in localStorage as URLs for demo purposes
     const frontPhotoUrl = URL.createObjectURL(frontPhoto);
-    const sidePhotoUrl = URL.createObjectURL(sidePhoto);
     const backPhotoUrl = URL.createObjectURL(backPhoto);
+    const leftSidePhotoUrl = URL.createObjectURL(leftSidePhoto);
+    const rightSidePhotoUrl = URL.createObjectURL(rightSidePhoto);
     
     localStorage.setItem('frontPhotoUrl', frontPhotoUrl);
-    localStorage.setItem('sidePhotoUrl', sidePhotoUrl);
     localStorage.setItem('backPhotoUrl', backPhotoUrl);
+    localStorage.setItem('leftSidePhotoUrl', leftSidePhotoUrl);
+    localStorage.setItem('rightSidePhotoUrl', rightSidePhotoUrl);
+    localStorage.setItem('sidePhotoUrl', leftSidePhotoUrl); // For backward compatibility
     
     // Navigate to analysis page
     navigate('/analysis');
@@ -83,7 +89,7 @@ const PhotoUploadPage = () => {
             <h2 className="text-lg font-medium mb-2">Foto Frontal</h2>
             <PhotoUpload 
               type="front" 
-              onPhotoUploaded={(file) => handlePhotoUploaded(file, 'front')}
+              onPhotoUploaded={handlePhotoUploaded}
             />
             <p className="text-xs text-gray-500 mt-2">
               Fique em pé, olhando para frente, braços relaxados ao lado do corpo.
@@ -94,28 +100,39 @@ const PhotoUploadPage = () => {
             <h2 className="text-lg font-medium mb-2">Foto de Costas</h2>
             <PhotoUpload 
               type="back" 
-              onPhotoUploaded={(file) => handlePhotoUploaded(file, 'back')}
+              onPhotoUploaded={handlePhotoUploaded}
             />
             <p className="text-xs text-gray-500 mt-2">
               Fique de costas, braços relaxados ao lado do corpo.
             </p>
           </div>
           
-          <div className="md:col-span-2">
-            <h2 className="text-lg font-medium mb-2">Foto Lateral</h2>
+          <div>
+            <h2 className="text-lg font-medium mb-2">Foto Lateral Esquerda</h2>
             <PhotoUpload 
-              type="rightSide" 
-              onPhotoUploaded={(file) => handlePhotoUploaded(file, 'rightSide')}
+              type="leftSide" 
+              onPhotoUploaded={handlePhotoUploaded}
             />
             <p className="text-xs text-gray-500 mt-2">
-              Fique de lado, olhando para frente, braços relaxados ao lado do corpo.
+              Fique de lado esquerdo, olhando para frente, braços relaxados.
+            </p>
+          </div>
+          
+          <div>
+            <h2 className="text-lg font-medium mb-2">Foto Lateral Direita</h2>
+            <PhotoUpload 
+              type="rightSide" 
+              onPhotoUploaded={handlePhotoUploaded}
+            />
+            <p className="text-xs text-gray-500 mt-2">
+              Fique de lado direito, olhando para frente, braços relaxados.
             </p>
           </div>
         </div>
         
         <Button 
           onClick={handleAnalyzeClick}
-          disabled={!frontPhoto || !sidePhoto || !backPhoto}
+          disabled={!frontPhoto || !backPhoto || !leftSidePhoto || !rightSidePhoto}
           className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
         >
           Analisar meu corpo

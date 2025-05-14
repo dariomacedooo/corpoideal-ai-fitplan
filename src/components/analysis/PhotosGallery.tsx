@@ -16,7 +16,7 @@ export function PhotosGallery({
 }: PhotosGalleryProps) {
   return (
     <div className="mb-6">
-      <div className="grid grid-cols-4 gap-2 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
         <div>
           <img 
             src={frontPhotoUrl || '/placeholder.svg'} 

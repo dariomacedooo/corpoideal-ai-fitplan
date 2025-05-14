@@ -88,7 +88,7 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue={workoutDays[0].day.toLowerCase()}>
+        <Tabs defaultValue={workoutDays[0]?.day.toLowerCase()}>
           <TabsList className="grid grid-cols-7 mb-4">
             {workoutDays.map((day) => (
               <TabsTrigger key={day.day} value={day.day.toLowerCase()}>
