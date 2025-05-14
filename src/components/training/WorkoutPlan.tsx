@@ -72,6 +72,47 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
     }
   };
 
+  // Get location-specific instructions
+  const getTrainingLocationInstructions = () => {
+    switch (trainingLocation) {
+      case 'academia':
+        return (
+          <>
+            <li>Utilize máquinas e equipamentos específicos para melhorar o isolamento muscular</li>
+            <li>Execute com amplitude completa dos movimentos para maior ativação muscular</li>
+            <li>Utilize técnicas avançadas como drop-sets e super-sets quando indicado</li>
+            <li>Ajuste corretamente as máquinas para sua altura e proporções corporais</li>
+          </>
+        );
+      case 'casa':
+        return (
+          <>
+            <li>Utilize móveis estáveis como cadeiras e mesas para apoio quando necessário</li>
+            <li>Improvise pesos com garrafas d'água, mochilas ou outros objetos</li>
+            <li>Foque na correta execução e controle dos movimentos</li>
+            <li>Utilize variações mais desafiadoras dos exercícios para aumentar a intensidade</li>
+          </>
+        );
+      case 'ar-livre':
+        return (
+          <>
+            <li>Utilize o ambiente e mobiliário público como apoio (bancos, barras, etc)</li>
+            <li>Realize atividades cardiovasculares entre os exercícios para maior queima calórica</li>
+            <li>Adapte os exercícios conforme as condições climáticas</li>
+            <li>Traga elásticos ou outros equipamentos leves para aumentar a resistência</li>
+          </>
+        );
+      default:
+        return (
+          <>
+            <li>Adapte os exercícios ao ambiente disponível</li>
+            <li>Foque na execução correta e controle da respiração</li>
+            <li>Ajuste a intensidade conforme sua capacidade atual</li>
+          </>
+        );
+    }
+  };
+
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
@@ -146,12 +187,14 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
                       <li>Execute os movimentos com controle e boa forma</li>
                       <li>Aumente a carga progressivamente conforme sentir facilidade</li>
                       <li>Consumo de proteína após o treino é recomendado</li>
+                      {getTrainingLocationInstructions()}
                     </>
                   ) : (
                     <>
                       <li>Descanso de 30-45 segundos entre as séries</li>
                       <li>Mantenha o ritmo constante e a forma correta</li>
                       <li>Foque na intensidade e no controle da respiração</li>
+                      {getTrainingLocationInstructions()}
                     </>
                   )}
                 </ul>

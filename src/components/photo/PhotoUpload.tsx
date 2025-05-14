@@ -56,13 +56,13 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
   const getPhotoInstructions = () => {
     switch(type) {
       case 'front': 
-        return 'Posicione-se de frente para a câmera, com os braços levemente afastados do corpo';
+        return 'Posicione-se de frente para a câmera, com os braços levemente afastados do corpo. Mantenha a postura natural.';
       case 'back': 
-        return 'Posicione-se de costas para a câmera, com os braços levemente afastados do corpo';
+        return 'Posicione-se de costas para a câmera, com os braços levemente afastados do corpo. Mantenha a postura ereta.';
       case 'leftSide': 
-        return 'Posicione-se com seu lado esquerdo para a câmera, em posição natural';
+        return 'Posicione-se com seu lado esquerdo para a câmera, em posição natural. Braços ao longo do corpo.';
       case 'rightSide': 
-        return 'Posicione-se com seu lado direito para a câmera, em posição natural';
+        return 'Posicione-se com seu lado direito para a câmera, em posição natural. Braços ao longo do corpo.';
       default: 
         return '';
     }
@@ -73,26 +73,30 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
       <input
         type="file"
         accept="image/*"
+        capture="environment"
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
       />
       
       {previewUrl ? (
-        <div className="relative w-full h-64">
+        <div className="relative w-full h-64 bg-gray-100">
           <img 
             src={previewUrl} 
             alt={`Foto ${getPhotoTypeText()}`}
             className="photo-preview w-full h-full object-cover"
           />
-          <Button 
-            variant="secondary" 
-            size="sm"
-            onClick={triggerFileInput}
-            className="absolute bottom-2 right-2"
-          >
-            Trocar
-          </Button>
+          <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+            <p className="text-xs text-white mb-1">{getPhotoTypeText()}</p>
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={triggerFileInput}
+              className="w-full"
+            >
+              Trocar foto
+            </Button>
+          </div>
         </div>
       ) : (
         <div 
@@ -100,10 +104,13 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
           className="upload-area h-64 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors"
         >
           <div className="flex flex-col items-center gap-2 p-4 text-center">
-            <Upload className="h-10 w-10 text-gray-400" />
-            <p className="text-sm text-gray-500 font-medium">Clique para enviar foto {getPhotoTypeText()}</p>
-            <p className="text-xs text-gray-400">{getPhotoInstructions()}</p>
-            <p className="text-xs text-gray-400 mt-2">Recomendação: tire a foto em frente a um fundo neutro</p>
+            <Camera className="h-10 w-10 text-gray-400" />
+            <p className="text-sm text-gray-600 font-medium">Clique para tirar foto {getPhotoTypeText()}</p>
+            <p className="text-xs text-gray-400 max-w-[90%]">{getPhotoInstructions()}</p>
+            <div className="text-xs text-gray-400 mt-2 flex items-center">
+              <Upload className="h-4 w-4 mr-1" />
+              <span>Ou selecione uma imagem da galeria</span>
+            </div>
           </div>
         </div>
       )}
