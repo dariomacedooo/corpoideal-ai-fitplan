@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -50,7 +49,7 @@ export function MuscleProjection3D({ bodyPart, gainAmount, userImage }: MusclePr
     userImg: HTMLImageElement | null
   ) => {
     // Desenha um gradiente de fundo
-    const gradient = ctx.createLinearGradient(0, 0, width, canvas.width);
+    const gradient = ctx.createLinearGradient(0, 0, width, canvasRef.current!.width);
     gradient.addColorStop(0, '#f3f4f6');
     gradient.addColorStop(1, '#e5e7eb');
     ctx.fillStyle = gradient;
