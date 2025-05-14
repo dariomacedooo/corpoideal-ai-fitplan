@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -7,16 +7,35 @@ import { useNavigate } from "react-router-dom";
 export function AppHeader() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('userLoggedIn') === 'true');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  useEffect(() => {
+    try {
+      const loggedInStatus = localStorage.getItem('userLoggedIn') === 'true';
+      setIsLoggedIn(loggedInStatus);
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+      setIsLoggedIn(false);
+    }
+  }, []);
   
   const handleLogout = () => {
-    localStorage.removeItem('userLoggedIn');
-    setIsLoggedIn(false);
-    toast({
-      title: "Logout realizado",
-      description: "Esperamos vê-lo novamente em breve!",
-    });
-    navigate('/');
+    try {
+      localStorage.removeItem('userLoggedIn');
+      setIsLoggedIn(false);
+      toast({
+        title: "Logout realizado",
+        description: "Esperamos vê-lo novamente em breve!",
+      });
+      navigate('/');
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+      toast({
+        title: "Erro ao fazer logout",
+        description: "Ocorreu um erro ao finalizar sua sessão.",
+        variant: "destructive"
+      });
+    }
   };
   
   return (

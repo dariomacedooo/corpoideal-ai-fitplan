@@ -6,22 +6,29 @@ const Index = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-    
-    if (isLoggedIn) {
-      // Check if profile is completed
-      const userProfile = localStorage.getItem('userProfile');
+    // Wrap localStorage access in try-catch to handle security errors
+    try {
+      // Check if user is logged in
+      const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
       
-      if (userProfile) {
-        // Profile exists, go to home
-        navigate('/home');
+      if (isLoggedIn) {
+        // Check if profile is completed
+        const userProfile = localStorage.getItem('userProfile');
+        
+        if (userProfile) {
+          // Profile exists, go to home
+          navigate('/home');
+        } else {
+          // Profile doesn't exist, go to profile page
+          navigate('/profile');
+        }
       } else {
-        // Profile doesn't exist, go to profile page
-        navigate('/profile');
+        // Redirect to auth page
+        navigate('/auth');
       }
-    } else {
-      // Redirect to auth page
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+      // Fallback to auth page on error
       navigate('/auth');
     }
   }, [navigate]);
