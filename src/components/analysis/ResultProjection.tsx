@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Scale, Dumbbell } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MuscleProjection3D } from "./MuscleProjection3D";
 
 interface ResultProjectionProps {
   originalPhotoUrl: string;
@@ -58,20 +59,39 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
   // Função para aplicar os filtros de acordo com o tipo de projeção
   const getImageStyle = () => {
     if (projectionType === 'weightLoss') {
+      // Efeitos mais visíveis para perda de peso
+      const lossPercentage = weightLoss[0] * 2;
       return {
-        filter: 'contrast(105%) brightness(110%) saturate(105%)',
-        transform: `scale(0.${95 - weightLoss[0]})`
+        filter: `contrast(${100 + weightLoss[0]}%) brightness(${100 + weightLoss[0]}%) saturate(105%)`,
+        transform: `scale(${Math.max(0.8, 1 - (weightLoss[0] / 50))})`,
+        transition: 'all 0.3s ease'
       };
     } else {
-      // Estilos para ganho muscular - aumentamos partes específicas
-      let muscleFilter = 'contrast(110%) brightness(105%) saturate(110%)';
-      let muscleTransform = `scale(1.${Math.min(15, muscleMass[0])})`;
-      
+      // Efeitos mais visíveis para ganho muscular
+      const gainMultiplier = Math.min(30, muscleMass[0] * 2);
       return {
-        filter: muscleFilter,
-        transform: muscleTransform,
+        filter: `contrast(${110 + gainMultiplier}%) brightness(105%) saturate(${110 + gainMultiplier}%)`,
+        transform: `scale(${Math.min(1.2, 1 + (muscleMass[0] / 50))})`,
+        transition: 'all 0.3s ease'
       };
     }
+  };
+
+  // Estilo específico para máscaras de áreas do corpo
+  const getMaskStyle = () => {
+    const baseStyle = getImageStyle();
+    
+    // Incremento específico para realçar a área muscular
+    if (projectionType === 'muscleGain') {
+      const gainMultiplier = muscleMass[0] * 3; // Efeito aumentado para áreas específicas
+      return {
+        ...baseStyle,
+        filter: `contrast(${120 + gainMultiplier}%) brightness(${105 + gainMultiplier / 2}%) saturate(${120 + gainMultiplier}%)`,
+        transform: `scale(${Math.min(1.3, 1 + (muscleMass[0] / 40))})`,
+      };
+    }
+    
+    return baseStyle;
   };
 
   return (
@@ -184,6 +204,13 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
                   </Button>
                 </div>
               </div>
+
+              {/* Adicionando o componente 3D para melhor visualização do ganho muscular */}
+              <MuscleProjection3D 
+                bodyPart={targetArea}
+                gainAmount={muscleMass[0]}
+                userImage={originalPhotoUrl}
+              />
             </TabsContent>
           </Tabs>
           
@@ -195,12 +222,53 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
             {processingImage ? "Processando..." : "Gerar Projeção"}
           </Button>
           
-          {projectedImageUrl && (
+          {projectedImageUrl && projectionType === 'weightLoss' && (
             <div className="mt-6">
               <h3 className="text-sm font-medium mb-3">
-                {projectionType === 'weightLoss' 
-                  ? `Projeção com -${weightLoss[0]}kg:` 
-                  : `Projeção com +${muscleMass[0]}kg de massa muscular${targetArea !== 'full' ? ` no ${getTargetAreaName(targetArea)}` : ''}:`}
+                Projeção com -{weightLoss[0]}kg:
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1 text-center">Original</p>
+                  <img 
+                    src={originalPhotoUrl} 
+                    alt="Foto original"
+                    className="rounded-lg w-full object-cover h-48"
+                  />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1 text-center">Projeção</p>
+                  <div className="relative">
+                    <img 
+                      src={projectedImageUrl} 
+                      alt="Projeção"
+                      className="rounded-lg w-full object-cover h-48"
+                      style={getImageStyle()}
+                    />
+                    {/* Overlay com informações de perda */}
+                    <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-2 rounded-b-lg">
+                      <p className="text-xs text-white font-medium">-{weightLoss[0]}kg</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 className="text-sm font-medium text-corpoideal-purple mb-2">Dicas para atingir esse resultado:</h4>
+                <ul className="text-xs text-gray-600 space-y-1 pl-4 list-disc">
+                  <li>Déficit calórico de aproximadamente 500 calorias por dia</li>
+                  <li>30-45 minutos de exercício cardiovascular 4-5x por semana</li>
+                  <li>Treino de resistência para preservar massa muscular</li>
+                  <li>Dieta rica em proteínas e com baixo teor de açúcares refinados</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {projectedImageUrl && projectionType === 'muscleGain' && (
+            <div className="mt-6">
+              <h3 className="text-sm font-medium mb-3">
+                Projeção com +{muscleMass[0]}kg de massa muscular{targetArea !== 'full' ? ` no ${getTargetAreaName(targetArea)}` : ''}:
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -221,7 +289,7 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
                       style={targetArea === 'full' ? getImageStyle() : undefined}
                     />
                     
-                    {/* Overlay para destacar áreas específicas */}
+                    {/* Overlay para destacar áreas específicas com efeito mais pronunciado */}
                     {targetArea !== 'full' && (
                       <div 
                         className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-lg"
@@ -235,7 +303,7 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
                           WebkitMaskRepeat: 'no-repeat',
                           maskRepeat: 'no-repeat',
                           backgroundColor: 'transparent',
-                          ...getImageStyle()
+                          ...getMaskStyle()
                         }}
                       >
                         <img 
@@ -245,35 +313,47 @@ export function ResultProjection({ originalPhotoUrl }: ResultProjectionProps) {
                         />
                       </div>
                     )}
+                    
+                    {/* Overlay com informações de ganho */}
+                    <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-2 rounded-b-lg">
+                      <p className="text-xs text-white font-medium">+{muscleMass[0]}kg de massa muscular</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                Esta é uma simulação aproximada. Os resultados reais podem variar.
-              </p>
               
               <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
                 <h4 className="text-sm font-medium text-corpoideal-purple mb-2">Dicas para atingir esse resultado:</h4>
-                {projectionType === 'weightLoss' ? (
-                  <ul className="text-xs text-gray-600 space-y-1 pl-4 list-disc">
-                    <li>Déficit calórico de aproximadamente 500 calorias por dia</li>
-                    <li>30-45 minutos de exercício cardiovascular 4-5x por semana</li>
-                    <li>Treino de resistência para preservar massa muscular</li>
-                    <li>Dieta rica em proteínas e com baixo teor de açúcares refinados</li>
-                  </ul>
-                ) : (
-                  <ul className="text-xs text-gray-600 space-y-1 pl-4 list-disc">
-                    <li>Superávit calórico de aproximadamente 300-500 calorias por dia</li>
-                    <li>Consumo de proteína de 1.6-2g por kg de peso corporal</li>
-                    <li>Treino de hipertrofia com foco em {targetArea === 'full' ? 'corpo completo' : getTargetAreaName(targetArea)}</li>
-                    <li>Descanso adequado de 7-9h por noite para recuperação muscular</li>
-                  </ul>
-                )}
+                <ul className="text-xs text-gray-600 space-y-1 pl-4 list-disc">
+                  <li>Superávit calórico de aproximadamente 300-500 calorias por dia</li>
+                  <li>Consumo de proteína de 1.6-2g por kg de peso corporal</li>
+                  <li>Treino de hipertrofia com foco em {targetArea === 'full' ? 'corpo completo' : getTargetAreaName(targetArea)}</li>
+                  <li>Descanso adequado de 7-9h por noite para recuperação muscular</li>
+                  {targetArea !== 'full' && (
+                    <li>Exercícios específicos para {getTargetAreaName(targetArea)}, como {getExampleExercises(targetArea)}</li>
+                  )}
+                </ul>
               </div>
             </div>
           )}
+          
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            Esta é uma simulação aproximada. Os resultados reais podem variar conforme genética e disciplina.
+          </p>
         </div>
       </CardContent>
     </Card>
   );
+}
+
+// Função auxiliar para exemplos de exercícios específicos
+function getExampleExercises(bodyPart: string): string {
+  switch(bodyPart) {
+    case 'chest': return 'supino reto, supino inclinado e crucifixo';
+    case 'abs': return 'prancha, crunch abdominal e elevação de pernas';
+    case 'shoulders': return 'desenvolvimento, elevação lateral e frontal';
+    case 'arms': return 'rosca direta, tríceps testa e rosca concentrada';
+    case 'legs': return 'agachamento, leg press e cadeira extensora';
+    default: return 'treino completo de corpo';
+  }
 }

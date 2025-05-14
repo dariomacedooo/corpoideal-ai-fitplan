@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Upload, Camera } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 
 interface PhotoUploadProps {
-  type: 'front' | 'side' | 'back';
-  onPhotoUploaded: (file: File, type: 'front' | 'side' | 'back') => void;
+  type: 'front' | 'back' | 'leftSide' | 'rightSide';
+  onPhotoUploaded: (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => void;
   photoUrl?: string;
 }
 
@@ -48,8 +47,24 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
     switch(type) {
       case 'front': return 'frontal';
       case 'back': return 'de costas';
-      case 'side': return 'lateral';
+      case 'leftSide': return 'lateral esquerda';
+      case 'rightSide': return 'lateral direita';
       default: return '';
+    }
+  };
+
+  const getPhotoInstructions = () => {
+    switch(type) {
+      case 'front': 
+        return 'Posicione-se de frente para a câmera, com os braços levemente afastados do corpo';
+      case 'back': 
+        return 'Posicione-se de costas para a câmera, com os braços levemente afastados do corpo';
+      case 'leftSide': 
+        return 'Posicione-se com seu lado esquerdo para a câmera, em posição natural';
+      case 'rightSide': 
+        return 'Posicione-se com seu lado direito para a câmera, em posição natural';
+      default: 
+        return '';
     }
   };
 
@@ -82,12 +97,13 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
       ) : (
         <div 
           onClick={triggerFileInput}
-          className="upload-area h-64 bg-gray-50 flex items-center justify-center cursor-pointer"
+          className="upload-area h-64 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors"
         >
           <div className="flex flex-col items-center gap-2 p-4 text-center">
             <Upload className="h-10 w-10 text-gray-400" />
-            <p className="text-sm text-gray-500">Clique para enviar foto {getPhotoTypeText()}</p>
-            <p className="text-xs text-gray-400">Recomendação: tire a foto em frente a um fundo neutro</p>
+            <p className="text-sm text-gray-500 font-medium">Clique para enviar foto {getPhotoTypeText()}</p>
+            <p className="text-xs text-gray-400">{getPhotoInstructions()}</p>
+            <p className="text-xs text-gray-400 mt-2">Recomendação: tire a foto em frente a um fundo neutro</p>
           </div>
         </div>
       )}

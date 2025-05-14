@@ -5,6 +5,8 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 // Import the refactored components
 import { BasicMeasurementsForm } from "@/components/profile/BasicMeasurementsForm";
@@ -26,9 +28,18 @@ const ProfilePage = () => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [bodyFat, setBodyFat] = useState(''); 
   const [budget, setBudget] = useState('');
+  // Novas medidas
+  const [chest, setChest] = useState('');
+  const [leftArm, setLeftArm] = useState('');
+  const [rightArm, setRightArm] = useState('');
   const [waist, setWaist] = useState('');
-  const [thigh, setThigh] = useState('');
-  const [calf, setCalf] = useState('');
+  const [hips, setHips] = useState('');
+  const [leftThigh, setLeftThigh] = useState('');
+  const [rightThigh, setRightThigh] = useState('');
+  const [leftCalf, setLeftCalf] = useState('');
+  const [rightCalf, setRightCalf] = useState('');
+  // Objetivo
+  const [goal, setGoal] = useState('');
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -49,9 +60,18 @@ const ProfilePage = () => {
       setAdditionalInfo(profile.additionalInfo || '');
       setBodyFat(profile.bodyFat || '');
       setBudget(profile.budget || '');
+      // Carregar novas medidas
+      setChest(profile.chest || '');
+      setLeftArm(profile.leftArm || '');
+      setRightArm(profile.rightArm || '');
       setWaist(profile.waist || '');
-      setThigh(profile.thigh || '');
-      setCalf(profile.calf || '');
+      setHips(profile.hips || '');
+      setLeftThigh(profile.leftThigh || '');
+      setRightThigh(profile.rightThigh || '');
+      setLeftCalf(profile.leftCalf || '');
+      setRightCalf(profile.rightCalf || '');
+      // Objetivo
+      setGoal(profile.goal || '');
     }
   }, []);
   
@@ -75,6 +95,16 @@ const ProfilePage = () => {
       });
       return;
     }
+
+    // Validar que o objetivo foi selecionado
+    if (!goal) {
+      toast({
+        title: "Objetivo não selecionado",
+        description: "Por favor, selecione seu objetivo fitness.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Save profile data
     const profileData = {
@@ -89,9 +119,18 @@ const ProfilePage = () => {
       healthIssues,
       additionalInfo,
       budget,
+      // Novas medidas
+      chest,
+      leftArm,
+      rightArm,
       waist,
-      thigh,
-      calf,
+      hips,
+      leftThigh,
+      rightThigh,
+      leftCalf,
+      rightCalf,
+      // Objetivo
+      goal,
       profileCompleted: true,
     };
     
@@ -129,13 +168,94 @@ const ProfilePage = () => {
             setSex={setSex}
             bodyFat={bodyFat}
             setBodyFat={setBodyFat}
+            chest={chest}
+            setChest={setChest}
+            leftArm={leftArm}
+            setLeftArm={setLeftArm}
+            rightArm={rightArm}
+            setRightArm={setRightArm}
             waist={waist}
             setWaist={setWaist}
-            thigh={thigh}
-            setThigh={setThigh}
-            calf={calf}
-            setCalf={setCalf}
+            hips={hips}
+            setHips={setHips}
+            leftThigh={leftThigh}
+            setLeftThigh={setLeftThigh}
+            rightThigh={rightThigh}
+            setRightThigh={setRightThigh}
+            leftCalf={leftCalf}
+            setLeftCalf={setLeftCalf}
+            rightCalf={rightCalf}
+            setRightCalf={setRightCalf}
           />
+          
+          {/* Objetivo fitness */}
+          <div className="space-y-4">
+            <h3 className="text-md font-medium text-corpoideal-purple flex items-center gap-2">
+              <Dumbbell className="h-4 w-4" /> Seu Objetivo
+            </h3>
+            <RadioGroup 
+              value={goal} 
+              onValueChange={setGoal}
+              className="grid grid-cols-2 gap-4"
+            >
+              <div>
+                <RadioGroupItem value="perder-peso" id="perder-peso" className="peer sr-only" />
+                <Label
+                  htmlFor="perder-peso"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple"
+                >
+                  <div className="w-full flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Perda de Peso</p>
+                    <p className="text-xs text-muted-foreground">
+                      Reduzir gordura corporal e definir
+                    </p>
+                  </div>
+                </Label>
+              </div>
+              <div>
+                <RadioGroupItem value="ganhar-massa" id="ganhar-massa" className="peer sr-only" />
+                <Label
+                  htmlFor="ganhar-massa"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple"
+                >
+                  <div className="w-full flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Ganho de Massa Muscular</p>
+                    <p className="text-xs text-muted-foreground">
+                      Hipertrofia e aumento de força
+                    </p>
+                  </div>
+                </Label>
+              </div>
+              <div>
+                <RadioGroupItem value="ganhar-peso" id="ganhar-peso" className="peer sr-only" />
+                <Label
+                  htmlFor="ganhar-peso"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple"
+                >
+                  <div className="w-full flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Ganho de Peso</p>
+                    <p className="text-xs text-muted-foreground">
+                      Aumentar peso de forma saudável
+                    </p>
+                  </div>
+                </Label>
+              </div>
+              <div>
+                <RadioGroupItem value="manter-peso" id="manter-peso" className="peer sr-only" />
+                <Label
+                  htmlFor="manter-peso"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple"
+                >
+                  <div className="w-full flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Manter Peso</p>
+                    <p className="text-xs text-muted-foreground">
+                      Manter composição atual e saúde
+                    </p>
+                  </div>
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
           
           {/* Estilo de vida */}
           <LifestyleForm 
