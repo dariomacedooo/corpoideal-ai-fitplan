@@ -73,7 +73,6 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
       <input
         type="file"
         accept="image/*"
-        capture="environment"
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
@@ -99,17 +98,28 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
           </div>
         </div>
       ) : (
-        <div 
-          onClick={triggerFileInput}
-          className="upload-area h-64 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors"
-        >
-          <div className="flex flex-col items-center gap-2 p-4 text-center">
-            <Camera className="h-10 w-10 text-gray-400" />
-            <p className="text-sm text-gray-600 font-medium">Clique para tirar foto {getPhotoTypeText()}</p>
-            <p className="text-xs text-gray-400 max-w-[90%]">{getPhotoInstructions()}</p>
-            <div className="text-xs text-gray-400 mt-2 flex items-center">
-              <Upload className="h-4 w-4 mr-1" />
-              <span>Ou selecione uma imagem da galeria</span>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="upload-area h-56 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
+            <div className="flex flex-col items-center gap-2 p-4 text-center" onClick={triggerFileInput}>
+              <Camera className="h-10 w-10 text-gray-400" />
+              <p className="text-sm text-gray-600 font-medium">Tirar ou escolher foto {getPhotoTypeText()}</p>
+              <p className="text-xs text-gray-400 max-w-[90%]">{getPhotoInstructions()}</p>
+              
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // This ensures we can select files from gallery
+                    fileInputRef.current?.click();
+                  }}
+                  className="flex items-center gap-1"
+                >
+                  <Upload className="h-4 w-4" />
+                  Escolher da galeria
+                </Button>
+              </div>
             </div>
           </div>
         </div>
