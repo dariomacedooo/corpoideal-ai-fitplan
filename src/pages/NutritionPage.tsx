@@ -4,17 +4,31 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { NutritionPlan } from "@/components/nutrition/NutritionPlan";
 import { WaterIntakeCalculator } from "@/components/nutrition/WaterIntakeCalculator";
 import { useState, useEffect } from "react";
+import { ProfileSummary } from "@/components/analysis/ProfileSummary";
 
 const NutritionPage = () => {
   const [userWeight, setUserWeight] = useState<number>(70);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [userGoal, setUserGoal] = useState<string>("ganhar-musculos");
+  const [userExperience, setUserExperience] = useState<string>("intermediario");
   
-  // Get user weight from profile
+  // Get user profile data from localStorage
   useEffect(() => {
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
       const profile = JSON.parse(savedProfile);
+      setUserProfile(profile);
+      
       if (profile.weight) {
         setUserWeight(parseInt(profile.weight));
+      }
+      
+      if (profile.goal) {
+        setUserGoal(profile.goal);
+      }
+      
+      if (profile.trainingExperience) {
+        setUserExperience(profile.trainingExperience);
       }
     }
   }, []);
@@ -108,6 +122,21 @@ const NutritionPage = () => {
     }
   ];
 
+  // Ajustar macros com base no nível de experiência
+  const adjustedDays = days.map(day => {
+    // Para usuários avançados com objetivo de ganho de massa, aumentar proteínas e calorias
+    if (userExperience === 'avancado' && userGoal === 'ganhar-musculos') {
+      return {
+        ...day,
+        totalCalories: Math.round(day.totalCalories * 1.2), // 20% mais calorias
+        totalProtein: Math.round(day.totalProtein * 1.3),   // 30% mais proteína
+        totalCarbs: Math.round(day.totalCarbs * 1.15),      // 15% mais carboidratos
+        totalFat: Math.round(day.totalFat * 1.1)            // 10% mais gorduras
+      };
+    }
+    return day;
+  });
+
   return (
     <div className="pb-16 pt-14">
       <AppHeader />
@@ -118,21 +147,24 @@ const NutritionPage = () => {
           Alimentação balanceada para alcançar seus objetivos de forma saudável.
         </p>
         
+        {userProfile && <ProfileSummary userProfile={userProfile} />}
+        
         <div className="space-y-6">
           <NutritionPlan 
-            goal="ganhar-musculos" 
-            days={days} 
-            userName="Usuario"
+            goal={userGoal}
+            days={adjustedDays} 
+            userName={userProfile?.name || "Usuário"}
             weight={userWeight}
-            height={175}
-            sex="masculino"
-            age={30}
-            activityLevel="moderado"
+            height={userProfile?.height ? parseInt(userProfile.height) : 175}
+            sex={userProfile?.sex || "masculino"}
+            age={userProfile?.age ? parseInt(userProfile.age) : 30}
+            activityLevel={userProfile?.lifestyle || "moderado"}
+            experience={userExperience}
           />
           
           <WaterIntakeCalculator 
             weight={userWeight}
-            activityLevel="moderate"
+            activityLevel={userProfile?.lifestyle || "moderate"}
           />
         </div>
       </div>
