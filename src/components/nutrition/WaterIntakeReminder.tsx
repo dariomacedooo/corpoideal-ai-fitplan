@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
-import { Droplet } from "lucide-react"; // Changed from Water to Droplet
+import { Droplet } from "lucide-react"; 
 import { useToast } from "@/components/ui/use-toast";
 
 interface WaterIntakeReminderProps {
@@ -140,7 +140,7 @@ export function WaterIntakeReminder({ weight, goal, activity, userName }: WaterI
     <Card className="w-full">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Water className="h-5 w-5 text-blue-500" />
+          <Droplet className="h-5 w-5 text-blue-500" />
           Consumo de Água
         </CardTitle>
       </CardHeader>
