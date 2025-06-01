@@ -1,46 +1,44 @@
 
-import { Link, useLocation } from "react-router-dom";
-import { 
-  Home, 
-  Dumbbell, 
-  Apple, 
-  LineChart,
-  User,
-  Sparkles
-} from "lucide-react";
+import { Home, User, Camera, BarChart3, Dumbbell, Apple, Download } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function BottomNav() {
   const location = useLocation();
-  
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-  
+  const navigate = useNavigate();
+
   const navItems = [
-    { path: "/home", icon: Home, label: "Início" },
-    { path: "/training", icon: Dumbbell, label: "Treino" },
-    { path: "/nutrition", icon: Apple, label: "Nutrição" },
-    { path: "/progress", icon: LineChart, label: "Progresso" },
-    { path: "/features", icon: Sparkles, label: "Recursos" },
-    { path: "/profile", icon: User, label: "Perfil" }
+    { icon: Home, label: "Início", path: "/" },
+    { icon: User, label: "Perfil", path: "/profile" },
+    { icon: Camera, label: "Fotos", path: "/upload" },
+    { icon: Dumbbell, label: "Treino", path: "/training" },
+    { icon: Apple, label: "Nutrição", path: "/nutrition" },
+    { icon: BarChart3, label: "Progresso", path: "/progress" },
+    { icon: Download, label: "Backup", path: "/import-export" }
   ];
-  
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-1px_3px_rgba(0,0,0,0.1)] flex justify-around p-2 z-10">
-      {navItems.map((item) => (
-        <Link
-          key={item.path}
-          to={item.path}
-          className={`flex flex-col items-center py-1 px-1 rounded-md transition-colors ${
-            isActive(item.path)
-              ? "text-corpoideal-purple"
-              : "text-gray-500 hover:text-corpoideal-purple"
-          }`}
-        >
-          <item.icon size={20} />
-          <span className="text-xs mt-1">{item.label}</span>
-        </Link>
-      ))}
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-1 z-50">
+      <div className="flex justify-around items-center max-w-md mx-auto">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          
+          return (
+            <button
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              className={`flex flex-col items-center p-1 rounded-lg transition-colors ${
+                isActive
+                  ? "text-corpoideal-purple bg-corpoideal-purple/10"
+                  : "text-gray-500 hover:text-corpoideal-purple"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+              <span className="text-xs mt-1">{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 }

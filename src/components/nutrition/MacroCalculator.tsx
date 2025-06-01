@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +14,11 @@ import {
 } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { Calculator } from "lucide-react";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { calculateBMR, calculateTDEE, adjustCaloriesForGoal } from "@/utils/nutritionCalculator";
 
 export function MacroCalculator() {
+  const { profile } = useUserProfile();
   const [weight, setWeight] = useState<string>("70");
   const [height, setHeight] = useState<string>("170");
   const [age, setAge] = useState<string>("30");
@@ -27,6 +30,34 @@ export function MacroCalculator() {
   const [fat, setFat] = useState<number>(30);
   const [calculatedCalories, setCalculatedCalories] = useState<number | null>(null);
   const [calculatedMacros, setCalculatedMacros] = useState<any>(null);
+  
+  // Load user profile data
+  useEffect(() => {
+    if (profile) {
+      setWeight(profile.weight || "70");
+      setHeight(profile.height || "170");
+      setAge(profile.age || "30");
+      setGender(profile.sex || "masculino");
+      setGoal(profile.goal || "manter");
+      
+      // Set activity level based on lifestyle
+      if (profile.lifestyle === 'sedentario') setActivityLevel('sedentario');
+      else if (profile.lifestyle === 'leve') setActivityLevel('leve');
+      else if (profile.lifestyle === 'moderado') setActivityLevel('moderado');
+      else if (profile.lifestyle === 'ativo') setActivityLevel('ativo');
+      
+      // Adjust macros based on goal
+      if (profile.goal === 'ganhar-massa' || profile.goal === 'ganhar-peso') {
+        setProtein(35);
+        setCarbs(45);
+        setFat(20);
+      } else if (profile.goal === 'perder-peso') {
+        setProtein(40);
+        setCarbs(30);
+        setFat(30);
+      }
+    }
+  }, [profile]);
   
   // Ensure macro percentages always add up to 100%
   const adjustMacros = (newValue: number, macroType: 'protein' | 'carbs' | 'fat') => {
@@ -62,56 +93,19 @@ export function MacroCalculator() {
     const heightNum = parseFloat(height);
     const ageNum = parseFloat(age);
     
-    // Basic BMR calculation using Mifflin-St Jeor Equation
-    let bmr;
-    if (gender === "masculino") {
-      bmr = 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5;
-    } else {
-      bmr = 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
-    }
+    // Calculate BMR using the nutrition calculator utility
+    const bmr = calculateBMR(weightNum, heightNum, ageNum, gender);
     
-    // Apply activity multiplier
-    let tdee;
-    switch (activityLevel) {
-      case "sedentario":
-        tdee = bmr * 1.2;
-        break;
-      case "leve":
-        tdee = bmr * 1.375;
-        break;
-      case "moderado":
-        tdee = bmr * 1.55;
-        break;
-      case "ativo":
-        tdee = bmr * 1.725;
-        break;
-      case "muito-ativo":
-        tdee = bmr * 1.9;
-        break;
-      default:
-        tdee = bmr * 1.55;
-    }
+    // Calculate TDEE
+    const tdee = calculateTDEE(bmr, activityLevel);
     
     // Adjust for goal
-    let calories;
-    switch (goal) {
-      case "perder":
-        calories = tdee * 0.85; // 15% deficit
-        break;
-      case "manter":
-        calories = tdee;
-        break;
-      case "ganhar":
-        calories = tdee * 1.15; // 15% surplus
-        break;
-      default:
-        calories = tdee;
-    }
+    const finalCalories = adjustCaloriesForGoal(tdee, goal);
     
-    const totalCalories = Math.round(calories);
+    const totalCalories = Math.round(finalCalories);
     setCalculatedCalories(totalCalories);
     
-    // Calculate macronutrients in grams
+    // Calculate macronutrients in grams (fixed calculation)
     const proteinGrams = Math.round((totalCalories * (protein / 100)) / 4);
     const carbsGrams = Math.round((totalCalories * (carbs / 100)) / 4);
     const fatGrams = Math.round((totalCalories * (fat / 100)) / 9);
@@ -120,7 +114,9 @@ export function MacroCalculator() {
       protein: proteinGrams,
       carbs: carbsGrams,
       fat: fatGrams,
-      total: totalCalories
+      total: totalCalories,
+      bmr: Math.round(bmr),
+      tdee: Math.round(tdee)
     });
   };
   
@@ -194,11 +190,11 @@ export function MacroCalculator() {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sedentario">Sedentário</SelectItem>
-                  <SelectItem value="leve">Levemente Ativo</SelectItem>
-                  <SelectItem value="moderado">Moderadamente Ativo</SelectItem>
-                  <SelectItem value="ativo">Muito Ativo</SelectItem>
-                  <SelectItem value="muito-ativo">Extremamente Ativo</SelectItem>
+                  <SelectItem value="sedentario">Sedentário (pouco ou nenhum exercício)</SelectItem>
+                  <SelectItem value="leve">Levemente Ativo (1-3 dias/semana)</SelectItem>
+                  <SelectItem value="moderado">Moderadamente Ativo (3-5 dias/semana)</SelectItem>
+                  <SelectItem value="ativo">Muito Ativo (6-7 dias/semana)</SelectItem>
+                  <SelectItem value="muito-ativo">Extremamente Ativo (2x/dia)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -210,9 +206,10 @@ export function MacroCalculator() {
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="perder">Perder Peso</SelectItem>
-                  <SelectItem value="manter">Manter Peso</SelectItem>
-                  <SelectItem value="ganhar">Ganhar Massa</SelectItem>
+                  <SelectItem value="perder-peso">Perder Peso</SelectItem>
+                  <SelectItem value="manter-peso">Manter Peso</SelectItem>
+                  <SelectItem value="ganhar-massa">Ganhar Massa</SelectItem>
+                  <SelectItem value="ganhar-peso">Ganhar Peso</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -297,6 +294,17 @@ export function MacroCalculator() {
                   <div>
                     <p className="text-xl font-semibold">{calculatedMacros.total} kcal</p>
                     <p className="text-sm text-gray-500">Calorias diárias</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-white p-2 rounded border">
+                      <p className="font-medium">TMB: {calculatedMacros.bmr} kcal</p>
+                      <p className="text-gray-500">Taxa metabólica basal</p>
+                    </div>
+                    <div className="bg-white p-2 rounded border">
+                      <p className="font-medium">TDEE: {calculatedMacros.tdee} kcal</p>
+                      <p className="text-gray-500">Gasto total diário</p>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-3 gap-2">
