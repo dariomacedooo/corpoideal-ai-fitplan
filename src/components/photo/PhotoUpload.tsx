@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Upload, Camera } from "lucide-react";
+import { Upload, Camera, Image } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface PhotoUploadProps {
@@ -14,6 +14,7 @@ interface PhotoUploadProps {
 export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(photoUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +42,10 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
   
   const triggerFileInput = () => {
     fileInputRef.current?.click();
+  };
+
+  const triggerCameraInput = () => {
+    cameraInputRef.current?.click();
   };
 
   const getPhotoTypeText = () => {
@@ -73,8 +78,16 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
       <input
         type="file"
         accept="image/*"
-        capture="environment"
         ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
+      />
+      
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        ref={cameraInputRef}
         onChange={handleFileChange}
         className="hidden"
       />
@@ -88,28 +101,57 @@ export function PhotoUpload({ type, onPhotoUploaded, photoUrl }: PhotoUploadProp
           />
           <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
             <p className="text-xs text-white mb-1">{getPhotoTypeText()}</p>
-            <Button 
-              variant="secondary" 
-              size="sm"
-              onClick={triggerFileInput}
-              className="w-full"
-            >
-              Trocar foto
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={triggerCameraInput}
+                className="flex-1 text-xs"
+              >
+                <Camera className="h-3 w-3 mr-1" />
+                Câmera
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="sm"
+                onClick={triggerFileInput}
+                className="flex-1 text-xs"
+              >
+                <Image className="h-3 w-3 mr-1" />
+                Galeria
+              </Button>
+            </div>
           </div>
         </div>
       ) : (
-        <div 
-          onClick={triggerFileInput}
-          className="upload-area h-64 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors"
-        >
-          <div className="flex flex-col items-center gap-2 p-4 text-center">
-            <Camera className="h-10 w-10 text-gray-400" />
-            <p className="text-sm text-gray-600 font-medium">Clique para tirar foto {getPhotoTypeText()}</p>
+        <div className="upload-area h-64 bg-gray-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 p-4 text-center">
+            <div className="flex gap-4">
+              <Button
+                onClick={triggerCameraInput}
+                variant="outline"
+                className="flex flex-col items-center p-4 h-auto"
+              >
+                <Camera className="h-8 w-8 text-gray-600 mb-2" />
+                <span className="text-xs">Tirar foto</span>
+              </Button>
+              
+              <Button
+                onClick={triggerFileInput}
+                variant="outline"
+                className="flex flex-col items-center p-4 h-auto"
+              >
+                <Image className="h-8 w-8 text-gray-600 mb-2" />
+                <span className="text-xs">Galeria</span>
+              </Button>
+            </div>
+            
+            <p className="text-sm text-gray-600 font-medium">Foto {getPhotoTypeText()}</p>
             <p className="text-xs text-gray-400 max-w-[90%]">{getPhotoInstructions()}</p>
+            
             <div className="text-xs text-gray-400 mt-2 flex items-center">
               <Upload className="h-4 w-4 mr-1" />
-              <span>Ou selecione uma imagem da galeria</span>
+              <span>Escolha uma opção acima</span>
             </div>
           </div>
         </div>
