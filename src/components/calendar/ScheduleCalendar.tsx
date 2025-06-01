@@ -1,173 +1,131 @@
 
 import { useState } from 'react';
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dumbbell, Apple } from "lucide-react";
+import { Calendar, Clock, Dumbbell, Apple, Droplets } from "lucide-react";
+
+interface ScheduleEvent {
+  id: string;
+  title: string;
+  time: string;
+  type: 'workout' | 'meal' | 'water' | 'rest';
+  completed?: boolean;
+}
 
 export function ScheduleCalendar() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  
-  // Mock data for workouts and meals
-  const workoutDates = [
-    new Date(2025, 4, 12),
-    new Date(2025, 4, 14),
-    new Date(2025, 4, 16),
-    new Date(2025, 4, 19),
-    new Date(2025, 4, 21),
-  ];
-  
-  const mealDates = [
-    new Date(2025, 4, 10),
-    new Date(2025, 4, 11),
-    new Date(2025, 4, 12),
-    new Date(2025, 4, 13),
-    new Date(2025, 4, 14),
-    new Date(2025, 4, 15),
-    new Date(2025, 4, 16),
-    new Date(2025, 4, 17),
-    new Date(2025, 4, 18),
-    new Date(2025, 4, 19),
-    new Date(2025, 4, 20),
-    new Date(2025, 4, 21),
-  ];
-  
-  // Mock events for selected date
-  const getWorkoutsForDate = (selectedDate: Date | undefined) => {
-    if (!selectedDate) return [];
-    return [
-      { 
-        id: 1, 
-        time: '07:00', 
-        name: 'Treino de Peito e Tríceps', 
-        duration: '60 min'
-      },
-      { 
-        id: 2, 
-        time: '18:00', 
-        name: 'Cardio', 
-        duration: '30 min'
-      },
-    ];
-  };
-  
-  const getMealsForDate = (selectedDate: Date | undefined) => {
-    if (!selectedDate) return [];
-    return [
-      { id: 1, time: '07:30', name: 'Café da manhã', description: 'Ovos, torrada integral e café' },
-      { id: 2, time: '10:30', name: 'Lanche da manhã', description: 'Iogurte com frutas' },
-      { id: 3, time: '13:00', name: 'Almoço', description: 'Frango grelhado, arroz integral e salada' },
-      { id: 4, time: '16:00', name: 'Lanche da tarde', description: 'Shake de proteína e banana' },
-      { id: 5, time: '19:30', name: 'Jantar', description: 'Salmão, batata doce e legumes' },
-    ];
-  };
-  
-  const workouts = getWorkoutsForDate(date);
-  const meals = getMealsForDate(date);
-  
-  // Helper function to highlight dates with events
-  const isDayWithWorkout = (day: Date) => {
-    return workoutDates.some(workoutDay => 
-      workoutDay.getDate() === day.getDate() && 
-      workoutDay.getMonth() === day.getMonth() &&
-      workoutDay.getFullYear() === day.getFullYear()
-    );
-  };
-  
-  const isDayWithMeal = (day: Date) => {
-    return mealDates.some(mealDay => 
-      mealDay.getDate() === day.getDate() && 
-      mealDay.getMonth() === day.getMonth() &&
-      mealDay.getFullYear() === day.getFullYear()
-    );
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [events, setEvents] = useState<ScheduleEvent[]>([
+    { id: '1', title: 'Treino de Peito', time: '07:00', type: 'workout', completed: true },
+    { id: '2', title: 'Café da manhã', time: '08:30', type: 'meal', completed: true },
+    { id: '3', title: 'Lembrete: Água', time: '10:00', type: 'water', completed: false },
+    { id: '4', title: 'Almoço', time: '12:30', type: 'meal', completed: false },
+    { id: '5', title: 'Lanche da tarde', time: '15:00', type: 'meal', completed: false },
+    { id: '6', title: 'Treino de Pernas', time: '18:00', type: 'workout', completed: false },
+    { id: '7', title: 'Jantar', time: '20:00', type: 'meal', completed: false },
+    { id: '8', title: 'Descanso/Sono', time: '22:00', type: 'rest', completed: false },
+  ]);
+
+  const toggleEventCompletion = (eventId: string) => {
+    setEvents(prev => prev.map(event => 
+      event.id === eventId 
+        ? { ...event, completed: !event.completed }
+        : event
+    ));
   };
 
+  const getEventIcon = (type: string) => {
+    switch (type) {
+      case 'workout': return <Dumbbell className="h-4 w-4" />;
+      case 'meal': return <Apple className="h-4 w-4" />;
+      case 'water': return <Droplets className="h-4 w-4" />;
+      default: return <Clock className="h-4 w-4" />;
+    }
+  };
+
+  const getEventColor = (type: string, completed: boolean) => {
+    if (completed) return 'bg-green-100 text-green-800';
+    
+    switch (type) {
+      case 'workout': return 'bg-blue-100 text-blue-800';
+      case 'meal': return 'bg-orange-100 text-orange-800';
+      case 'water': return 'bg-cyan-100 text-cyan-800';
+      case 'rest': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const completedEvents = events.filter(e => e.completed).length;
+  const totalEvents = events.length;
+  const progressPercentage = Math.round((completedEvents / totalEvents) * 100);
+
   return (
-    <Card className="animate-fade-in">
-      <CardHeader>
-        <CardTitle className="text-xl text-corpoideal-purple">Calendário</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="border rounded-md"
-              modifiers={{
-                workout: isDayWithWorkout,
-                meal: isDayWithMeal
-              }}
-              modifiersStyles={{
-                workout: { fontWeight: 'bold', textDecoration: 'underline' },
-                meal: { fontWeight: 'bold' }
-              }}
-            />
-            <div className="flex justify-center gap-4 mt-2">
-              <div className="flex items-center gap-1 text-xs">
-                <div className="w-3 h-3 bg-corpoideal-purple rounded-full"></div>
-                <span>Treino</span>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl text-corpoideal-purple flex items-center">
+            <Calendar className="h-5 w-5 mr-2" />
+            Agenda do Dia
+          </CardTitle>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">
+              {selectedDate.toLocaleDateString('pt-BR', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </span>
+            <Badge className={progressPercentage === 100 ? 'bg-green-600' : 'bg-corpoideal-purple'}>
+              {completedEvents}/{totalEvents} concluídos
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {events.map((event) => (
+              <div 
+                key={event.id} 
+                className={`flex items-center justify-between p-3 border rounded-lg transition-all ${
+                  event.completed ? 'bg-gray-50 opacity-75' : 'bg-white'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg ${getEventColor(event.type, event.completed)}`}>
+                    {getEventIcon(event.type)}
+                  </div>
+                  <div>
+                    <h4 className={`font-medium ${event.completed ? 'line-through text-gray-500' : ''}`}>
+                      {event.title}
+                    </h4>
+                    <p className="text-sm text-gray-500">{event.time}</p>
+                  </div>
+                </div>
+                <Button
+                  variant={event.completed ? "outline" : "default"}
+                  size="sm"
+                  onClick={() => toggleEventCompletion(event.id)}
+                >
+                  {event.completed ? 'Desfazer' : 'Concluir'}
+                </Button>
               </div>
-              <div className="flex items-center gap-1 text-xs">
-                <div className="w-3 h-3 bg-corpoideal-darkpurple rounded-full"></div>
-                <span>Refeição</span>
-              </div>
-            </div>
+            ))}
           </div>
           
-          <div>
-            <Tabs defaultValue="workouts">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="workouts"><Dumbbell className="mr-1 h-4 w-4" />Treinos</TabsTrigger>
-                <TabsTrigger value="meals"><Apple className="mr-1 h-4 w-4" />Refeições</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="workouts" className="mt-4">
-                {workouts.length > 0 ? (
-                  <div className="space-y-3">
-                    {workouts.map(workout => (
-                      <div key={workout.id} className="bg-gray-50 rounded-lg p-3">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-medium">{workout.name}</span>
-                          <Badge variant="outline">{workout.time}</Badge>
-                        </div>
-                        <p className="text-xs text-gray-500">Duração: {workout.duration}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-center text-gray-500 py-6">Nenhum treino agendado para este dia.</p>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="meals" className="mt-4">
-                {meals.length > 0 ? (
-                  <div className="space-y-3">
-                    {meals.map(meal => (
-                      <div key={meal.id} className="bg-gray-50 rounded-lg p-3">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-medium">{meal.name}</span>
-                          <Badge variant="outline">{meal.time}</Badge>
-                        </div>
-                        <p className="text-xs text-gray-600">{meal.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-center text-gray-500 py-6">Nenhuma refeição agendada para este dia.</p>
-                )}
-              </TabsContent>
-            </Tabs>
+          <div className="mt-6 p-4 bg-corpoideal-purple/10 rounded-lg">
+            <h4 className="font-medium text-corpoideal-purple mb-2">Progresso do Dia</h4>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-corpoideal-purple h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-gray-600 mt-2">
+              {progressPercentage}% das atividades concluídas
+            </p>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

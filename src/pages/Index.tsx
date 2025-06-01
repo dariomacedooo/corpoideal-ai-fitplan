@@ -16,10 +16,23 @@ const Index = () => {
         const userProfile = localStorage.getItem('userProfile');
         
         if (userProfile) {
-          // Profile exists, go to training page (main functionality)
-          navigate('/training');
+          const profile = JSON.parse(userProfile);
+          if (profile.profileCompleted) {
+            // Check if photos are uploaded
+            const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+            if (frontPhotoUrl) {
+              // Everything is complete, go to home dashboard
+              navigate('/home');
+            } else {
+              // Profile complete but no photos, go to photo upload
+              navigate('/upload');
+            }
+          } else {
+            // Profile incomplete, go to profile page
+            navigate('/profile');
+          }
         } else {
-          // Profile doesn't exist, go to profile page
+          // No profile, go to profile page
           navigate('/profile');
         }
       } else {

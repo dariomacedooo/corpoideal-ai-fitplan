@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import PhotoUploadPage from "./pages/PhotoUploadPage";
 import AnalysisPage from "./pages/AnalysisPage";
@@ -29,6 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/upload" element={<PhotoUploadPage />} />
             <Route path="/analysis" element={<AnalysisPage />} />

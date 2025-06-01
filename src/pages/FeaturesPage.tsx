@@ -1,67 +1,52 @@
 
-import { useState } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { AchievementSystem } from "@/components/gamification/AchievementSystem";
-import { MacroCalculator } from "@/components/nutrition/MacroCalculator";
-import { OfflineMode } from "@/components/offline/OfflineMode";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WearableIntegration } from "@/components/wearables/WearableIntegration";
 import { CommunityForum } from "@/components/community/CommunityForum";
-import { PeriodicAssessment } from "@/components/progress/PeriodicAssessment";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { OfflineMode } from "@/components/offline/OfflineMode";
+import { ScheduleCalendar } from "@/components/calendar/ScheduleCalendar";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 
 const FeaturesPage = () => {
-  const [activeTab, setActiveTab] = useState<string>("achievements");
-  
   return (
     <div className="pb-16 pt-14">
       <AppHeader />
       
       <div className="px-4 py-6">
-        <h1 className="text-2xl font-bold text-corpoideal-purple mb-6">Recursos do CorpoIdeal AI</h1>
+        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Recursos Avançados</h1>
+        <p className="text-gray-600 mb-6">
+          Explore todas as funcionalidades do CorpoIdeal AI para maximizar seus resultados.
+        </p>
         
-        <Tabs defaultValue="achievements" value={activeTab} onValueChange={setActiveTab}>
-          <div className="overflow-x-auto pb-2">
-            <TabsList className="inline-flex w-auto min-w-full">
-              <TabsTrigger value="achievements">Conquistas</TabsTrigger>
-              <TabsTrigger value="calculator">Calculadora</TabsTrigger>
-              <TabsTrigger value="community">Comunidade</TabsTrigger>
-              <TabsTrigger value="assessment">Avaliações</TabsTrigger>
-              <TabsTrigger value="offline">Modo Offline</TabsTrigger>
-              <TabsTrigger value="wearables">Wearables</TabsTrigger>
-            </TabsList>
-          </div>
+        <Tabs defaultValue="calendar" className="space-y-6">
+          <TabsList className="grid grid-cols-5 mb-4">
+            <TabsTrigger value="calendar">Agenda</TabsTrigger>
+            <TabsTrigger value="community">Comunidade</TabsTrigger>
+            <TabsTrigger value="wearables">Dispositivos</TabsTrigger>
+            <TabsTrigger value="notifications">Notificações</TabsTrigger>
+            <TabsTrigger value="offline">Offline</TabsTrigger>
+          </TabsList>
           
-          <div className="mt-6">
-            <TabsContent value="achievements">
-              <AchievementSystem />
-            </TabsContent>
-            
-            <TabsContent value="calculator">
-              <MacroCalculator />
-            </TabsContent>
-            
-            <TabsContent value="community">
-              <CommunityForum />
-            </TabsContent>
-            
-            <TabsContent value="assessment">
-              <PeriodicAssessment />
-            </TabsContent>
-            
-            <TabsContent value="offline">
-              <OfflineMode />
-            </TabsContent>
-            
-            <TabsContent value="wearables">
-              <WearableIntegration />
-            </TabsContent>
-          </div>
+          <TabsContent value="calendar" className="space-y-6">
+            <ScheduleCalendar />
+          </TabsContent>
+          
+          <TabsContent value="community" className="space-y-6">
+            <CommunityForum />
+          </TabsContent>
+          
+          <TabsContent value="wearables" className="space-y-6">
+            <WearableIntegration />
+          </TabsContent>
+          
+          <TabsContent value="notifications" className="space-y-6">
+            <NotificationCenter />
+          </TabsContent>
+          
+          <TabsContent value="offline" className="space-y-6">
+            <OfflineMode />
+          </TabsContent>
         </Tabs>
       </div>
       
