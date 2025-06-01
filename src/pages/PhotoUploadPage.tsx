@@ -13,6 +13,7 @@ const PhotoUploadPage = () => {
   const [leftSidePhoto, setLeftSidePhoto] = useState<File | null>(null);
   const [rightSidePhoto, setRightSidePhoto] = useState<File | null>(null);
   const [profileCompleted, setProfileCompleted] = useState(false);
+  const [userName, setUserName] = useState<string>('');
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -23,6 +24,7 @@ const PhotoUploadPage = () => {
     if (savedProfile) {
       const profile = JSON.parse(savedProfile);
       setProfileCompleted(!!profile.profileCompleted);
+      setUserName(profile.userName || '');
     }
     
     if (!savedProfile || !JSON.parse(savedProfile).profileCompleted) {
@@ -33,6 +35,18 @@ const PhotoUploadPage = () => {
       navigate('/profile');
     }
   }, [navigate, toast]);
+  
+  // Show motivational message with user name when component mounts
+  useEffect(() => {
+    if (userName) {
+      setTimeout(() => {
+        toast({
+          title: `Olá, ${userName}!`,
+          description: "Vamos tirar ou selecionar suas fotos para uma análise precisa da sua postura."
+        });
+      }, 1000);
+    }
+  }, [userName, toast]);
   
   const handlePhotoUploaded = (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => {
     if (type === 'front') {

@@ -15,6 +15,7 @@ import { TrainingExperienceForm } from "@/components/profile/TrainingExperienceF
 import { HealthIssuesForm } from "@/components/profile/HealthIssuesForm";
 import { AdditionalInfoForm } from "@/components/profile/AdditionalInfoForm";
 import { BudgetForm } from "@/components/profile/BudgetForm";
+import { MenstrualCycleForm } from "@/components/profile/MenstrualCycleForm";
 
 const ProfilePage = () => {
   const [height, setHeight] = useState('');
@@ -40,6 +41,12 @@ const ProfilePage = () => {
   const [rightCalf, setRightCalf] = useState('');
   // Objetivo
   const [goal, setGoal] = useState('');
+  // Nome do usuário
+  const [userName, setUserName] = useState('');
+  // Ciclo menstrual (para mulheres)
+  const [cycleLength, setCycleLength] = useState('28');
+  const [lastPeriod, setLastPeriod] = useState('');
+  const [periodTracking, setPeriodTracking] = useState(false);
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -72,6 +79,12 @@ const ProfilePage = () => {
       setRightCalf(profile.rightCalf || '');
       // Objetivo
       setGoal(profile.goal || '');
+      // Nome do usuário
+      setUserName(profile.userName || '');
+      // Ciclo menstrual
+      setCycleLength(profile.cycleLength || '28');
+      setLastPeriod(profile.lastPeriod || '');
+      setPeriodTracking(profile.periodTracking || false);
     }
   }, []);
   
@@ -106,6 +119,26 @@ const ProfilePage = () => {
       return;
     }
     
+    // Validar ciclo menstrual para mulheres
+    if (sex === 'feminino' && periodTracking && (!lastPeriod || !cycleLength)) {
+      toast({
+        title: "Dados do ciclo incompletos",
+        description: "Se deseja acompanhamento com base no ciclo, preencha todos os dados.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Additional validation for userName
+    if (!userName.trim()) {
+      toast({
+        title: "Nome não preenchido",
+        description: "Por favor, informe seu nome para personalização do plano.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Save profile data
     const profileData = {
       height,
@@ -131,6 +164,12 @@ const ProfilePage = () => {
       rightCalf,
       // Objetivo
       goal,
+      // Nome do usuário
+      userName,
+      // Ciclo menstrual
+      cycleLength,
+      lastPeriod,
+      periodTracking,
       profileCompleted: true,
     };
     
@@ -140,6 +179,16 @@ const ProfilePage = () => {
       title: "Perfil salvo!",
       description: "Seus dados foram salvos com sucesso.",
     });
+    
+    // Show motivational message with user's name
+    if (userName) {
+      setTimeout(() => {
+        toast({
+          title: `Excelente, ${userName}!`,
+          description: "Você está no caminho certo para alcançar seus objetivos de fitness. Vamos continuar!",
+        });
+      }, 1000);
+    }
     
     // Navigate to the photo upload page
     navigate('/upload');
@@ -156,6 +205,19 @@ const ProfilePage = () => {
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Nome do usuário */}
+          <div className="space-y-2">
+            <Label htmlFor="user-name">Seu Nome</Label>
+            <input
+              id="user-name"
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Como devemos te chamar?"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          
           {/* Medidas básicas e medidas corporais */}
           <BasicMeasurementsForm 
             height={height}
@@ -187,6 +249,18 @@ const ProfilePage = () => {
             rightCalf={rightCalf}
             setRightCalf={setRightCalf}
           />
+          
+          {/* Ciclo menstrual (apenas para mulheres) */}
+          {sex === 'feminino' && (
+            <MenstrualCycleForm
+              cycleLength={cycleLength}
+              setCycleLength={setCycleLength}
+              lastPeriod={lastPeriod}
+              setLastPeriod={setLastPeriod}
+              periodTracking={periodTracking}
+              setPeriodTracking={setPeriodTracking}
+            />
+          )}
           
           {/* Objetivo fitness */}
           <div className="space-y-4">
