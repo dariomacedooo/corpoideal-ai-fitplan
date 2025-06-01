@@ -16,8 +16,8 @@ const Index = () => {
         const userProfile = localStorage.getItem('userProfile');
         
         if (userProfile) {
-          // Profile exists, go to home
-          navigate('/home');
+          // Profile exists, go to training page (main functionality)
+          navigate('/training');
         } else {
           // Profile doesn't exist, go to profile page
           navigate('/profile');
