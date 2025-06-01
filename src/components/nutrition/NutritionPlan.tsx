@@ -1,313 +1,451 @@
 
-import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Apple } from "lucide-react";
+import { AlertCircle, Apple } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-interface NutritionItem {
+interface Food {
   name: string;
   portion: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
+  calories?: number; // Added calories field
+  protein?: number;  // Added protein field
+  carbs?: number;    // Added carbs field
+  fat?: number;      // Added fat field
 }
 
 interface Meal {
+  name: string;
   time: string;
-  title: string;
-  items: NutritionItem[];
+  foods: Food[];
+  totalCalories?: number; // Added total calories for the meal
+  macros?: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
 }
 
-interface NutritionDay {
-  day: string;
+interface Diet {
+  type: string;
+  budget?: string;  // Opcional para compatibilidade
   meals: Meal[];
-  totalCalories: number;
-  totalProtein: number;
-  totalCarbs: number;
-  totalFat: number;
+  recipe: {
+    name: string;
+    ingredients: string[];
+    instructions: string;
+  };
+  dailyCalories?: number; // Added daily calorie total
+  dailyMacros?: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
 }
 
-export interface NutritionPlanProps {
-  goal: string;
-  days: NutritionDay[];
-  userName?: string;
-  weight: number;
-  height: number;
-  sex: string;
-  age: number;
-  activityLevel: string;
-  experience?: string;
+interface NutritionPlanProps {
+  diets: Diet[];
 }
 
-export function NutritionPlan({
-  goal,
-  days,
-  userName,
-  weight,
-  height,
-  sex,
-  age,
-  activityLevel,
-  experience = "intermediario"
-}: NutritionPlanProps) {
-  const [activeTab, setActiveTab] = useState(days[0]?.day.toLowerCase());
-
-  const getGoalText = () => {
-    switch (goal) {
-      case 'perder-peso':
-        return 'Perder Peso';
-      case 'ganhar-massa':
-      case 'ganhar-musculos':
-        return 'Ganhar Massa Muscular';
-      case 'ganhar-peso':
-        return 'Ganhar Peso';
-      default:
-        return 'Manter Peso';
-    }
-  };
-
-  // Calculate BMR (Basal Metabolic Rate) using Mifflin-St Jeor Equation
-  const calculateBMR = () => {
-    if (sex === 'masculino') {
-      return (10 * weight) + (6.25 * height) - (5 * age) + 5;
-    } else {
-      return (10 * weight) + (6.25 * height) - (5 * age) - 161;
-    }
-  };
-
-  // Calculate TDEE (Total Daily Energy Expenditure)
-  const calculateTDEE = () => {
-    const bmr = calculateBMR();
-    const activityMultipliers: {[key: string]: number} = {
-      'sedentario': 1.2,
-      'leve': 1.375,
-      'moderado': 1.55,
-      'ativo': 1.725,
-      'muito-ativo': 1.9
-    };
-    
-    const multiplier = activityMultipliers[activityLevel] || 1.55;
-    return Math.round(bmr * multiplier);
-  };
-
-  // Calculate target calories based on goal
-  const calculateTargetCalories = () => {
-    const tdee = calculateTDEE();
-    
-    switch (goal) {
-      case 'perder-peso':
-        return Math.round(tdee * 0.85); // 15% deficit
-      case 'ganhar-massa':
-      case 'ganhar-musculos':
-        // Ajuste adicional com base no nível de experiência
-        const experienceMultiplier = {
-          'iniciante': 1.1,      // +10%
-          'intermediario': 1.15, // +15%
-          'avancado': 1.2        // +20%
-        };
-        const multiplier = experienceMultiplier[experience as keyof typeof experienceMultiplier] || 1.15;
-        return Math.round(tdee * multiplier);
-      case 'ganhar-peso':
-        return Math.round(tdee * 1.1); // 10% surplus
-      default:
-        return tdee;
-    }
-  };
-
-  // Calculate macronutrient targets
-  const calculateMacroTargets = () => {
-    const targetCalories = calculateTargetCalories();
-    let proteinPercentage, carbPercentage, fatPercentage;
-    
-    // Adjust macros based on goal and experience level
-    if (goal === 'ganhar-massa' || goal === 'ganhar-musculos') {
-      if (experience === 'avancado') {
-        proteinPercentage = 0.35; // 35% from protein
-        carbPercentage = 0.45;    // 45% from carbs
-        fatPercentage = 0.2;      // 20% from fat
-      } else {
-        proteinPercentage = 0.3;  // 30% from protein
-        carbPercentage = 0.45;    // 45% from carbs
-        fatPercentage = 0.25;     // 25% from fat
-      }
-    } else if (goal === 'perder-peso') {
-      proteinPercentage = 0.4;    // 40% from protein
-      carbPercentage = 0.35;      // 35% from carbs
-      fatPercentage = 0.25;       // 25% from fat
-    } else {
-      proteinPercentage = 0.3;    // 30% from protein
-      carbPercentage = 0.4;       // 40% from carbs
-      fatPercentage = 0.3;        // 30% from fat
-    }
-    
-    // Calculate grams
-    const proteinGrams = Math.round((targetCalories * proteinPercentage) / 4); // 4 calories per gram
-    const carbGrams = Math.round((targetCalories * carbPercentage) / 4);       // 4 calories per gram
-    const fatGrams = Math.round((targetCalories * fatPercentage) / 9);         // 9 calories per gram
-    
-    return {
-      targetCalories,
-      proteinGrams,
-      carbGrams,
-      fatGrams
-    };
-  };
-
-  const macroTargets = calculateMacroTargets();
+export function NutritionPlan({ diets }: NutritionPlanProps) {
+  const [selectedDiet, setSelectedDiet] = useState<string>('');
+  const [filteredDiets, setFilteredDiets] = useState<Diet[]>([]);
+  const [userBudget, setUserBudget] = useState<string>('');
+  const [showNutritionInfo, setShowNutritionInfo] = useState<boolean>(true);
   
-  // Adjust recommendations based on experience level
-  const getExperienceRecommendation = () => {
-    if (goal === 'ganhar-musculos' || goal === 'ganhar-massa') {
-      switch (experience) {
-        case 'iniciante':
-          return "Para iniciantes, foque em consistência nas refeições e no consumo adequado de proteínas (1.6-1.8g por kg de peso corporal).";
-        case 'intermediario':
-          return "Para intermediários, distribua bem suas proteínas (2g por kg) ao longo do dia e dê atenção especial à alimentação pré e pós-treino.";
-        case 'avancado':
-          return "Para avançados, aumente a ingestão de proteína (2.2-2.5g por kg) e carboidratos pré e pós-treino para maximizar recuperação e síntese proteica.";
-        default:
-          return "";
-      }
+  // Load user's budget from localStorage
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile);
+      setUserBudget(profile.budget || '');
     }
-    return "";
+  }, []);
+  
+  // Filter diets based on budget
+  useEffect(() => {
+    // First, calculate calories and macros for all diets if they don't have them yet
+    const dietsWithCalories = diets.map(diet => {
+      if (diet.dailyCalories) return diet; // Skip if already calculated
+      
+      // Calculate totals for the diet
+      let totalCalories = 0;
+      let totalProtein = 0;
+      let totalCarbs = 0;
+      let totalFat = 0;
+      
+      // Updated meals with calorie information
+      const updatedMeals = diet.meals.map(meal => {
+        // Skip if meal already has calculated totals
+        if (meal.totalCalories) return meal;
+        
+        let mealCalories = 0;
+        let mealProtein = 0;
+        let mealCarbs = 0;
+        let mealFat = 0;
+        
+        // Add realistic calorie and macro values for foods
+        const updatedFoods = meal.foods.map(food => {
+          // Skip if food already has calories
+          if (food.calories) return food;
+          
+          // Estimate calories and macros based on food name and portion
+          const estimate = estimateNutritionValues(food.name, food.portion);
+          
+          // Add to meal totals
+          mealCalories += estimate.calories;
+          mealProtein += estimate.protein;
+          mealCarbs += estimate.carbs;
+          mealFat += estimate.fat;
+          
+          // Return food with nutrition data
+          return {
+            ...food,
+            calories: estimate.calories,
+            protein: estimate.protein,
+            carbs: estimate.carbs,
+            fat: estimate.fat
+          };
+        });
+        
+        // Add to diet totals
+        totalCalories += mealCalories;
+        totalProtein += mealProtein;
+        totalCarbs += mealCarbs;
+        totalFat += mealFat;
+        
+        // Return meal with updated foods and totals
+        return {
+          ...meal,
+          foods: updatedFoods,
+          totalCalories: mealCalories,
+          macros: {
+            protein: mealProtein,
+            carbs: mealCarbs,
+            fat: mealFat
+          }
+        };
+      });
+      
+      // Return updated diet with totals
+      return {
+        ...diet,
+        meals: updatedMeals,
+        dailyCalories: totalCalories,
+        dailyMacros: {
+          protein: totalProtein,
+          carbs: totalCarbs,
+          fat: totalFat
+        }
+      };
+    });
+    
+    // Apply budget filtering
+    if (!userBudget) {
+      setFilteredDiets(dietsWithCalories);
+    } else {
+      // Filter diets compatible with user's budget
+      const compatible = dietsWithCalories.filter(diet => {
+        if (!diet.budget) return true; // If diet doesn't specify budget, show to all
+        
+        // Budget compatibility logic
+        if (userBudget === '100-300' && diet.budget === '100-300') return true;
+        if (userBudget === '301-500' && (diet.budget === '100-300' || diet.budget === '301-500')) return true;
+        if (userBudget === '501-800' && diet.budget !== '801+') return true;
+        if (userBudget === '801+') return true; // Users with high budget can see all diets
+        
+        return false;
+      });
+      
+      setFilteredDiets(compatible.length > 0 ? compatible : dietsWithCalories);
+    }
+  }, [diets, userBudget]);
+  
+  // Update selected diet when filtered diets change
+  useEffect(() => {
+    if (filteredDiets.length > 0 && (!selectedDiet || !filteredDiets.find(d => d.type === selectedDiet))) {
+      setSelectedDiet(filteredDiets[0].type);
+    }
+  }, [filteredDiets, selectedDiet]);
+  
+  const currentDiet = filteredDiets.find(diet => diet.type === selectedDiet) || (filteredDiets[0] || diets[0]);
+  
+  const getBudgetLabel = (budget: string) => {
+    switch (budget) {
+      case '100-300': return 'R$100-R$300';
+      case '301-500': return 'R$301-R$500';
+      case '501-800': return 'R$501-R$800';
+      case '801+': return 'Acima de R$800';
+      default: return budget;
+    }
   };
-
-  const experienceRecommendation = getExperienceRecommendation();
-
+  
+  // Helper function to estimate nutrition values
+  const estimateNutritionValues = (foodName: string, portion: string): { calories: number, protein: number, carbs: number, fat: number } => {
+    // Default values
+    let calories = 0;
+    let protein = 0;
+    let carbs = 0;
+    let fat = 0;
+    
+    // Very basic estimation based on food name and portion
+    // In a real app, this would use a comprehensive food database
+    
+    // Extract quantity from portion when possible
+    const quantityMatch = portion.match(/(\d+)/);
+    const quantity = quantityMatch ? parseInt(quantityMatch[0]) : 1;
+    
+    // Proteins
+    if (foodName.includes('frango') || foodName.includes('peito de frango')) {
+      calories = 165 * quantity;
+      protein = 31 * quantity;
+      fat = 3.6 * quantity;
+    } else if (foodName.includes('ovo')) {
+      calories = 70 * quantity;
+      protein = 6 * quantity;
+      carbs = 0.6 * quantity;
+      fat = 5 * quantity;
+    } else if (foodName.includes('peixe') || foodName.includes('salmão')) {
+      calories = 208 * quantity;
+      protein = 20 * quantity;
+      fat = 13 * quantity;
+    } else if (foodName.includes('carne')) {
+      calories = 250 * quantity;
+      protein = 26 * quantity;
+      fat = 17 * quantity;
+    } else if (foodName.includes('tofu')) {
+      calories = 144 * quantity;
+      protein = 17 * quantity;
+      carbs = 3 * quantity;
+      fat = 9 * quantity;
+    }
+    
+    // Carbs
+    else if (foodName.includes('arroz')) {
+      calories = 130 * quantity;
+      protein = 2.7 * quantity;
+      carbs = 28 * quantity;
+      fat = 0.3 * quantity;
+    } else if (foodName.includes('batata')) {
+      calories = 160 * quantity;
+      protein = 3 * quantity;
+      carbs = 37 * quantity;
+      fat = 0.2 * quantity;
+    } else if (foodName.includes('pão')) {
+      calories = 80 * quantity;
+      protein = 3 * quantity;
+      carbs = 15 * quantity;
+      fat = 1 * quantity;
+    } else if (foodName.includes('quinoa')) {
+      calories = 120 * quantity;
+      protein = 4 * quantity;
+      carbs = 21 * quantity;
+      fat = 1.9 * quantity;
+    } else if (foodName.includes('feijão')) {
+      calories = 100 * quantity;
+      protein = 7 * quantity;
+      carbs = 17 * quantity;
+      fat = 0.5 * quantity;
+    }
+    
+    // Fruits and veggies
+    else if (foodName.includes('banana')) {
+      calories = 105 * quantity;
+      protein = 1.3 * quantity;
+      carbs = 27 * quantity;
+      fat = 0.4 * quantity;
+    } else if (foodName.includes('maçã')) {
+      calories = 95 * quantity;
+      protein = 0.5 * quantity;
+      carbs = 25 * quantity;
+      fat = 0.3 * quantity;
+    } else if (foodName.includes('salada')) {
+      calories = 20 * quantity;
+      protein = 1 * quantity;
+      carbs = 4 * quantity;
+      fat = 0.2 * quantity;
+    } else if (foodName.includes('legumes')) {
+      calories = 25 * quantity;
+      protein = 1.5 * quantity;
+      carbs = 5 * quantity;
+      fat = 0.2 * quantity;
+    }
+    
+    // Dairy and supplements
+    else if (foodName.includes('iogurte')) {
+      calories = 150 * quantity;
+      protein = 8 * quantity;
+      carbs = 12 * quantity;
+      fat = 8 * quantity;
+    } else if (foodName.includes('queijo')) {
+      calories = 110 * quantity;
+      protein = 7 * quantity;
+      carbs = 1 * quantity;
+      fat = 9 * quantity;
+    } else if (foodName.includes('whey')) {
+      calories = 120 * quantity;
+      protein = 24 * quantity;
+      carbs = 3 * quantity;
+      fat = 2 * quantity;
+    }
+    
+    // Default generic food values if not matched
+    else {
+      calories = 100 * quantity;
+      protein = 5 * quantity;
+      carbs = 10 * quantity;
+      fat = 5 * quantity;
+    }
+    
+    return { calories, protein, carbs, fat };
+  };
+  
   return (
-    <Card className="w-full shadow-sm">
-      <CardHeader className="pb-4">
+    <Card className="w-full animate-fade-in">
+      <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl text-corpoideal-purple flex items-center">
             <Apple className="h-5 w-5 mr-2" />
             Plano Alimentar
           </CardTitle>
-          <div className="flex flex-wrap gap-2">
-            <Badge>{getGoalText()}</Badge>
-            {experience && <Badge variant="outline">{experience === 'iniciante' ? 'Iniciante' : experience === 'intermediario' ? 'Intermediário' : 'Avançado'}</Badge>}
+          <div className="flex flex-col gap-2 items-end">
+            {userBudget && (
+              <Badge variant="outline" className="mb-1">
+                Orçamento: {getBudgetLabel(userBudget)}
+              </Badge>
+            )}
+            <Select value={selectedDiet} onValueChange={setSelectedDiet}>
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Estilo" />
+              </SelectTrigger>
+              <SelectContent>
+                {filteredDiets.map(diet => (
+                  <SelectItem key={diet.type} value={diet.type}>
+                    {diet.type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-          <h3 className="font-medium mb-2">Suas necessidades diárias</h3>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            <div className="bg-white p-3 rounded-md shadow-sm">
-              <div className="text-sm text-gray-500">Calorias</div>
-              <div className="text-lg font-medium">{macroTargets.targetCalories} kcal</div>
-            </div>
-            <div className="bg-white p-3 rounded-md shadow-sm">
-              <div className="text-sm text-gray-500">Proteínas</div>
-              <div className="text-lg font-medium">{macroTargets.proteinGrams}g</div>
-            </div>
-            <div className="bg-white p-3 rounded-md shadow-sm">
-              <div className="text-sm text-gray-500">Carboidratos</div>
-              <div className="text-lg font-medium">{macroTargets.carbGrams}g</div>
-            </div>
-            <div className="bg-white p-3 rounded-md shadow-sm">
-              <div className="text-sm text-gray-500">Gorduras</div>
-              <div className="text-lg font-medium">{macroTargets.fatGrams}g</div>
+        {currentDiet.budget && (
+          <Alert className="mb-4 bg-corpoideal-purple/5 border-corpoideal-purple/20">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Faixa de orçamento</AlertTitle>
+            <AlertDescription>
+              Este plano alimentar é adequado para orçamentos de {getBudgetLabel(currentDiet.budget)}.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {currentDiet.dailyCalories && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <h3 className="text-sm font-medium text-corpoideal-purple mb-2">Informações Nutricionais Diárias</h3>
+            <div className="flex justify-between items-center">
+              <div className="text-center">
+                <span className="text-sm font-bold block">{currentDiet.dailyCalories} kcal</span>
+                <span className="text-xs text-gray-500">Total/dia</span>
+              </div>
+
+              {currentDiet.dailyMacros && (
+                <>
+                  <div className="text-center">
+                    <span className="text-sm font-bold block">{currentDiet.dailyMacros.protein}g</span>
+                    <span className="text-xs text-gray-500">Proteínas</span>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-sm font-bold block">{currentDiet.dailyMacros.carbs}g</span>
+                    <span className="text-xs text-gray-500">Carboidratos</span>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-sm font-bold block">{currentDiet.dailyMacros.fat}g</span>
+                    <span className="text-xs text-gray-500">Gorduras</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-          
-          {experienceRecommendation && (
-            <div className="mt-4 text-sm text-corpoideal-purple">
-              <strong>Recomendação:</strong> {experienceRecommendation}
-            </div>
-          )}
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-4 grid" style={{ gridTemplateColumns: `repeat(${Math.min(days.length, 7)}, 1fr)` }}>
-            {days.map((day) => (
-              <TabsTrigger key={day.day} value={day.day.toLowerCase()}>
-                {day.day.substring(0, 3)}
-              </TabsTrigger>
-            ))}
+        )}
+      
+        <Tabs defaultValue="refeicoes">
+          <TabsList className="grid grid-cols-2 mb-4">
+            <TabsTrigger value="refeicoes">Refeições</TabsTrigger>
+            <TabsTrigger value="receita">Receita do Dia</TabsTrigger>
           </TabsList>
           
-          {days.map((day) => (
-            <TabsContent key={day.day} value={day.day.toLowerCase()}>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-medium">{day.day}</h3>
-                  <div className="text-sm">
-                    <span className="font-medium">{day.totalCalories} kcal</span>
-                    <span className="text-gray-500 ml-2">
-                      ({day.totalProtein}g P / {day.totalCarbs}g C / {day.totalFat}g G)
-                    </span>
-                  </div>
-                </div>
-                
-                {day.meals.map((meal, i) => (
-                  <div key={i} className="border border-gray-200 rounded-lg p-4">
-                    <div className="flex justify-between mb-2">
-                      <h4 className="font-medium">{meal.title}</h4>
-                      <span className="text-sm text-gray-500">{meal.time}</span>
+          <TabsContent value="refeicoes">
+            <div className="space-y-4">
+              {currentDiet.meals.map((meal, index) => (
+                <div key={index} className="nutrition-card">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-medium">{meal.name}</h4>
+                    <div className="flex items-center gap-2">
+                      {meal.totalCalories && (
+                        <Badge className="bg-corpoideal-purple/10 text-corpoideal-purple border-0">
+                          {meal.totalCalories} kcal
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="text-xs">{meal.time}</Badge>
                     </div>
-                    
-                    <div className="space-y-3">
-                      {meal.items.map((item, j) => (
-                        <div key={j} className="flex justify-between items-start pt-2">
-                          <div>
-                            <div className="font-medium text-sm">{item.name}</div>
-                            <div className="text-xs text-gray-500">{item.portion}</div>
-                          </div>
-                          <div className="text-xs text-right">
-                            <div>{item.calories} kcal</div>
-                            <div className="text-gray-500">
-                              {item.protein}g P / {item.carbs}g C / {item.fat}g G
-                            </div>
-                          </div>
+                  </div>
+                  
+                  <ul className="text-sm space-y-1">
+                    {meal.foods.map((food, idx) => (
+                      <li key={idx} className="flex justify-between">
+                        <span>{food.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-500">{food.portion}</span>
+                          {showNutritionInfo && food.calories && (
+                            <span className="text-xs text-corpoideal-purple">{food.calories} kcal</span>
+                          )}
                         </div>
-                      ))}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  {showNutritionInfo && meal.macros && (
+                    <div className="mt-2 pt-2 border-t border-gray-100 grid grid-cols-3 gap-2 text-xs text-gray-500">
+                      <div>Proteínas: <span className="font-medium">{meal.macros.protein}g</span></div>
+                      <div>Carbos: <span className="font-medium">{meal.macros.carbs}g</span></div>
+                      <div>Gorduras: <span className="font-medium">{meal.macros.fat}g</span></div>
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="receita">
+            <div className="nutrition-card">
+              <div className="bg-gradient-to-r from-corpoideal-purple/10 to-corpoideal-lightpurple/10 p-4 rounded-lg mb-4">
+                <h3 className="font-medium text-lg mb-1 text-corpoideal-purple">{currentDiet.recipe.name}</h3>
+                <p className="text-xs text-gray-600">Receita especial para o seu plano alimentar</p>
               </div>
-            </TabsContent>
-          ))}
+              
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                  <span className="mr-1">🥗</span> Ingredientes:
+                </h4>
+                <ul className="list-disc list-inside text-sm space-y-1">
+                  {currentDiet.recipe.ingredients.map((ingredient, idx) => (
+                    <li key={idx}>{ingredient}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-2 flex items-center">
+                  <span className="mr-1">👨‍🍳</span> Modo de Preparo:
+                </h4>
+                <p className="text-sm">{currentDiet.recipe.instructions}</p>
+              </div>
+            </div>
+          </TabsContent>
         </Tabs>
-        
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-          <h4 className="text-sm font-medium text-corpoideal-purple mb-2">
-            Dicas para {getGoalText()}:
-          </h4>
-          <ul className="text-sm text-gray-600 space-y-1 pl-4 list-disc">
-            {goal === 'ganhar-massa' || goal === 'ganhar-musculos' ? (
-              <>
-                <li>Consuma proteína em todas as refeições principais</li>
-                <li>Priorize carboidratos complexos antes e depois do treino</li>
-                <li>Consuma calorias suficientes para apoiar o ganho de massa</li>
-                <li>Não negligencie gorduras boas para hormônios saudáveis</li>
-                {experience === 'avancado' && (
-                  <>
-                    <li>Divida suas refeições em 5-6 ao longo do dia</li>
-                    <li>Adicione 20-30g de proteína imediatamente pós-treino</li>
-                    <li>Considere periodização nutricional alinhada com seus ciclos de treino</li>
-                  </>
-                )}
-              </>
-            ) : goal === 'perder-peso' ? (
-              <>
-                <li>Mantenha um déficit calórico moderado (15-20%)</li>
-                <li>Aumente a ingestão de proteínas para preservar massa muscular</li>
-                <li>Priorize alimentos com alta saciedade e baixa densidade calórica</li>
-                <li>Beba água antes das refeições para aumentar a saciedade</li>
-                <li>Evite alimentos ultraprocessados e ricos em açúcar</li>
-              </>
-            ) : (
-              <>
-                <li>Mantenha uma alimentação balanceada com todos os grupos alimentares</li>
-                <li>Consuma proteínas suficientes para manutenção muscular</li>
-                <li>Ajuste calorias conforme seu nível de atividade diária</li>
-                <li>Priorize alimentos integrais e minimamente processados</li>
-              </>
-            )}
-          </ul>
-        </div>
       </CardContent>
     </Card>
   );
