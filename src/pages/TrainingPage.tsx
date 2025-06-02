@@ -1,6 +1,9 @@
+
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { WorkoutPlan } from "@/components/training/WorkoutPlan";
+import { LoadProgress } from "@/components/training/LoadProgress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
@@ -343,7 +346,7 @@ const TrainingPage = () => {
       
       <div className="px-4 py-6">
         <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">
-          Seu Plano de Treino - {profile.name || 'Usuário'}
+          Treino - {profile.name || 'Usuário'}
         </h1>
         <p className="text-gray-600 mb-6">
           Treino personalizado para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
@@ -351,12 +354,25 @@ const TrainingPage = () => {
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Nível {profile.trainingExperience}
         </p>
         
-        <WorkoutPlan 
-          goal={profile.goal}
-          workoutDays={workoutDays}
-          trainingLocation={profile.trainingLocation}
-          experience={profile.trainingExperience}
-        />
+        <Tabs defaultValue="workout" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="workout">Plano de Treino</TabsTrigger>
+            <TabsTrigger value="progress">Progresso de Cargas</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="workout" className="mt-6">
+            <WorkoutPlan 
+              goal={profile.goal}
+              workoutDays={workoutDays}
+              trainingLocation={profile.trainingLocation}
+              experience={profile.trainingExperience}
+            />
+          </TabsContent>
+          
+          <TabsContent value="progress" className="mt-6">
+            <LoadProgress />
+          </TabsContent>
+        </Tabs>
       </div>
       
       <BottomNav />

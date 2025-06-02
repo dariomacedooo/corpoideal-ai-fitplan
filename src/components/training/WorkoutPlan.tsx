@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Dumbbell, Clock, Target, TrendingUp } from "lucide-react";
 import { advancedWorkouts } from "@/data/advancedWorkouts";
+import { LoadManager } from "./LoadManager";
 
 interface Exercise {
   name: string;
@@ -263,10 +263,12 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
                         💡 <strong>Técnica:</strong> {exercise.tip}
                       </p>
                       
+                      <LoadManager exerciseName={exercise.name} />
+                      
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full text-xs hover:bg-corpoideal-purple hover:text-white transition-colors"
+                        className="w-full text-xs hover:bg-corpoideal-purple hover:text-white transition-colors mt-2"
                         onClick={() => window.open(exercise.videoUrl, '_blank')}
                       >
                         🎥 Ver demonstração técnica
