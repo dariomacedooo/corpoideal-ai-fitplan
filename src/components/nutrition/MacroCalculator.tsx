@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,9 +12,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { Calculator } from "lucide-react";
+import { Calculator, TrendingUp, Zap } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { calculateBMR, calculateTDEE, adjustCaloriesForGoal } from "@/utils/nutritionCalculator";
+import { calculateBMR, calculateTDEE, adjustCaloriesForGoal, calculateMacros, distributeMeals } from "@/utils/nutritionCalculator";
+import { classifyBiotipo } from "@/utils/bodyAnalysis";
 
 export function MacroCalculator() {
   const { profile } = useUserProfile();
@@ -25,11 +25,7 @@ export function MacroCalculator() {
   const [gender, setGender] = useState<string>("masculino");
   const [activityLevel, setActivityLevel] = useState<string>("moderado");
   const [goal, setGoal] = useState<string>("manter");
-  const [protein, setProtein] = useState<number>(30);
-  const [carbs, setCarbs] = useState<number>(40);
-  const [fat, setFat] = useState<number>(30);
-  const [calculatedCalories, setCalculatedCalories] = useState<number | null>(null);
-  const [calculatedMacros, setCalculatedMacros] = useState<any>(null);
+  const [calculatedData, setCalculatedData] = useState<any>(null);
   
   // Load user profile data
   useEffect(() => {
@@ -88,12 +84,12 @@ export function MacroCalculator() {
   };
   
   const calculateCalories = () => {
-    // Parse input values
     const weightNum = parseFloat(weight);
     const heightNum = parseFloat(height);
     const ageNum = parseFloat(age);
+    const waistNum = parseFloat(profile?.waist || "80");
     
-    // Calculate BMR using the nutrition calculator utility
+    // Calculate BMR using Mifflin-St Jeor equation
     const bmr = calculateBMR(weightNum, heightNum, ageNum, gender);
     
     // Calculate TDEE
@@ -102,38 +98,48 @@ export function MacroCalculator() {
     // Adjust for goal
     const finalCalories = adjustCaloriesForGoal(tdee, goal);
     
-    const totalCalories = Math.round(finalCalories);
-    setCalculatedCalories(totalCalories);
+    // Classify biotipo for macro distribution
+    const biotipo = classifyBiotipo(waistNum, heightNum, parseFloat(profile?.bodyFat || "0"));
     
-    // Calculate macronutrients in grams (fixed calculation)
-    const proteinGrams = Math.round((totalCalories * (protein / 100)) / 4);
-    const carbsGrams = Math.round((totalCalories * (carbs / 100)) / 4);
-    const fatGrams = Math.round((totalCalories * (fat / 100)) / 9);
+    // Calculate scientific macro distribution
+    const macros = calculateMacros(
+      finalCalories, 
+      weightNum, 
+      goal, 
+      biotipo,
+      profile?.trainingExperience || 'iniciante'
+    );
     
-    setCalculatedMacros({
-      protein: proteinGrams,
-      carbs: carbsGrams,
-      fat: fatGrams,
-      total: totalCalories,
+    // Calculate meal distribution
+    const mealPlan = distributeMeals(finalCalories, macros.proteinG);
+    
+    setCalculatedData({
+      calories: Math.round(finalCalories),
       bmr: Math.round(bmr),
-      tdee: Math.round(tdee)
+      tdee: Math.round(tdee),
+      macros,
+      biotipo,
+      mealPlan
     });
   };
   
   // Prepare data for pie chart
-  const chartData = [
-    { name: "Proteínas", value: protein, color: "#8B5CF6" },
-    { name: "Carboidratos", value: carbs, color: "#22C55E" },
-    { name: "Gorduras", value: fat, color: "#EF4444" }
-  ];
+  const chartData = calculatedData ? [
+    { name: "Proteínas", value: calculatedData.macros.protein, color: "#8B5CF6" },
+    { name: "Carboidratos", value: calculatedData.macros.carbs, color: "#22C55E" },
+    { name: "Gorduras", value: calculatedData.macros.fat, color: "#EF4444" }
+  ] : [];
   
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
         <CardTitle className="text-xl text-corpoideal-purple flex items-center">
           <Calculator className="h-5 w-5 mr-2" />
-          Calculadora de Macronutrientes
+          Calculadora Científica de Macronutrientes
         </CardTitle>
+        <p className="text-sm text-gray-600">
+          Baseada em WHO/FAO/UNU, Mifflin-St Jeor e recomendações de Brad Schoenfeld
+        </p>
       </CardHeader>
       <CardContent>
         <div className="grid gap-6 md:grid-cols-2">
@@ -259,68 +265,104 @@ export function MacroCalculator() {
               className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
               onClick={calculateCalories}
             >
-              Calcular
+              <Zap className="h-4 w-4 mr-2" />
+              Calcular com Base Científica
             </Button>
           </div>
           
           <div>
-            <div className="h-48 mb-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            {chartData.length > 0 && (
+              <div className="h-48 mb-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
             
-            {calculatedMacros && (
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium text-corpoideal-purple mb-2">Resultado:</h3>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-xl font-semibold">{calculatedMacros.total} kcal</p>
-                    <p className="text-sm text-gray-500">Calorias diárias</p>
+            {calculatedData && (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-corpoideal-purple/10 to-blue-50 p-4 rounded-lg border border-corpoideal-purple/20">
+                  <h3 className="font-medium text-corpoideal-purple mb-3 flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Resultado Científico:
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-2xl font-bold">{calculatedData.calories} kcal</p>
+                      <p className="text-sm text-gray-500">Calorias diárias • Biotipo: {calculatedData.biotipo}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-white p-2 rounded border">
+                        <p className="font-medium">TMB: {calculatedData.bmr} kcal</p>
+                        <p className="text-gray-500">Mifflin-St Jeor</p>
+                      </div>
+                      <div className="bg-white p-2 rounded border">
+                        <p className="font-medium">GCD: {calculatedData.tdee} kcal</p>
+                        <p className="text-gray-500">WHO/FAO/UNU</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-white p-2 rounded border">
+                        <p className="text-lg font-bold">{calculatedData.macros.proteinG}g</p>
+                        <p className="text-xs text-gray-500">Proteínas ({calculatedData.macros.protein}%)</p>
+                      </div>
+                      <div className="bg-white p-2 rounded border">
+                        <p className="text-lg font-bold">{calculatedData.macros.carbsG}g</p>
+                        <p className="text-xs text-gray-500">Carboidratos ({calculatedData.macros.carbs}%)</p>
+                      </div>
+                      <div className="bg-white p-2 rounded border">
+                        <p className="text-lg font-bold">{calculatedData.macros.fatG}g</p>
+                        <p className="text-xs text-gray-500">Gorduras ({calculatedData.macros.fat}%)</p>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-white p-2 rounded border">
-                      <p className="font-medium">TMB: {calculatedMacros.bmr} kcal</p>
-                      <p className="text-gray-500">Taxa metabólica basal</p>
+                </div>
+
+                {/* Meal Distribution */}
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h4 className="text-sm font-bold text-blue-700 mb-2">📋 Distribuição das Refeições:</h4>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="bg-white p-2 rounded">
+                      <p className="font-medium">{calculatedData.mealPlan.mealsCount} refeições</p>
+                      <p className="text-gray-500">Otimizada</p>
                     </div>
-                    <div className="bg-white p-2 rounded border">
-                      <p className="font-medium">TDEE: {calculatedMacros.tdee} kcal</p>
-                      <p className="text-gray-500">Gasto total diário</p>
+                    <div className="bg-white p-2 rounded">
+                      <p className="font-medium">{calculatedData.mealPlan.caloriesPerMeal} kcal</p>
+                      <p className="text-gray-500">Por refeição</p>
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="bg-white p-2 rounded border">
-                      <p className="text-lg font-medium">{calculatedMacros.protein}g</p>
-                      <p className="text-xs text-gray-500">Proteínas</p>
-                    </div>
-                    <div className="bg-white p-2 rounded border">
-                      <p className="text-lg font-medium">{calculatedMacros.carbs}g</p>
-                      <p className="text-xs text-gray-500">Carboidratos</p>
-                    </div>
-                    <div className="bg-white p-2 rounded border">
-                      <p className="text-lg font-medium">{calculatedMacros.fat}g</p>
-                      <p className="text-xs text-gray-500">Gorduras</p>
+                    <div className="bg-white p-2 rounded">
+                      <p className="font-medium">{calculatedData.mealPlan.proteinPerMeal}g</p>
+                      <p className="text-gray-500">Proteína/refeição</p>
                     </div>
                   </div>
+                </div>
+
+                {/* Scientific References */}
+                <div className="bg-gray-50 p-3 rounded-lg text-xs text-gray-600">
+                  <strong>📚 Embasamento Científico:</strong><br/>
+                  • TMB: Mifflin-St Jeor (Journal of the American Dietetic Association, 1990)<br/>
+                  • Proteína: {goal === 'ganhar-massa' ? '2.0-2.2g/kg' : goal === 'perder-peso' ? '2.2-2.5g/kg' : '2.0g/kg'} (Brad Schoenfeld, 2018)<br/>
+                  • Distribuição: ≥0.4g/kg por refeição (Moore et al., 2009)<br/>
+                  • Fatores atividade: WHO/FAO/UNU Expert Consultation
                 </div>
               </div>
             )}

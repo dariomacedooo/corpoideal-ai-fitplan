@@ -1,158 +1,110 @@
-// Utility functions for accurate nutrition calculations
 
-export interface NutritionValues {
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-}
+// Enhanced nutrition calculator with WHO/FAO/UNU and scientific formulas
 
-// Food database with accurate nutrition per 100g
-const FOOD_DATABASE: Record<string, NutritionValues> = {
-  // Proteins
-  'frango': { calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-  'peito de frango': { calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-  'ovo': { calories: 155, protein: 13, carbs: 1.1, fat: 11 },
-  'peixe': { calories: 206, protein: 22, carbs: 0, fat: 12 },
-  'salmão': { calories: 208, protein: 20, carbs: 0, fat: 13 },
-  'carne': { calories: 250, protein: 26, carbs: 0, fat: 17 },
-  'tofu': { calories: 76, protein: 8, carbs: 1.9, fat: 4.8 },
-  
-  // Carbs
-  'arroz': { calories: 130, protein: 2.7, carbs: 28, fat: 0.3 },
-  'batata': { calories: 77, protein: 2, carbs: 17, fat: 0.1 },
-  'batata doce': { calories: 86, protein: 1.6, carbs: 20, fat: 0.1 },
-  'pão': { calories: 265, protein: 9, carbs: 49, fat: 3.2 },
-  'quinoa': { calories: 120, protein: 4.4, carbs: 22, fat: 1.9 },
-  'feijão': { calories: 127, protein: 9, carbs: 23, fat: 0.5 },
-  
-  // Fruits
-  'banana': { calories: 89, protein: 1.1, carbs: 23, fat: 0.3 },
-  'maçã': { calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
-  'laranja': { calories: 47, protein: 0.9, carbs: 12, fat: 0.1 },
-  
-  // Vegetables
-  'salada': { calories: 15, protein: 1.4, carbs: 2.9, fat: 0.2 },
-  'legumes': { calories: 35, protein: 2, carbs: 7, fat: 0.2 },
-  'brócolis': { calories: 34, protein: 2.8, carbs: 7, fat: 0.4 },
-  
-  // Dairy
-  'iogurte': { calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
-  'queijo': { calories: 113, protein: 25, carbs: 4.1, fat: 0.2 },
-  'leite': { calories: 42, protein: 3.4, carbs: 5, fat: 1 },
-  
-  // Others
-  'whey': { calories: 400, protein: 80, carbs: 6, fat: 4 },
-  'aveia': { calories: 389, protein: 17, carbs: 66, fat: 7 },
-  'castanhas': { calories: 654, protein: 15, carbs: 12, fat: 66 },
-};
-
-export const estimateNutritionValues = (foodName: string, portion: string): NutritionValues => {
-  // Normalize food name for lookup
-  const normalizedName = foodName.toLowerCase();
-  
-  // Extract quantity from portion
-  let quantity = 1;
-  let unit = 'unidade';
-  
-  // Parse portion string
-  const portionMatch = portion.match(/(\d+(?:\.\d+)?)\s*(\w+)/);
-  if (portionMatch) {
-    quantity = parseFloat(portionMatch[1]);
-    unit = portionMatch[2].toLowerCase();
-  }
-  
-  // Find matching food in database
-  let baseNutrition: NutritionValues = { calories: 100, protein: 5, carbs: 10, fat: 5 };
-  
-  for (const [key, nutrition] of Object.entries(FOOD_DATABASE)) {
-    if (normalizedName.includes(key)) {
-      baseNutrition = nutrition;
-      break;
-    }
-  }
-  
-  // Convert portion to grams
-  let gramsMultiplier = 1;
-  
-  switch (unit) {
-    case 'g':
-    case 'gramas':
-      gramsMultiplier = quantity / 100; // Database is per 100g
-      break;
-    case 'unidade':
-    case 'unidades':
-      // Estimate weight based on food type
-      if (normalizedName.includes('ovo')) gramsMultiplier = (quantity * 50) / 100;
-      else if (normalizedName.includes('banana')) gramsMultiplier = (quantity * 120) / 100;
-      else if (normalizedName.includes('maçã')) gramsMultiplier = (quantity * 150) / 100;
-      else if (normalizedName.includes('pão')) gramsMultiplier = (quantity * 50) / 100;
-      else gramsMultiplier = (quantity * 100) / 100;
-      break;
-    case 'colher':
-    case 'colheres':
-      gramsMultiplier = (quantity * 15) / 100; // 15g per tablespoon
-      break;
-    case 'xícara':
-    case 'xícaras':
-      gramsMultiplier = (quantity * 200) / 100; // 200g per cup
-      break;
-    case 'copo':
-    case 'copos':
-      gramsMultiplier = (quantity * 240) / 100; // 240ml per glass
-      break;
-    case 'scoop':
-      gramsMultiplier = (quantity * 30) / 100; // 30g per scoop
-      break;
-    case 'punhado':
-      gramsMultiplier = (quantity * 30) / 100; // 30g per handful
-      break;
-    default:
-      gramsMultiplier = quantity / 100;
-  }
-  
-  // Calculate final nutrition values
-  return {
-    calories: Math.round(baseNutrition.calories * gramsMultiplier),
-    protein: Math.round(baseNutrition.protein * gramsMultiplier * 10) / 10,
-    carbs: Math.round(baseNutrition.carbs * gramsMultiplier * 10) / 10,
-    fat: Math.round(baseNutrition.fat * gramsMultiplier * 10) / 10,
-  };
-};
-
-// Calculate BMR using Mifflin-St Jeor Equation
-export const calculateBMR = (weight: number, height: number, age: number, gender: string): number => {
-  if (gender === 'masculino') {
-    return 10 * weight + 6.25 * height - 5 * age + 5;
+// Mifflin-St Jeor equation (most accurate for healthy adults)
+export const calculateBMR = (weight: number, height: number, age: number, sex: string): number => {
+  if (sex === 'masculino') {
+    return (10 * weight) + (6.25 * height) - (5 * age) + 5;
   } else {
-    return 10 * weight + 6.25 * height - 5 * age - 161;
+    return (10 * weight) + (6.25 * height) - (5 * age) - 161;
   }
 };
 
-// Calculate TDEE (Total Daily Energy Expenditure)
-export const calculateTDEE = (bmr: number, activityLevel: string): number => {
-  const multipliers: Record<string, number> = {
-    'sedentario': 1.2,
-    'leve': 1.375,
-    'moderado': 1.55,
-    'ativo': 1.725,
-    'muito-ativo': 1.9
-  };
-  
-  return bmr * (multipliers[activityLevel] || 1.55);
+// Cunningham equation for advanced athletes (uses lean body mass)
+export const calculateBMRCunningham = (leanBodyMass: number): number => {
+  return 500 + (22 * leanBodyMass);
 };
 
-// Adjust calories based on goal
+// Activity factors based on WHO/FAO/UNU recommendations
+export const calculateTDEE = (bmr: number, activityLevel: string): number => {
+  const activityFactors: { [key: string]: number } = {
+    'sedentario': 1.2,     // Little or no exercise
+    'leve': 1.375,         // Light exercise 1-3 days/week
+    'moderado': 1.55,      // Moderate exercise 3-5 days/week
+    'ativo': 1.725,        // Heavy exercise 6-7 days/week
+    'muito-ativo': 1.9     // Very heavy exercise, 2x/day
+  };
+  
+  return bmr * (activityFactors[activityLevel] || 1.55);
+};
+
+// Goal-based calorie adjustment
 export const adjustCaloriesForGoal = (tdee: number, goal: string): number => {
   switch (goal) {
     case 'perder-peso':
-      return tdee * 0.85; // 15% deficit
+      return tdee * 0.8; // 20% deficit for fat loss
     case 'ganhar-massa':
-    case 'ganhar-musculos':
     case 'ganhar-peso':
-      return tdee * 1.15; // 15% surplus
+      return tdee * 1.15; // 15% surplus for muscle gain
     case 'manter-peso':
     default:
       return tdee;
   }
+};
+
+// Scientific macronutrient distribution based on goal and biotipo
+export const calculateMacros = (
+  totalCalories: number, 
+  weight: number, 
+  goal: string, 
+  biotipo: string,
+  trainingExperience: string
+): { protein: number; carbs: number; fat: number; proteinG: number; carbsG: number; fatG: number } => {
+  
+  let proteinGPerKg: number;
+  let carbsGPerKg: number;
+  let fatGPerKg: number;
+
+  // Goal-based macronutrient distribution
+  if (goal === 'ganhar-massa' || goal === 'ganhar-peso') {
+    // Volume phase - Brad Schoenfeld recommendations
+    proteinGPerKg = trainingExperience === 'avancado' ? 2.2 : 2.0;
+    carbsGPerKg = biotipo === 'Ectomorfo' ? 6 : biotipo === 'Mesomorfo' ? 5 : 4;
+    fatGPerKg = 1.0;
+  } else if (goal === 'perder-peso') {
+    // Definition phase - Higher protein to preserve muscle
+    proteinGPerKg = trainingExperience === 'avancado' ? 2.5 : 2.2;
+    carbsGPerKg = biotipo === 'Endomorfo' ? 3 : 4;
+    fatGPerKg = 0.8;
+  } else {
+    // Maintenance
+    proteinGPerKg = 2.0;
+    carbsGPerKg = 4.5;
+    fatGPerKg = 1.0;
+  }
+
+  const proteinG = proteinGPerKg * weight;
+  const carbsG = carbsGPerKg * weight;
+  const fatG = fatGPerKg * weight;
+
+  // Calculate calories from macros
+  const proteinCal = proteinG * 4;
+  const carbsCal = carbsG * 4;
+  const fatCal = fatG * 9;
+  const totalMacroCal = proteinCal + carbsCal + fatCal;
+
+  // Adjust proportionally to match total calories
+  const adjustment = totalCalories / totalMacroCal;
+
+  return {
+    protein: Math.round((proteinCal / totalCalories) * 100),
+    carbs: Math.round((carbsCal / totalCalories) * 100),
+    fat: Math.round((fatCal / totalCalories) * 100),
+    proteinG: Math.round(proteinG * adjustment),
+    carbsG: Math.round(carbsG * adjustment),
+    fatG: Math.round(fatG * adjustment)
+  };
+};
+
+// Meal distribution based on scientific recommendations
+export const distributeMeals = (totalCalories: number, proteinG: number): any => {
+  const mealsCount = totalCalories > 2500 ? 6 : totalCalories > 2000 ? 5 : 4;
+  const caloriesPerMeal = Math.round(totalCalories / mealsCount);
+  const proteinPerMeal = Math.max(30, Math.round(proteinG / mealsCount)); // Minimum 30g per meal for optimal protein synthesis
+
+  return {
+    mealsCount,
+    caloriesPerMeal,
+    proteinPerMeal: Math.min(proteinPerMeal, 50) // Maximum 50g per meal for optimal absorption
+  };
 };
