@@ -13,7 +13,7 @@ import { AnalysisActions } from "@/components/analysis/AnalysisActions";
 import { LoadingAnalysis } from "@/components/analysis/LoadingAnalysis";
 import { PhotosGallery } from "@/components/analysis/PhotosGallery";
 import { ProfileSummary } from "@/components/analysis/ProfileSummary";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera } from "lucide-react";
 
 const AnalysisPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,12 +44,10 @@ const AnalysisPage = () => {
   };
 
   const handleShowProjection = () => {
-    // Handle projection logic
     console.log("Show projection clicked");
   };
 
   const handleShowGoals = () => {
-    // Handle goals logic
     console.log("Show goals clicked");
   };
 
@@ -86,6 +84,26 @@ const AnalysisPage = () => {
     );
   }
 
+  // Mock analysis data
+  const mockAnalysisData = {
+    posture: {
+      headPosition: "Normal",
+      shoulderAlignment: "Ligeiramente desalinhado",
+      spinalCurvature: "Dentro do normal",
+      recommendations: [
+        "Exercícios de fortalecimento para trapézio",
+        "Alongamento de peitorais",
+        "Correção postural diária"
+      ]
+    },
+    fatPercentage: 15,
+    symmetry: {
+      left: 85,
+      right: 88,
+      balance: "Boa simetria geral"
+    }
+  };
+
   return (
     <div className="pb-16 pt-14">
       <AppHeader />
@@ -111,7 +129,11 @@ const AnalysisPage = () => {
           </TabsList>
           
           <TabsContent value="body" className="space-y-6">
-            <BodyAnalysis />
+            <BodyAnalysis 
+              posture={mockAnalysisData.posture}
+              fatPercentage={mockAnalysisData.fatPercentage}
+              symmetry={mockAnalysisData.symmetry}
+            />
           </TabsContent>
           
           <TabsContent value="proportions" className="space-y-6">
@@ -119,7 +141,13 @@ const AnalysisPage = () => {
           </TabsContent>
           
           <TabsContent value="posture" className="space-y-6">
-            <PosturalAnalysis />
+            <PosturalAnalysis 
+              frontPhotoUrl={photos[0] || null}
+              backPhotoUrl={photos[1] || null}
+              leftSidePhotoUrl={photos[2] || null}
+              rightSidePhotoUrl={photos[3] || null}
+              analysisData={mockAnalysisData}
+            />
           </TabsContent>
           
           <TabsContent value="photos" className="space-y-6">
