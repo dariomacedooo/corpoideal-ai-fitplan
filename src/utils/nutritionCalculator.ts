@@ -61,6 +61,67 @@ export function calculateCalorieGoal(tdee: number, goal: Goal): number {
   }
 }
 
+// Função que estava sendo importada mas não existia
+export function adjustCaloriesForGoal(tdee: number, goal: string): number {
+  switch (goal) {
+    case 'perder-peso':
+      return tdee - 500;
+    case 'ganhar-massa':
+      return tdee + 300;
+    case 'ganhar-peso':
+      return tdee + 500;
+    case 'manter':
+    case 'manter-peso':
+    default:
+      return tdee;
+  }
+}
+
+// Função que estava sendo importada mas não existia
+export function calculateMacros(
+  calories: number, 
+  weight: number, 
+  goal: string, 
+  biotipo: string,
+  trainingExperience: string = 'iniciante'
+) {
+  let proteinGrams: number;
+  let carbsGrams: number;
+  let fatGrams: number;
+  
+  if (goal === 'ganhar-massa') {
+    proteinGrams = weight * 2.2;
+    fatGrams = weight * 1.0;
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = fatGrams * 9;
+    const carbsCalories = calories - proteinCalories - fatCalories;
+    carbsGrams = carbsCalories / 4;
+  } else if (goal === 'perder-peso') {
+    proteinGrams = weight * 2.5;
+    fatGrams = weight * 0.8;
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = fatGrams * 9;
+    const carbsCalories = calories - proteinCalories - fatCalories;
+    carbsGrams = Math.max(carbsCalories / 4, weight * 2);
+  } else {
+    proteinGrams = weight * 2.0;
+    fatGrams = weight * 1.0;
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = fatGrams * 9;
+    const carbsCalories = calories - proteinCalories - fatCalories;
+    carbsGrams = carbsCalories / 4;
+  }
+  
+  return {
+    proteinG: Math.round(proteinGrams),
+    carbsG: Math.round(carbsGrams),
+    fatG: Math.round(fatGrams),
+    protein: Math.round((proteinGrams * 4 / calories) * 100),
+    carbs: Math.round((carbsGrams * 4 / calories) * 100),
+    fat: Math.round((fatGrams * 9 / calories) * 100)
+  };
+}
+
 export function calculateMacroTargets(userData: UserData): MacroTargets {
   const bmr = calculateBMR(userData.weight, userData.height, userData.age, userData.gender);
   const tdee = calculateTDEE(bmr, userData.activityLevel);
