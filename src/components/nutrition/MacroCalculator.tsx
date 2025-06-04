@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,9 @@ export function MacroCalculator() {
   const [gender, setGender] = useState<string>("masculino");
   const [activityLevel, setActivityLevel] = useState<string>("moderado");
   const [goal, setGoal] = useState<string>("manter");
+  const [protein, setProtein] = useState<number>(30);
+  const [carbs, setCarbs] = useState<number>(40);
+  const [fat, setFat] = useState<number>(30);
   const [calculatedData, setCalculatedData] = useState<any>(null);
   
   // Load user profile data

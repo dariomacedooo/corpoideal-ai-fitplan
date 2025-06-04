@@ -39,6 +39,20 @@ const AnalysisPage = () => {
     }, 3000);
   }, []);
 
+  const handleBackButtonClick = () => {
+    window.history.back();
+  };
+
+  const handleShowProjection = () => {
+    // Handle projection logic
+    console.log("Show projection clicked");
+  };
+
+  const handleShowGoals = () => {
+    // Handle goals logic
+    console.log("Show goals clicked");
+  };
+
   if (isLoading) {
     return <LoadingAnalysis />;
   }
@@ -48,7 +62,7 @@ const AnalysisPage = () => {
       <div className="pb-16 pt-14">
         <AppHeader />
         <div className="px-4 py-6">
-          <BackButton />
+          <BackButton onClick={handleBackButtonClick} />
           <Card className="mt-6">
             <CardContent className="p-6 text-center">
               <Camera className="h-12 w-12 mx-auto text-gray-400 mb-4" />
@@ -77,7 +91,7 @@ const AnalysisPage = () => {
       <AppHeader />
       
       <div className="px-4 py-6">
-        <BackButton />
+        <BackButton onClick={handleBackButtonClick} />
         
         <h1 className="text-2xl font-bold text-corpoideal-purple mb-4 mt-4">
           Análise Científica Completa
@@ -97,7 +111,7 @@ const AnalysisPage = () => {
           </TabsList>
           
           <TabsContent value="body" className="space-y-6">
-            <BodyAnalysis photos={photos} userProfile={userProfile} />
+            <BodyAnalysis />
           </TabsContent>
           
           <TabsContent value="proportions" className="space-y-6">
@@ -105,15 +119,23 @@ const AnalysisPage = () => {
           </TabsContent>
           
           <TabsContent value="posture" className="space-y-6">
-            <PosturalAnalysis photos={photos} />
+            <PosturalAnalysis />
           </TabsContent>
           
           <TabsContent value="photos" className="space-y-6">
-            <PhotosGallery photos={photos} />
+            <PhotosGallery 
+              frontPhotoUrl={photos[0] || null}
+              backPhotoUrl={photos[1] || null}
+              leftSidePhotoUrl={photos[2] || null}
+              rightSidePhotoUrl={photos[3] || null}
+            />
           </TabsContent>
         </Tabs>
         
-        <AnalysisActions />
+        <AnalysisActions 
+          onShowProjection={handleShowProjection}
+          onShowGoals={handleShowGoals}
+        />
       </div>
       
       <BottomNav />

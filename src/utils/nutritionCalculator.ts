@@ -108,3 +108,21 @@ export const distributeMeals = (totalCalories: number, proteinG: number): any =>
     proteinPerMeal: Math.min(proteinPerMeal, 50) // Maximum 50g per meal for optimal absorption
   };
 };
+
+// Estimate nutrition values for WeeklyDietPlan
+export const estimateNutritionValues = (
+  calories: number,
+  protein: number,
+  carbs: number,
+  fat: number
+) => {
+  return {
+    calories,
+    protein,
+    carbs,
+    fat,
+    fiber: Math.round(calories * 0.014), // ~14g fiber per 1000 kcal
+    sodium: Math.round(calories * 1.2), // ~1200mg sodium per 1000 kcal
+    sugar: Math.round(carbs * 0.3) // ~30% of carbs as sugar
+  };
+};

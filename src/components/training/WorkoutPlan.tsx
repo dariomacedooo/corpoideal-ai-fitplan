@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -85,8 +86,6 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
     return workoutDays;
   };
 
-  const finalWorkoutDays = getAdvancedWorkouts();
-
   const getDifficultyScore = () => {
     switch (experience) {
       case 'iniciante': return 30;
@@ -94,14 +93,6 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
       case 'avancado': return 95;
       default: return 50;
     }
-  };
-
-  const getIntensityColor = () => {
-    const score = getDifficultyScore();
-    if (score >= 90) return 'bg-red-500';
-    if (score >= 70) return 'bg-orange-500';
-    if (score >= 50) return 'bg-yellow-500';
-    return 'bg-green-500';
   };
 
   const getScientificMethodology = () => {
