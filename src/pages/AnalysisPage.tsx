@@ -86,6 +86,15 @@ const AnalysisPage = () => {
 
   // Mock analysis data
   const mockAnalysisData = {
+    shoulders: "Ligeiramente desalinhado à direita",
+    hips: "Pelve com leve anteriorização",
+    knees: "Valgo dinâmico bilateral leve",
+    spine: "Lordose lombar acentuada",
+    feet: "Pronação leve do pé esquerdo",
+    symmetry: "Boa simetria geral com pequenos desvios"
+  };
+
+  const mockBodyAnalysis = {
     posture: {
       headPosition: "Normal",
       shoulderAlignment: "Ligeiramente desalinhado",
@@ -130,9 +139,9 @@ const AnalysisPage = () => {
           
           <TabsContent value="body" className="space-y-6">
             <BodyAnalysis 
-              posture={mockAnalysisData.posture}
-              fatPercentage={mockAnalysisData.fatPercentage}
-              symmetry={mockAnalysisData.symmetry}
+              posture={mockBodyAnalysis.posture}
+              fatPercentage={mockBodyAnalysis.fatPercentage}
+              symmetry={mockBodyAnalysis.symmetry}
             />
           </TabsContent>
           

@@ -1,128 +1,170 @@
 
-// Enhanced nutrition calculator with WHO/FAO/UNU and scientific formulas
+import { Goal } from "@/types/Goal";
 
-// Mifflin-St Jeor equation (most accurate for healthy adults)
-export const calculateBMR = (weight: number, height: number, age: number, sex: string): number => {
-  if (sex === 'masculino') {
+interface UserData {
+  weight: number;
+  height: number;
+  age: number;
+  gender: string;
+  activityLevel: string;
+  goal: Goal;
+}
+
+interface MacroTargets {
+  protein: number;
+  carbs: number;
+  fat: number;
+  calories: number;
+}
+
+interface MacroCalculationParams {
+  calories: number;
+  proteinPercentage: number;
+  carbsPercentage: number;
+  fatPercentage: number;
+}
+
+export function calculateBMR(weight: number, height: number, age: number, gender: string): number {
+  // Mifflin-St Jeor formula (mais precisa para adultos saudáveis)
+  if (gender === 'masculino') {
     return (10 * weight) + (6.25 * height) - (5 * age) + 5;
   } else {
     return (10 * weight) + (6.25 * height) - (5 * age) - 161;
   }
-};
+}
 
-// Cunningham equation for advanced athletes (uses lean body mass)
-export const calculateBMRCunningham = (leanBodyMass: number): number => {
-  return 500 + (22 * leanBodyMass);
-};
-
-// Activity factors based on WHO/FAO/UNU recommendations
-export const calculateTDEE = (bmr: number, activityLevel: string): number => {
-  const activityFactors: { [key: string]: number } = {
-    'sedentario': 1.2,     // Little or no exercise
-    'leve': 1.375,         // Light exercise 1-3 days/week
-    'moderado': 1.55,      // Moderate exercise 3-5 days/week
-    'ativo': 1.725,        // Heavy exercise 6-7 days/week
-    'muito-ativo': 1.9     // Very heavy exercise, 2x/day
+export function calculateTDEE(bmr: number, activityLevel: string): number {
+  // Fatores de atividade baseados em evidências científicas
+  const activityFactors = {
+    'sedentario': 1.2,      // Pouco ou nenhum exercício
+    'leve': 1.375,          // Exercício leve 1-3 dias/semana
+    'moderado': 1.55,       // Exercício moderado 3-5 dias/semana
+    'intenso': 1.725,       // Exercício intenso 6-7 dias/semana
+    'muito-intenso': 1.9    // Exercício muito intenso, trabalho físico
   };
   
-  return bmr * (activityFactors[activityLevel] || 1.55);
-};
+  return bmr * (activityFactors[activityLevel as keyof typeof activityFactors] || 1.55);
+}
 
-// Goal-based calorie adjustment
-export const adjustCaloriesForGoal = (tdee: number, goal: string): number => {
+export function calculateCalorieGoal(tdee: number, goal: Goal): number {
+  // Ajustes calóricos baseados no objetivo
   switch (goal) {
     case 'perder-peso':
-      return tdee * 0.8; // 20% deficit for fat loss
+      return tdee - 500; // Déficit de 500 kcal para perda de 0.5kg/semana
     case 'ganhar-massa':
+      return tdee + 300; // Superávit moderado para ganho de massa magra
     case 'ganhar-peso':
-      return tdee * 1.15; // 15% surplus for muscle gain
+      return tdee + 500; // Superávit maior para ganho de peso
     case 'manter-peso':
     default:
-      return tdee;
+      return tdee; // Manutenção
   }
-};
+}
 
-// Scientific macronutrient distribution based on goal and biotipo
-export const calculateMacros = (
-  totalCalories: number, 
-  weight: number, 
-  goal: string, 
-  biotipo: string,
-  trainingExperience: string
-): { protein: number; carbs: number; fat: number; proteinG: number; carbsG: number; fatG: number } => {
+export function calculateMacroTargets(userData: UserData): MacroTargets {
+  const bmr = calculateBMR(userData.weight, userData.height, userData.age, userData.gender);
+  const tdee = calculateTDEE(bmr, userData.activityLevel);
+  const calories = calculateCalorieGoal(tdee, userData.goal);
   
-  let proteinGPerKg: number;
-  let carbsGPerKg: number;
-  let fatGPerKg: number;
-
-  // Goal-based macronutrient distribution
-  if (goal === 'ganhar-massa' || goal === 'ganhar-peso') {
-    // Volume phase - Brad Schoenfeld recommendations
-    proteinGPerKg = trainingExperience === 'avancado' ? 2.2 : 2.0;
-    carbsGPerKg = biotipo === 'Ectomorfo' ? 6 : biotipo === 'Mesomorfo' ? 5 : 4;
-    fatGPerKg = 1.0;
-  } else if (goal === 'perder-peso') {
-    // Definition phase - Higher protein to preserve muscle
-    proteinGPerKg = trainingExperience === 'avancado' ? 2.5 : 2.2;
-    carbsGPerKg = biotipo === 'Endomorfo' ? 3 : 4;
-    fatGPerKg = 0.8;
+  // Macros baseados no objetivo e evidências científicas
+  let proteinGrams: number;
+  let carbsGrams: number;
+  let fatGrams: number;
+  
+  if (userData.goal === 'ganhar-massa') {
+    // Volume: proteína alta para síntese proteica
+    proteinGrams = userData.weight * 2.2; // 2.2g/kg
+    fatGrams = userData.weight * 1.0; // 1g/kg
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = fatGrams * 9;
+    const carbsCalories = calories - proteinCalories - fatCalories;
+    carbsGrams = carbsCalories / 4;
+  } else if (userData.goal === 'perder-peso') {
+    // Definição: proteína ainda mais alta para preservar massa magra
+    proteinGrams = userData.weight * 2.5; // 2.5g/kg
+    fatGrams = userData.weight * 0.8; // 0.8g/kg
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = fatGrams * 9;
+    const carbsCalories = calories - proteinCalories - fatCalories;
+    carbsGrams = Math.max(carbsCalories / 4, userData.weight * 2); // Mínimo 2g/kg
   } else {
-    // Maintenance
-    proteinGPerKg = 2.0;
-    carbsGPerKg = 4.5;
-    fatGPerKg = 1.0;
+    // Manutenção ou ganho de peso: distribuição equilibrada
+    proteinGrams = userData.weight * 2.0; // 2g/kg
+    fatGrams = userData.weight * 1.0; // 1g/kg
+    const proteinCalories = proteinGrams * 4;
+    const fatCalories = fatGrams * 9;
+    const carbsCalories = calories - proteinCalories - fatCalories;
+    carbsGrams = carbsCalories / 4;
   }
-
-  const proteinG = proteinGPerKg * weight;
-  const carbsG = carbsGPerKg * weight;
-  const fatG = fatGPerKg * weight;
-
-  // Calculate calories from macros
-  const proteinCal = proteinG * 4;
-  const carbsCal = carbsG * 4;
-  const fatCal = fatG * 9;
-  const totalMacroCal = proteinCal + carbsCal + fatCal;
-
-  // Adjust proportionally to match total calories
-  const adjustment = totalCalories / totalMacroCal;
-
+  
   return {
-    protein: Math.round((proteinCal / totalCalories) * 100),
-    carbs: Math.round((carbsCal / totalCalories) * 100),
-    fat: Math.round((fatCal / totalCalories) * 100),
-    proteinG: Math.round(proteinG * adjustment),
-    carbsG: Math.round(carbsG * adjustment),
-    fatG: Math.round(fatG * adjustment)
+    protein: Math.round(proteinGrams),
+    carbs: Math.round(carbsGrams),
+    fat: Math.round(fatGrams),
+    calories: Math.round(calories)
   };
-};
+}
 
-// Meal distribution based on scientific recommendations
-export const distributeMeals = (totalCalories: number, proteinG: number): any => {
-  const mealsCount = totalCalories > 2500 ? 6 : totalCalories > 2000 ? 5 : 4;
-  const caloriesPerMeal = Math.round(totalCalories / mealsCount);
-  const proteinPerMeal = Math.max(30, Math.round(proteinG / mealsCount)); // Minimum 30g per meal for optimal protein synthesis
-
+export function calculateMacrosFromPercentages(params: MacroCalculationParams): MacroTargets {
+  const { calories, proteinPercentage, carbsPercentage, fatPercentage } = params;
+  
+  // Converter percentuais em gramas
+  const proteinCalories = (calories * proteinPercentage) / 100;
+  const carbsCalories = (calories * carbsPercentage) / 100;
+  const fatCalories = (calories * fatPercentage) / 100;
+  
+  const protein = Math.round(proteinCalories / 4); // 4 kcal/g
+  const carbs = Math.round(carbsCalories / 4); // 4 kcal/g
+  const fat = Math.round(fatCalories / 9); // 9 kcal/g
+  
   return {
-    mealsCount,
-    caloriesPerMeal,
-    proteinPerMeal: Math.min(proteinPerMeal, 50) // Maximum 50g per meal for optimal absorption
-  };
-};
-
-// Estimate nutrition values for WeeklyDietPlan
-export const estimateNutritionValues = (
-  calories: number,
-  protein: number,
-  carbs: number,
-  fat: number
-) => {
-  return {
-    calories,
     protein,
     carbs,
     fat,
-    fiber: Math.round(calories * 0.014), // ~14g fiber per 1000 kcal
-    sodium: Math.round(calories * 1.2), // ~1200mg sodium per 1000 kcal
-    sugar: Math.round(carbs * 0.3) // ~30% of carbs as sugar
+    calories: Math.round(calories)
   };
-};
+}
+
+// Função auxiliar para estimar valores nutricionais (compatibilidade com código existente)
+export function estimateNutritionValues(calories: number, protein: number, carbs: number, fat: number) {
+  return {
+    calories: Math.round(calories),
+    protein: Math.round(protein),
+    carbs: Math.round(carbs),
+    fat: Math.round(fat)
+  };
+}
+
+// Função para calcular necessidade de água baseada no peso e atividade
+export function calculateWaterIntake(weight: number, activityLevel: string = 'moderate'): number {
+  // Base: 35ml/kg de peso corporal
+  let baseWater = weight * 35;
+  
+  // Ajustes para atividade física
+  const activityMultipliers = {
+    'sedentary': 1.0,
+    'light': 1.1,
+    'moderate': 1.2,
+    'intense': 1.4,
+    'very-intense': 1.6
+  };
+  
+  const multiplier = activityMultipliers[activityLevel as keyof typeof activityMultipliers] || 1.2;
+  
+  // Ajuste para clima quente do Ceará (+500ml)
+  const cearaAdjustment = 500;
+  
+  return Math.round(baseWater * multiplier + cearaAdjustment);
+}
+
+// Função para distribuir refeições ao longo do dia
+export function distributeMeals(totalCalories: number, totalProtein: number, mealsCount: number = 5) {
+  const caloriesPerMeal = Math.round(totalCalories / mealsCount);
+  const proteinPerMeal = Math.round(totalProtein / mealsCount);
+  
+  return {
+    caloriesPerMeal,
+    proteinPerMeal,
+    mealsCount
+  };
+}

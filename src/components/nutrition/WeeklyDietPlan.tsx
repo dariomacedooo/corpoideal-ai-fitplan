@@ -84,6 +84,7 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
 
       {/* Weekly Plan */}
       {dietData.weekPlan.map((day, index) => {
+        // Use estimateNutritionValues with 4 parameters instead of nutritionValues calculation
         const nutritionValues = estimateNutritionValues(
           day.totalCalories,
           day.totalProtein,
@@ -108,6 +109,7 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
             <CardContent className="p-4">
               <div className="space-y-4">
                 {day.meals.map((meal, mealIndex) => {
+                  // Use estimateNutritionValues with 4 parameters for each meal
                   const mealNutrition = estimateNutritionValues(
                     meal.calories,
                     meal.protein,
