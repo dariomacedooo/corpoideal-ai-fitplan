@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Orbitron:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,64 +8,34 @@
 @layer base {
   :root {
     --background: 10 10% 4%;
-    --foreground: 120 100% 85%;
+    --foreground: 0 0% 100%;
 
-    --card: 10 10% 8%;
-    --card-foreground: 120 100% 85%;
+    --card: 0 0% 16%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 10 10% 8%;
-    --popover-foreground: 120 100% 85%;
+    --popover: 0 0% 16%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 120 100% 50%;
-    --primary-foreground: 10 10% 4%;
+    --primary: 74 100% 63%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 10 10% 12%;
-    --secondary-foreground: 120 100% 85%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 10 10% 15%;
-    --muted-foreground: 120 20% 65%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 63%;
 
-    --accent: 120 100% 60%;
-    --accent-foreground: 10 10% 4%;
+    --accent: 74 100% 63%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 10 10% 20%;
-    --input: 10 10% 20%;
-    --ring: 120 100% 50%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 74 100% 63%;
 
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 10 10% 4%;
-    --foreground: 120 100% 85%;
-
-    --card: 10 10% 8%;
-    --card-foreground: 120 100% 85%;
-
-    --popover: 10 10% 8%;
-    --popover-foreground: 120 100% 85%;
-
-    --primary: 120 100% 50%;
-    --primary-foreground: 10 10% 4%;
-
-    --secondary: 10 10% 12%;
-    --secondary-foreground: 120 100% 85%;
-
-    --muted: 10 10% 15%;
-    --muted-foreground: 120 20% 65%;
-
-    --accent: 120 100% 60%;
-    --accent-foreground: 10 10% 4%;
-
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 10 10% 20%;
-    --input: 10 10% 20%;
-    --ring: 120 100% 50%;
+    --radius: 1rem;
   }
 }
 
@@ -75,8 +45,8 @@
   }
 
   body {
-    @apply bg-velocity-dark text-velocity-lime font-sans;
-    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #0A0A0A 100%);
+    @apply bg-fitness-black text-fitness-white font-sans;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
     min-height: 100vh;
   }
 
@@ -86,91 +56,108 @@
 }
 
 @layer components {
+  /* Navegação inferior */
   .bottom-nav-item {
-    @apply flex flex-col items-center justify-center text-xs transition-all duration-300;
+    @apply flex flex-col items-center justify-center text-xs transition-all duration-300 hover:scale-105;
   }
   
   .bottom-nav-icon {
     @apply h-5 w-5 mb-1 transition-all duration-300;
   }
 
-  .upload-area {
-    @apply border-2 border-dashed border-velocity-lime/40 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-velocity-electric hover:bg-velocity-shadow/50 transition-all duration-300;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(17, 17, 17, 0.9));
+  /* Componentes de fitness */
+  .fitness-card {
+    @apply bg-fitness-card-bg/90 backdrop-blur-sm rounded-2xl p-6 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
   }
   
-  .photo-preview {
-    @apply w-full h-full object-cover rounded-xl border-2 border-velocity-lime/20;
+  .fitness-button-primary {
+    @apply bg-fitness-lime text-black font-bold py-4 px-8 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg;
+    box-shadow: 0 0 20px rgba(195, 255, 0, 0.3);
+  }
+
+  .fitness-button-primary:hover {
+    box-shadow: 0 0 30px rgba(195, 255, 0, 0.5);
+  }
+
+  .fitness-button-secondary {
+    @apply border-2 border-white text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 hover:bg-white hover:text-black;
   }
   
-  .section-title {
-    @apply text-2xl font-bold text-velocity-lime font-display;
-    text-shadow: 0 0 10px rgba(50, 255, 50, 0.5);
+  .fitness-metric {
+    @apply text-4xl font-black font-mono text-fitness-lime;
   }
-  
+
+  .fitness-metric-small {
+    @apply text-2xl font-bold font-mono text-fitness-lime;
+  }
+
+  .fitness-section-title {
+    @apply text-2xl font-bold text-white uppercase tracking-wide mb-6;
+  }
+
+  .fitness-progress-bar {
+    @apply w-full bg-gray-800 rounded-full h-3 overflow-hidden;
+  }
+
+  .fitness-progress-fill {
+    @apply h-full bg-gradient-to-r from-fitness-lime to-fitness-coral rounded-full transition-all duration-800 ease-out;
+  }
+
+  /* Cards específicos */
   .workout-card {
-    @apply bg-velocity-charcoal rounded-xl shadow-2xl p-6 border border-velocity-lime/20 hover:border-velocity-electric transition-all duration-300;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(17, 17, 17, 0.8));
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(50, 255, 50, 0.1);
+    @apply fitness-card hover:border-fitness-lime/30;
   }
   
   .nutrition-card {
-    @apply bg-velocity-charcoal rounded-xl shadow-2xl p-6 border border-velocity-lime/20 hover:border-velocity-electric transition-all duration-300;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(17, 17, 17, 0.8));
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(50, 255, 50, 0.1);
+    @apply fitness-card hover:border-fitness-coral/30;
   }
 
-  .velocity-button {
-    @apply bg-gradient-to-r from-velocity-lime to-velocity-electric text-velocity-dark font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg;
-    box-shadow: 0 0 20px rgba(50, 255, 50, 0.3);
+  .progress-card {
+    @apply fitness-card;
   }
 
-  .velocity-button:hover {
-    box-shadow: 0 0 30px rgba(50, 255, 50, 0.5);
-    transform: translateY(-2px);
+  /* Inputs customizados */
+  .fitness-input {
+    @apply bg-fitness-card-bg/50 border border-white/20 text-white placeholder-fitness-text-secondary rounded-xl px-4 py-3 focus:border-fitness-lime focus:ring-2 focus:ring-fitness-lime/20 transition-all duration-300;
   }
 
-  .velocity-card {
-    @apply bg-velocity-charcoal rounded-xl p-6 border border-velocity-lime/20 hover:border-velocity-electric transition-all duration-300;
-    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(17, 17, 17, 0.8));
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(50, 255, 50, 0.1);
+  /* Efeitos visuais */
+  .glass-effect {
+    @apply backdrop-blur-sm bg-white/5 border border-white/10;
   }
 
-  .neon-text {
-    @apply text-velocity-lime font-display font-bold;
-    text-shadow: 0 0 10px rgba(50, 255, 50, 0.8), 0 0 20px rgba(50, 255, 50, 0.4);
+  .glow-lime {
+    box-shadow: 0 0 20px rgba(195, 255, 0, 0.3);
   }
 
-  .glow-border {
-    @apply border border-velocity-lime/30;
-    box-shadow: 0 0 15px rgba(50, 255, 50, 0.2), inset 0 0 15px rgba(50, 255, 50, 0.1);
+  .glow-coral {
+    box-shadow: 0 0 20px rgba(255, 107, 71, 0.3);
   }
 
-  .velocity-input {
-    @apply bg-velocity-shadow border border-velocity-lime/30 text-velocity-lime placeholder-velocity-lime/50 rounded-lg px-4 py-3 focus:border-velocity-electric focus:ring-2 focus:ring-velocity-lime/20 transition-all duration-300;
+  /* Overlays */
+  .fitness-overlay {
+    @apply absolute inset-0 bg-black/60 backdrop-blur-sm;
+  }
+
+  .fitness-overlay-light {
+    @apply absolute inset-0 bg-black/40;
   }
 }
 
 /* Animações personalizadas */
-@keyframes matrix-rain {
+@keyframes shimmer {
   0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
+    background-position: -1000px 0;
   }
   100% {
-    transform: translateY(100vh);
-    opacity: 0;
+    background-position: 1000px 0;
   }
 }
 
-.matrix-rain {
-  animation: matrix-rain 3s linear infinite;
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(195, 255, 0, 0.2), transparent);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
 }
 
 /* Scrollbar personalizada */
@@ -179,14 +166,19 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #1A1A1A;
+  background: #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #32FF32, #00FF41);
+  background: linear-gradient(180deg, #c3ff00, #ff6b47);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #00FF41, #39FF14);
+  background: linear-gradient(180deg, #b8ff00, #ff8a73);
+}
+
+/* Estados de loading */
+.skeleton {
+  @apply bg-fitness-card-bg/50 animate-pulse rounded-xl;
 }

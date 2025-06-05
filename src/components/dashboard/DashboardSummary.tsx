@@ -1,14 +1,15 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Calendar, Dumbbell, Apple, TrendingUp, Award, Zap, Target, Clock, Flame } from "lucide-react";
+import { Calendar, Dumbbell, Apple, TrendingUp, Award, Zap, Target, Clock, Flame, ChevronRight } from "lucide-react";
 
 interface DashboardSummaryProps {
   userName?: string;
 }
 
 export function DashboardSummary({ userName }: DashboardSummaryProps) {
-  // Mock data for the progress chart
+  // Mock data para o gráfico de progresso
   const progressData = [
     { name: 'Seg', valor: 65 },
     { name: 'Ter', valor: 70 },
@@ -19,88 +20,92 @@ export function DashboardSummary({ userName }: DashboardSummaryProps) {
     { name: 'Dom', valor: 80 }
   ];
 
-  // Mock data for achievement stats
+  // Mock data para estatísticas de conquistas
   const achievements = [
-    { name: "Treinos completados", value: "8/20", progress: 40, icon: Dumbbell },
-    { name: "Dias seguidos", value: "5", progress: 50, icon: Flame },
-    { name: "Refeições registradas", value: "21/30", progress: 70, icon: Apple },
+    { name: "Treinos completados", value: "8/20", progress: 40, icon: Dumbbell, color: "lime" },
+    { name: "Dias seguidos", value: "5", progress: 50, icon: Flame, color: "coral" },
+    { name: "Refeições registradas", value: "21/30", progress: 70, icon: Apple, color: "lime" },
   ];
 
-  // Mock next workout and meal
-  const nextWorkout = { name: "Treino de Pernas", time: "Hoje, 19:00" };
-  const nextMeal = { name: "Jantar", time: "Hoje, 20:30" };
+  // Mock próximo treino e refeição
+  const nextWorkout = { name: "Treino de Pernas", time: "Hoje, 19:00", progress: 75 };
+  const nextMeal = { name: "Jantar", time: "Hoje, 20:30", progress: 60 };
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in pb-8">
       {/* Hero Section */}
       <div className="relative overflow-hidden rounded-2xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-velocity-lime/20 via-velocity-electric/10 to-velocity-neon/20"></div>
-        <div className="absolute inset-0 bg-velocity-charcoal/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-fitness-lime/20 via-fitness-coral/10 to-transparent"></div>
+        <div className="fitness-overlay"></div>
         <div className="relative p-8 text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <Zap className="h-8 w-8 text-velocity-lime animate-glow-pulse" />
-            <h1 className="text-4xl font-display font-black text-velocity-lime neon-text">
-              Bem-vindo, {userName}!
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <Zap className="h-10 w-10 text-fitness-lime animate-pulse-lime" />
+            <h1 className="text-4xl md:text-5xl font-black text-white">
+              BEM-VINDO, <span className="text-fitness-lime">{userName?.toUpperCase()}</span>!
             </h1>
-            <Zap className="h-8 w-8 text-velocity-lime animate-glow-pulse" />
           </div>
-          <p className="text-velocity-lime/80 text-lg font-medium">
+          <p className="text-fitness-text-secondary text-lg font-medium mb-8">
             Sua jornada de transformação continua
           </p>
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="velocity-card text-center">
-              <Target className="h-6 w-6 text-velocity-electric mx-auto mb-2" />
-              <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Meta</p>
-              <p className="text-velocity-lime font-bold">85% Completa</p>
+          
+          <div className="grid grid-cols-3 gap-4">
+            <div className="fitness-card text-center py-4">
+              <Target className="h-8 w-8 text-fitness-coral mx-auto mb-3" />
+              <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mb-1">META</p>
+              <p className="fitness-metric-small">85%</p>
+              <p className="text-xs text-fitness-text-secondary">Completa</p>
             </div>
-            <div className="velocity-card text-center">
-              <Clock className="h-6 w-6 text-velocity-electric mx-auto mb-2" />
-              <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Tempo</p>
-              <p className="text-velocity-lime font-bold">3 Semanas</p>
+            <div className="fitness-card text-center py-4">
+              <Clock className="h-8 w-8 text-fitness-coral mx-auto mb-3" />
+              <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mb-1">TEMPO</p>
+              <p className="fitness-metric-small">3</p>
+              <p className="text-xs text-fitness-text-secondary">Semanas</p>
             </div>
-            <div className="velocity-card text-center">
-              <Flame className="h-6 w-6 text-velocity-electric mx-auto mb-2" />
-              <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Streak</p>
-              <p className="text-velocity-lime font-bold">5 Dias</p>
+            <div className="fitness-card text-center py-4">
+              <Flame className="h-8 w-8 text-fitness-coral mx-auto mb-3" />
+              <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mb-1">STREAK</p>
+              <p className="fitness-metric-small">5</p>
+              <p className="text-xs text-fitness-text-secondary">Dias</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Progress Chart */}
-      <Card className="velocity-card">
+      {/* Gráfico de Evolução */}
+      <Card className="fitness-card border-white/10">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl text-velocity-lime flex items-center font-display">
-            <TrendingUp className="h-6 w-6 mr-3 text-velocity-electric" />
-            Evolução Semanal
+          <CardTitle className="fitness-section-title flex items-center">
+            <TrendingUp className="h-8 w-8 mr-3 text-fitness-coral" />
+            EVOLUÇÃO SEMANAL
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-48">
+          <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={progressData}>
                 <XAxis 
                   dataKey="name" 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#32FF32', fontSize: 12 }}
+                  tick={{ fill: '#a0a0a0', fontSize: 14, fontWeight: 500 }}
                 />
                 <YAxis hide />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: '#1A1A1A',
-                    border: '1px solid #32FF32',
-                    borderRadius: '8px',
-                    color: '#32FF32'
+                    backgroundColor: '#2a2a2a',
+                    border: '1px solid rgba(195, 255, 0, 0.3)',
+                    borderRadius: '12px',
+                    color: '#ffffff',
+                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
                   }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="valor" 
-                  stroke="#32FF32"
-                  strokeWidth={3}
-                  dot={{ r: 5, fill: '#32FF32', strokeWidth: 2, stroke: '#00FF41' }}
-                  activeDot={{ r: 8, fill: '#00FF41', strokeWidth: 2, stroke: '#32FF32' }}
+                  stroke="#c3ff00"
+                  strokeWidth={4}
+                  dot={{ r: 6, fill: '#c3ff00', strokeWidth: 2, stroke: '#ffffff' }}
+                  activeDot={{ r: 10, fill: '#c3ff00', strokeWidth: 3, stroke: '#ffffff' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -108,66 +113,93 @@ export function DashboardSummary({ userName }: DashboardSummaryProps) {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-2 gap-4">
-        <Card className="velocity-card hover:border-velocity-electric cursor-pointer transition-all duration-300">
+      {/* Ações Rápidas */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="workout-card hover:border-fitness-lime/30 cursor-pointer group">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg text-velocity-lime flex items-center font-display">
-              <Dumbbell className="h-5 w-5 mr-2 text-velocity-electric" />
-              Próximo Treino
+            <CardTitle className="text-xl text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Dumbbell className="h-6 w-6 mr-3 text-fitness-lime" />
+                PRÓXIMO TREINO
+              </div>
+              <ChevronRight className="h-5 w-5 text-fitness-text-secondary group-hover:text-fitness-lime transition-colors" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <h3 className="font-bold text-velocity-lime">{nextWorkout.name}</h3>
-            <p className="text-sm text-velocity-lime/60 mt-1">{nextWorkout.time}</p>
-            <div className="mt-3 w-full bg-velocity-shadow rounded-full h-2">
-              <div className="bg-gradient-to-r from-velocity-lime to-velocity-electric h-2 rounded-full" style={{ width: '75%' }}></div>
+            <h3 className="text-2xl font-bold text-white mb-2">{nextWorkout.name}</h3>
+            <p className="text-fitness-text-secondary mb-4">{nextWorkout.time}</p>
+            <div className="fitness-progress-bar">
+              <div 
+                className="fitness-progress-fill animate-progress-fill" 
+                style={{ width: `${nextWorkout.progress}%` }}
+              ></div>
             </div>
+            <p className="text-xs text-fitness-text-secondary mt-2">{nextWorkout.progress}% preparado</p>
           </CardContent>
         </Card>
 
-        <Card className="velocity-card hover:border-velocity-electric cursor-pointer transition-all duration-300">
+        <Card className="nutrition-card hover:border-fitness-coral/30 cursor-pointer group">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg text-velocity-lime flex items-center font-display">
-              <Apple className="h-5 w-5 mr-2 text-velocity-electric" />
-              Próxima Refeição
+            <CardTitle className="text-xl text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Apple className="h-6 w-6 mr-3 text-fitness-coral" />
+                PRÓXIMA REFEIÇÃO
+              </div>
+              <ChevronRight className="h-5 w-5 text-fitness-text-secondary group-hover:text-fitness-coral transition-colors" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <h3 className="font-bold text-velocity-lime">{nextMeal.name}</h3>
-            <p className="text-sm text-velocity-lime/60 mt-1">{nextMeal.time}</p>
-            <div className="mt-3 w-full bg-velocity-shadow rounded-full h-2">
-              <div className="bg-gradient-to-r from-velocity-lime to-velocity-electric h-2 rounded-full" style={{ width: '60%' }}></div>
+            <h3 className="text-2xl font-bold text-white mb-2">{nextMeal.name}</h3>
+            <p className="text-fitness-text-secondary mb-4">{nextMeal.time}</p>
+            <div className="fitness-progress-bar">
+              <div 
+                className="h-full bg-gradient-to-r from-fitness-coral to-fitness-lime rounded-full animate-progress-fill" 
+                style={{ width: `${nextMeal.progress}%` }}
+              ></div>
             </div>
+            <p className="text-xs text-fitness-text-secondary mt-2">{nextMeal.progress}% preparado</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Achievements */}
-      <Card className="velocity-card">
+      {/* Conquistas */}
+      <Card className="fitness-card border-white/10">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl text-velocity-lime flex items-center font-display">
-            <Award className="h-6 w-6 mr-3 text-velocity-electric" />
-            Conquistas do Mês
+          <CardTitle className="fitness-section-title flex items-center">
+            <Award className="h-8 w-8 mr-3 text-fitness-lime" />
+            CONQUISTAS DO MÊS
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {achievements.map((achievement, index) => {
               const Icon = achievement.icon;
+              const isLime = achievement.color === 'lime';
+              
               return (
                 <div key={index} className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
-                      <Icon className="h-5 w-5 text-velocity-electric" />
-                      <span className="text-sm font-medium text-velocity-lime">{achievement.name}</span>
+                    <div className="flex items-center space-x-4">
+                      <div className={`p-3 rounded-xl ${isLime ? 'bg-fitness-lime/20' : 'bg-fitness-coral/20'}`}>
+                        <Icon className={`h-6 w-6 ${isLime ? 'text-fitness-lime' : 'text-fitness-coral'}`} />
+                      </div>
+                      <div>
+                        <span className="text-lg font-semibold text-white">{achievement.name}</span>
+                        <p className="text-fitness-text-secondary text-sm">{achievement.value}</p>
+                      </div>
                     </div>
-                    <span className="text-sm font-bold text-velocity-lime">{achievement.value}</span>
+                    <span className={`text-2xl font-black font-mono ${isLime ? 'text-fitness-lime' : 'text-fitness-coral'}`}>
+                      {achievement.progress}%
+                    </span>
                   </div>
-                  <Progress 
-                    value={achievement.progress} 
-                    className="h-3 bg-velocity-shadow"
-                  />
+                  <div className="fitness-progress-bar">
+                    <div 
+                      className={`h-full rounded-full animate-progress-fill ${
+                        isLime ? 'bg-fitness-lime' : 'bg-fitness-coral'
+                      }`}
+                      style={{ width: `${achievement.progress}%` }}
+                    ></div>
+                  </div>
                 </div>
               );
             })}
@@ -175,27 +207,27 @@ export function DashboardSummary({ userName }: DashboardSummaryProps) {
         </CardContent>
       </Card>
 
-      {/* Quick Stats */}
+      {/* Estatísticas Rápidas */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="velocity-card text-center">
-          <Calendar className="h-8 w-8 text-velocity-electric mx-auto mb-3" />
-          <p className="text-2xl font-bold text-velocity-lime">28</p>
-          <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Dias Ativos</p>
+        <div className="fitness-card text-center py-6">
+          <Calendar className="h-10 w-10 text-fitness-lime mx-auto mb-4" />
+          <div className="fitness-metric">28</div>
+          <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mt-2">DIAS ATIVOS</p>
         </div>
-        <div className="velocity-card text-center">
-          <Dumbbell className="h-8 w-8 text-velocity-electric mx-auto mb-3" />
-          <p className="text-2xl font-bold text-velocity-lime">156</p>
-          <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Exercícios</p>
+        <div className="fitness-card text-center py-6">
+          <Dumbbell className="h-10 w-10 text-fitness-coral mx-auto mb-4" />
+          <div className="fitness-metric">156</div>
+          <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mt-2">EXERCÍCIOS</p>
         </div>
-        <div className="velocity-card text-center">
-          <Flame className="h-8 w-8 text-velocity-electric mx-auto mb-3" />
-          <p className="text-2xl font-bold text-velocity-lime">2.4k</p>
-          <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Calorias</p>
+        <div className="fitness-card text-center py-6">
+          <Flame className="h-10 w-10 text-fitness-lime mx-auto mb-4" />
+          <div className="fitness-metric">2.4K</div>
+          <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mt-2">CALORIAS</p>
         </div>
-        <div className="velocity-card text-center">
-          <TrendingUp className="h-8 w-8 text-velocity-electric mx-auto mb-3" />
-          <p className="text-2xl font-bold text-velocity-lime">+12%</p>
-          <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Progresso</p>
+        <div className="fitness-card text-center py-6">
+          <TrendingUp className="h-10 w-10 text-fitness-coral mx-auto mb-4" />
+          <div className="fitness-metric">+12%</div>
+          <p className="text-xs text-fitness-text-secondary uppercase tracking-wide mt-2">PROGRESSO</p>
         </div>
       </div>
     </div>

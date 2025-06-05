@@ -13,7 +13,7 @@ const HomePage = () => {
   useEffect(() => {
     console.log('HomePage - checking authentication and profile');
     
-    // Check if user is logged in
+    // Verificar se o usuário está logado
     const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     console.log('HomePage - isLoggedIn:', isLoggedIn);
     
@@ -23,7 +23,7 @@ const HomePage = () => {
       return;
     }
     
-    // Check if profile is completed
+    // Verificar se o perfil está completo
     const userProfile = localStorage.getItem('userProfile');
     console.log('HomePage - userProfile exists:', !!userProfile);
     
@@ -42,7 +42,7 @@ const HomePage = () => {
       return;
     }
     
-    // Check if photos are uploaded
+    // Verificar se as fotos foram enviadas
     const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
     console.log('HomePage - frontPhotoUrl exists:', !!frontPhotoUrl);
     
@@ -55,27 +55,27 @@ const HomePage = () => {
     console.log('HomePage - All requirements met, staying on home page');
   }, [navigate]);
 
-  // Show loading while checking requirements
+  // Mostrar loading enquanto verifica os requisitos
   const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
   const userProfile = localStorage.getItem('userProfile');
   const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
   
   if (!isLoggedIn || !userProfile || !frontPhotoUrl) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-velocity-gradient">
-        <div className="text-center animate-slide-up">
-          <div className="relative mb-8">
-            <div className="absolute inset-0 bg-velocity-lime/20 rounded-full blur-3xl animate-glow-pulse"></div>
-            <h1 className="text-6xl font-display font-black text-velocity-lime neon-text relative z-10">
-              CorpoIdeal AI
-            </h1>
+      <div className="min-h-screen bg-fitness-gradient flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="w-20 h-20 bg-fitness-lime rounded-2xl flex items-center justify-center mx-auto mb-6 animate-pulse-lime">
+            <div className="w-8 h-8 bg-black rounded-lg"></div>
           </div>
-          <div className="flex items-center justify-center space-x-2">
-            <div className="w-2 h-2 bg-velocity-lime rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-velocity-electric rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-velocity-neon rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+          <h1 className="text-4xl font-black text-white mb-4">
+            FITNESS REVOLUTION
+          </h1>
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="w-3 h-3 bg-fitness-lime rounded-full animate-pulse"></div>
+            <div className="w-3 h-3 bg-fitness-coral rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-3 h-3 bg-fitness-lime rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
           </div>
-          <p className="text-velocity-lime/80 font-medium mt-4 text-lg">
+          <p className="text-fitness-text-secondary font-medium text-lg">
             Verificando requisitos...
           </p>
         </div>
@@ -86,7 +86,7 @@ const HomePage = () => {
   const parsedProfile = JSON.parse(userProfile);
 
   return (
-    <div className="min-h-screen bg-velocity-gradient pb-20 pt-20">
+    <div className="min-h-screen bg-fitness-gradient pb-24 pt-20">
       <AppHeader />
       
       <div className="px-6 py-8">
