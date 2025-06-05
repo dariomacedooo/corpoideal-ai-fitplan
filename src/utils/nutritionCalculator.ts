@@ -1,4 +1,11 @@
 // Utility functions for accurate nutrition calculations
+import { 
+  calculateMifflinStJeor, 
+  calculateCunningham, 
+  calculateTDEE,
+  performAnthropometricAnalysis,
+  type AnthropometricData 
+} from './anthropometricCalculations';
 
 export interface NutritionValues {
   calories: number;
@@ -120,39 +127,95 @@ export const estimateNutritionValues = (foodName: string, portion: string): Nutr
   };
 };
 
-// Calculate BMR using Mifflin-St Jeor Equation
+// Calculate BMR using Mifflin-St Jeor Equation (mais precisa)
 export const calculateBMR = (weight: number, height: number, age: number, gender: string): number => {
-  if (gender === 'masculino') {
-    return 10 * weight + 6.25 * height - 5 * age + 5;
-  } else {
-    return 10 * weight + 6.25 * height - 5 * age - 161;
-  }
+  return calculateMifflinStJeor(weight, height, age, gender);
 };
 
-// Calculate TDEE (Total Daily Energy Expenditure)
+// Calculate TDEE with improved accuracy
 export const calculateTDEE = (bmr: number, activityLevel: string): number => {
-  const multipliers: Record<string, number> = {
-    'sedentario': 1.2,
-    'leve': 1.375,
-    'moderado': 1.55,
-    'ativo': 1.725,
-    'muito-ativo': 1.9
-  };
-  
-  return bmr * (multipliers[activityLevel] || 1.55);
+  return calculateTDEE(bmr, activityLevel);
 };
 
-// Adjust calories based on goal
+// Adjust calories based on goal with scientific approach
 export const adjustCaloriesForGoal = (tdee: number, goal: string): number => {
   switch (goal) {
     case 'perder-peso':
-      return tdee * 0.85; // 15% deficit
+      return tdee * 0.85; // 15% deficit for sustainable fat loss
     case 'ganhar-massa':
     case 'ganhar-musculos':
     case 'ganhar-peso':
-      return tdee * 1.15; // 15% surplus
+      return tdee * 1.15; // 15% surplus for lean mass gain
     case 'manter-peso':
     default:
       return tdee;
   }
+};
+
+// Calculate macros based on goal and body composition
+export const calculateMacros = (calories: number, goal: string, weight: number) => {
+  let proteinRatio: number;
+  let fatRatio: number;
+  
+  switch (goal) {
+    case 'ganhar-massa':
+    case 'ganhar-musculos':
+      proteinRatio = 0.25; // 25% proteína para hipertrofia
+      fatRatio = 0.25;     // 25% gordura
+      break;
+    case 'perder-peso':
+      proteinRatio = 0.30; // 30% proteína para preservar massa magra
+      fatRatio = 0.20;     // 20% gordura
+      break;
+    default:
+      proteinRatio = 0.25; // 25% proteína padrão
+      fatRatio = 0.25;     // 25% gordura padrão
+  }
+  
+  const carbRatio = 1 - proteinRatio - fatRatio;
+  
+  return {
+    protein: Math.round((calories * proteinRatio) / 4), // 4 cal/g
+    carbs: Math.round((calories * carbRatio) / 4),      // 4 cal/g
+    fat: Math.round((calories * fatRatio) / 9)          // 9 cal/g
+  };
+};
+
+// Comprehensive anthropometric analysis
+export const getComprehensiveAnalysis = (userData: {
+  height: string;
+  weight: string;
+  age: string;
+  sex: string;
+  bodyFat?: string;
+  lifestyle: string;
+  chest?: string;
+  waist?: string;
+  hips?: string;
+  leftArm?: string;
+  rightArm?: string;
+  leftThigh?: string;
+  rightThigh?: string;
+  leftCalf?: string;
+  rightCalf?: string;
+}) => {
+  const anthropometricData: AnthropometricData = {
+    height: parseInt(userData.height),
+    weight: parseInt(userData.weight),
+    age: parseInt(userData.age),
+    sex: userData.sex as 'masculino' | 'feminino',
+    bodyFat: userData.bodyFat ? parseFloat(userData.bodyFat) : undefined,
+    activityLevel: userData.lifestyle as any,
+    chest: userData.chest ? parseFloat(userData.chest) : undefined,
+    waist: userData.waist ? parseFloat(userData.waist) : undefined,
+    hips: userData.hips ? parseFloat(userData.hips) : undefined,
+    leftArm: userData.leftArm ? parseFloat(userData.leftArm) : undefined,
+    rightArm: userData.rightArm ? parseFloat(userData.rightArm) : undefined,
+    leftThigh: userData.leftThigh ? parseFloat(userData.leftThigh) : undefined,
+    rightThigh: userData.rightThigh ? parseFloat(userData.rightThigh) : undefined,
+    leftCalf: userData.leftCalf ? parseFloat(userData.leftCalf) : undefined,
+    rightCalf: userData.rightCalf ? parseFloat(userData.rightCalf) : undefined,
+  };
+  
+  return performAnthropometricAnalysis(anthropometricData);
 };

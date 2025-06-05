@@ -16,6 +16,7 @@ import { PosturalAnalysis } from "@/components/analysis/PosturalAnalysis";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScientificAnalysis } from "@/components/analysis/ScientificAnalysis";
 
 const AnalysisPage = () => {
   const [loading, setLoading] = useState(true);
@@ -525,52 +526,63 @@ const AnalysisPage = () => {
     }
 
     return (
-      <>
-        <BodyAnalysis 
-          posture={analysis.posture}
-          fatPercentage={analysis.fatPercentage}
-          symmetry={analysis.symmetry}
-          bmi={analysis.bmi}
-          measurements={analysis.measurements}
-        />
+      <Tabs defaultValue="basic" className="space-y-6">
+        <TabsList className="grid grid-cols-2 mb-4">
+          <TabsTrigger value="basic">Análise Básica</TabsTrigger>
+          <TabsTrigger value="scientific">Análise Científica</TabsTrigger>
+        </TabsList>
         
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button 
-            onClick={() => setShowProjection(true)}
-            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            <img 
-              src="/placeholder.svg" 
-              alt="Perda de peso" 
-              className="w-12 h-12 mb-2"
-            />
-            <span className="text-sm font-medium">Projeção de perda/ganho</span>
-          </button>
+        <TabsContent value="basic" className="space-y-6">
+          <BodyAnalysis 
+            posture={analysis.posture}
+            fatPercentage={analysis.fatPercentage}
+            symmetry={analysis.symmetry}
+            bmi={analysis.bmi}
+            measurements={analysis.measurements}
+          />
           
-          <button 
-            onClick={() => setShow3DProjection(true)}
-            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            <img 
-              src="/placeholder.svg" 
-              alt="Ganho muscular" 
-              className="w-12 h-12 mb-2"
-            />
-            <span className="text-sm font-medium">Modelo 3D muscular</span>
-          </button>
-          
-          <button 
-            onClick={() => setShowPostureAnalysis(true)}
-            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            <img 
-              src="/placeholder.svg" 
-              alt="Análise postural" 
-              className="w-12 h-12 mb-2"
-            />
-            <span className="text-sm font-medium">Análise postural detalhada</span>
-          </button>
-        </div>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button 
+              onClick={() => setShowProjection(true)}
+              className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              <img 
+                src="/placeholder.svg" 
+                alt="Perda de peso" 
+                className="w-12 h-12 mb-2"
+              />
+              <span className="text-sm font-medium">Projeção de perda/ganho</span>
+            </button>
+            
+            <button 
+              onClick={() => setShow3DProjection(true)}
+              className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              <img 
+                src="/placeholder.svg" 
+                alt="Ganho muscular" 
+                className="w-12 h-12 mb-2"
+              />
+              <span className="text-sm font-medium">Modelo 3D muscular</span>
+            </button>
+            
+            <button 
+              onClick={() => setShowPostureAnalysis(true)}
+              className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              <img 
+                src="/placeholder.svg" 
+                alt="Análise postural" 
+                className="w-12 h-12 mb-2"
+              />
+              <span className="text-sm font-medium">Análise postural detalhada</span>
+            </button>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="scientific" className="space-y-6">
+          <ScientificAnalysis userProfile={userProfile} />
+        </TabsContent>
         
         <div className="mt-4 text-center">
           <Button 
@@ -580,7 +592,7 @@ const AnalysisPage = () => {
             Definir meu objetivo e gerar plano
           </Button>
         </div>
-      </>
+      </Tabs>
     );
   };
 
