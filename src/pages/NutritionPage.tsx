@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { weeklyDiets } from "@/data/weeklyDiets";
-import { WeeklyDietData } from "@/types/WeeklyDiet";
 
 const NutritionPage = () => {
   const { profile } = useUserProfile();
@@ -23,32 +22,11 @@ const NutritionPage = () => {
   }, [profile]);
 
   // Get diet based on user goal
-  const getUserDiet = (): WeeklyDietData => {
-    if (!profile?.goal) {
-      // Convert to WeeklyDietData format
-      const defaultDiet = weeklyDiets[0];
-      return {
-        id: defaultDiet.id || '1',
-        name: defaultDiet.name || 'Dieta Padrão',
-        goal: defaultDiet.goal || 'manter-peso',
-        budget: defaultDiet.budget || 'medio',
-        weekPlan: defaultDiet.weekPlan || [],
-        tips: defaultDiet.tips || [],
-        supplements: defaultDiet.supplements
-      };
-    }
+  const getUserDiet = () => {
+    if (!profile?.goal) return weeklyDiets[0]; // Default to first diet
     
-    const goalBasedDiet = weeklyDiets.find(diet => diet.goal === profile.goal) || weeklyDiets[0];
-    
-    return {
-      id: goalBasedDiet.id || '1',
-      name: goalBasedDiet.name || 'Dieta Personalizada',
-      goal: goalBasedDiet.goal || profile.goal,
-      budget: goalBasedDiet.budget || 'medio',
-      weekPlan: goalBasedDiet.weekPlan || [],
-      tips: goalBasedDiet.tips || [],
-      supplements: goalBasedDiet.supplements
-    };
+    const goalBasedDiet = weeklyDiets.find(diet => diet.goal === profile.goal);
+    return goalBasedDiet || weeklyDiets[0];
   };
 
   const currentDiet = getUserDiet();

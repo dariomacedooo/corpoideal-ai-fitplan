@@ -1,10 +1,9 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Dumbbell, Clock, Target, TrendingUp, Thermometer, Droplets } from "lucide-react";
+import { Dumbbell, Clock, Target, TrendingUp } from "lucide-react";
 import { advancedWorkouts } from "@/data/advancedWorkouts";
 import { LoadManager } from "./LoadManager";
 
@@ -86,6 +85,8 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
     return workoutDays;
   };
 
+  const finalWorkoutDays = getAdvancedWorkouts();
+
   const getDifficultyScore = () => {
     switch (experience) {
       case 'iniciante': return 30;
@@ -94,70 +95,6 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
       default: return 50;
     }
   };
-
-  const getScientificMethodology = () => {
-    if (experience === 'avancado') {
-      return {
-        title: "Metodologia Científica Avançada",
-        description: "Baseada em evidências de Brad Schoenfeld, Eric Helms e ACSM Position Stand 2021",
-        principles: [
-          "Volume: 10-20 séries efetivas semanais por grupo muscular",
-          "Intensidade: 65-85% 1RM (6-15 repetições)",
-          "Frequência: 2-3x por semana por grupo muscular",
-          "Progressão: Overload progressivo com técnicas avançadas",
-          "RIR: 0-3 repetições em reserva (proximidade da falha)"
-        ],
-        techniques: [
-          "Rest-Pause: Para maximizar volume de treino",
-          "Cluster Sets: Manutenção de intensidade alta",
-          "Tempo sob Tensão: 30-60 segundos por série",
-          "Pré-exaustão: Isolamento antes de compostos"
-        ]
-      };
-    } else if (experience === 'intermediario') {
-      return {
-        title: "Metodologia Intermediária",
-        description: "Progressão sistemática com técnicas validadas cientificamente",
-        principles: [
-          "Volume: 8-16 séries por grupo muscular",
-          "Intensidade: 70-85% 1RM",
-          "Frequência: 2x por semana por grupo",
-          "Progressão: Sobrecarga progressiva linear"
-        ]
-      };
-    }
-    
-    return {
-      title: "Base Científica Iniciante",
-      description: "Fundamentos sólidos baseados em movimento funcional",
-      principles: [
-        "Volume: 6-12 séries por grupo muscular",
-        "Foco em técnica e adaptação neural",
-        "Progressão gradual de cargas"
-      ]
-    };
-  };
-
-  const getCearaAdaptations = () => {
-    return {
-      climate: [
-        "🌡️ Clima quente: Treinos preferencialmente 5h-7h ou 17h-19h",
-        "💧 Hidratação: 300-500ml a cada 15-20 min durante o treino",
-        "🏖️ Utilize praias para cardio matinal (corrida na areia)",
-        "🥥 Água de coco como isotônico natural regional"
-      ],
-      nutrition: [
-        "🐟 Priorize peixes frescos (abundantes e ricos em ômega-3)",
-        "🥥 Castanha de caju como fonte de proteína vegetal",
-        "🥭 Frutas regionais: caju, manga, açaí para energia natural",
-        "🍤 Camarão como proteína magra de baixo custo"
-      ]
-    };
-  };
-
-  const methodology = getScientificMethodology();
-  const cearaAdaptations = getCearaAdaptations();
-  const finalWorkoutDays = getAdvancedWorkouts();
 
   const getIntensityColor = () => {
     const score = getDifficultyScore();
@@ -230,60 +167,12 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
         <div className="flex justify-between items-start mb-4">
           <CardTitle className="text-xl text-corpoideal-purple flex items-center">
             <Dumbbell className="h-5 w-5 mr-2" />
-            {methodology.title}
+            Plano de Treino {experience === 'avancado' ? 'Científico' : 'Personalizado'}
           </CardTitle>
           <div className="flex gap-2 flex-wrap">
             <Badge variant="outline">{getGoalText()}</Badge>
             <Badge variant="secondary">{getLocationText()}</Badge>
             <Badge variant="secondary">{getExperienceText()}</Badge>
-          </div>
-        </div>
-
-        {/* Scientific Methodology Overview */}
-        <div className="bg-gradient-to-r from-corpoideal-purple/10 to-blue-50 p-4 rounded-lg border border-corpoideal-purple/20 mb-4">
-          <h4 className="text-sm font-bold text-corpoideal-purple mb-2">🧬 {methodology.description}</h4>
-          <ul className="text-xs text-gray-700 space-y-1">
-            {methodology.principles.map((principle, index) => (
-              <li key={index}>• {principle}</li>
-            ))}
-          </ul>
-          
-          {methodology.techniques && (
-            <div className="mt-3 p-2 bg-white rounded border">
-              <p className="text-xs font-medium text-corpoideal-purple mb-1">Técnicas Avançadas Aplicadas:</p>
-              <ul className="text-xs text-gray-600 space-y-1">
-                {methodology.techniques.map((technique, index) => (
-                  <li key={index}>• {technique}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {/* Ceará-specific adaptations */}
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
-            <h4 className="text-sm font-bold text-orange-700 mb-2 flex items-center">
-              <Thermometer className="h-4 w-4 mr-1" />
-              Adaptações para o Ceará
-            </h4>
-            <ul className="text-xs text-orange-600 space-y-1">
-              {cearaAdaptations.climate.map((adaptation, index) => (
-                <li key={index}>{adaptation}</li>
-              ))}
-            </ul>
-          </div>
-          
-          <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-            <h4 className="text-sm font-bold text-green-700 mb-2 flex items-center">
-              <Droplets className="h-4 w-4 mr-1" />
-              Nutrição Regional
-            </h4>
-            <ul className="text-xs text-green-600 space-y-1">
-              {cearaAdaptations.nutrition.map((nutrition, index) => (
-                <li key={index}>{nutrition}</li>
-              ))}
-            </ul>
           </div>
         </div>
 
@@ -392,53 +281,44 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
               <div className="mt-6 p-4 bg-gradient-to-r from-corpoideal-purple/5 to-blue-50 rounded-lg border border-corpoideal-purple/20">
                 <h4 className="text-sm font-bold text-corpoideal-purple mb-3 flex items-center">
                   <Target className="h-4 w-4 mr-2" />
-                  Orientações Científicas - {day.focus}:
+                  Orientações Específicas - {day.focus}:
                 </h4>
                 <ul className="text-sm text-gray-700 space-y-2 pl-4 list-disc">
                   {experience === 'avancado' ? (
                     <>
-                      <li><strong>Volume:</strong> 10-20 séries efetivas semanais (Schoenfeld et al., 2017)</li>
-                      <li><strong>Intensidade:</strong> 65-85% 1RM, 0-3 RIR (Helms et al., 2018)</li>
-                      <li><strong>Frequência:</strong> 2-3x/semana por grupo muscular (optimal para hipertrofia)</li>
-                      <li><strong>Descanso:</strong> 2-4 min compostos, 60-90s isolados (ACSM, 2021)</li>
-                      <li><strong>Progressão:</strong> +2.5-5% carga quando RIR ≤ 1</li>
+                      <li>Descanso estratégico: 2-4 minutos para exercícios compostos, 60-90s para isolados</li>
+                      <li>RPE alvo: 8-9 nas séries principais (deixar 1-2 reps na reserva)</li>
+                      <li>Aplicar técnicas de intensidade conforme prescrito (rest-pause, clusters, etc.)</li>
+                      <li>Periodização: aumentar volume/intensidade a cada 2-3 semanas</li>
+                      <li>Aquecimento específico obrigatório: 5-8 minutos</li>
                       {getTrainingLocationInstructions()}
                     </>
                   ) : experience === 'intermediario' ? (
                     <>
-                      <li><strong>Volume:</strong> 8-16 séries semanais por grupo muscular</li>
-                      <li><strong>Sobrecarga:</strong> Aumente peso/reps quando conseguir fazer todas as séries no limite superior</li>
-                      <li><strong>Técnica:</strong> Priorize forma perfeita sobre carga máxima</li>
-                      <li><strong>Descanso:</strong> 90-120s entre séries</li>
+                      <li>Descanso: 90-120 segundos entre séries de exercícios compostos</li>
+                      <li>Foque na sobrecarga progressiva: aumente peso/reps semanalmente</li>
+                      <li>Execute amplitude completa em todos os movimentos</li>
+                      <li>Controle da fase excêntrica (descida): 2-3 segundos</li>
+                      <li>Técnica perfeita é prioridade sobre carga máxima</li>
                       {getTrainingLocationInstructions()}
                     </>
                   ) : (
                     <>
-                      <li><strong>Foco:</strong> Aprendizagem motora e adaptação neural</li>
-                      <li><strong>Progressão:</strong> Gradual, priorizando técnica</li>
-                      <li><strong>Descanso:</strong> 60-90s entre séries</li>
+                      <li>Descanso de 60-90 segundos entre as séries</li>
+                      <li>Execute os movimentos com controle e boa forma</li>
+                      <li>Aumente a carga progressivamente conforme sentir facilidade</li>
+                      <li>Consumo de proteína após o treino é recomendado</li>
                       {getTrainingLocationInstructions()}
                     </>
                   )}
                 </ul>
 
-                {/* Climate considerations for Ceará */}
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <h5 className="text-xs font-bold text-yellow-700 mb-1 flex items-center">
-                    <Thermometer className="h-3 w-3 mr-1" />
-                    ☀️ Adaptações Climáticas (Ceará):
-                  </h5>
-                  <p className="text-xs text-yellow-600">
-                    Temperaturas altas reduzem performance em ~10-15%. Hidrate-se constantemente e evite horários de pico solar (11h-15h).
-                  </p>
-                </div>
-
                 {experience === 'avancado' && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <h5 className="text-xs font-bold text-red-700 mb-1">⚠️ PROTOCOLO AVANÇADO:</h5>
+                    <h5 className="text-xs font-bold text-red-700 mb-1">⚠️ AVISO - Treino Avançado:</h5>
                     <p className="text-xs text-red-600">
-                      Baseado em evidências científicas recentes. Monitore sinais de overtraining: 
-                      fadiga persistente, queda de performance, alterações do humor.
+                      Este protocolo é baseado em evidências científicas e requer experiência prévia. 
+                      Monitore sinais de overtraining e ajuste o volume conforme recuperação.
                     </p>
                   </div>
                 )}
@@ -447,28 +327,17 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
           ))}
         </Tabs>
 
-        {/* Enhanced Scientific References */}
+        {/* Scientific References for Advanced Users */}
         {experience === 'avancado' && (
           <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <h4 className="text-sm font-bold text-gray-800 mb-3">📚 Referências Científicas Aplicadas:</h4>
-            <div className="grid md:grid-cols-2 gap-4 text-xs text-gray-600">
-              <div>
-                <p className="font-medium mb-1">Hipertrofia e Volume:</p>
-                <ul className="space-y-1">
-                  <li>• Schoenfeld et al. (2017) - Sports Medicine</li>
-                  <li>• Helms et al. (2018) - Muscle & Strength Pyramids</li>
-                  <li>• ACSM (2021) - Position Stand Resistance Training</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-medium mb-1">Técnicas Avançadas:</p>
-                <ul className="space-y-1">
-                  <li>• Rest-Pause: Haff & Triplett (2015)</li>
-                  <li>• Cluster Sets: Tufano et al. (2017)</li>
-                  <li>• RIR: Zourdos et al. (2016)</li>
-                </ul>
-              </div>
-            </div>
+            <h4 className="text-sm font-bold text-gray-800 mb-2">📚 Embasamento Científico:</h4>
+            <ul className="text-xs text-gray-600 space-y-1">
+              <li>• Volume Alemão: Bompa & Haff (2009) - Periodization Theory</li>
+              <li>• Rest-Pause: Haff & Triplett (2015) - Essentials of Strength Training</li>
+              <li>• Cluster Sets: Tufano et al. (2017) - Sports Medicine</li>
+              <li>• Tempo sob Tensão: Schoenfeld (2010) - Journal of Strength & Conditioning</li>
+              <li>• Pré-exaustão: Brennecke et al. (2009) - Applied Physiology</li>
+            </ul>
           </div>
         )}
       </CardContent>
