@@ -63,18 +63,30 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom colors for CorpoIdeal AI
+				// Novas cores principais do projeto - tema velocidade/força
+				velocity: {
+					lime: '#32FF32',     // Verde limão vibrante
+					electric: '#00FF41', // Verde elétrico
+					neon: '#39FF14',     // Verde neon
+					dark: '#0A0A0A',     // Preto profundo
+					charcoal: '#1A1A1A', // Carvão
+					shadow: '#111111',   // Sombra
+					accent: '#28FF28',   // Accent verde
+					glow: '#00FF7F',     // Verde brilhante
+				},
+				// Cores antigas mantidas para compatibilidade
 				corpoideal: {
-					purple: '#8B5CF6',
-					darkpurple: '#6E59A5',
-					lightpurple: '#D6BCFA',
+					purple: '#32FF32',
+					darkpurple: '#28FF28',
+					lightpurple: '#00FF41',
 					gray: '#8E9196',
-					dark: '#1A1F2C',
+					dark: '#0A0A0A',
 				}
 			},
 			fontFamily: {
 				sans: ['Poppins', 'sans-serif'],
 				body: ['Roboto', 'sans-serif'],
+				display: ['Orbitron', 'monospace'], // Fonte futurística para títulos
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -118,12 +130,46 @@ export default {
 					  opacity: '1'
 					}
 				},
+				'glow-pulse': {
+					'0%, 100%': {
+						boxShadow: '0 0 5px #32FF32, 0 0 10px #32FF32, 0 0 15px #32FF32'
+					},
+					'50%': {
+						boxShadow: '0 0 10px #32FF32, 0 0 20px #32FF32, 0 0 30px #32FF32'
+					}
+				},
+				'slide-up': {
+					'0%': {
+						transform: 'translateY(20px)',
+						opacity: '0'
+					},
+					'100%': {
+						transform: 'translateY(0)',
+						opacity: '1'
+					}
+				},
+				'neon-flicker': {
+					'0%, 100%': {
+						textShadow: '0 0 5px #32FF32, 0 0 10px #32FF32'
+					},
+					'50%': {
+						textShadow: '0 0 2px #32FF32, 0 0 5px #32FF32, 0 0 8px #32FF32'
+					}
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+				'slide-up': 'slide-up 0.4s ease-out',
+				'neon-flicker': 'neon-flicker 1.5s ease-in-out infinite',
+			},
+			backgroundImage: {
+				'velocity-gradient': 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #0A0A0A 100%)',
+				'lime-gradient': 'linear-gradient(135deg, #32FF32 0%, #00FF41 50%, #39FF14 100%)',
+				'neon-gradient': 'linear-gradient(90deg, #32FF32, #00FF41, #39FF14)',
 			}
 		}
 	},
