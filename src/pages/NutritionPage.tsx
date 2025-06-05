@@ -1,10 +1,10 @@
 
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { NutritionPlan } from "@/components/nutrition/NutritionPlan";
 import { WeeklyDietPlan } from "@/components/nutrition/WeeklyDietPlan";
 import { WaterIntakeCalculator } from "@/components/nutrition/WaterIntakeCalculator";
 import { MacroCalculator } from "@/components/nutrition/MacroCalculator";
+import { EvidenceBasedDietPlan } from "@/components/nutrition/EvidenceBasedDietPlan";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -60,12 +60,17 @@ const NutritionPage = () => {
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Orçamento: {profile.budget}
         </p>
         
-        <Tabs defaultValue="weekly" className="space-y-6">
-          <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="weekly">Dieta Semanal</TabsTrigger>
+        <Tabs defaultValue="evidence-based" className="space-y-6">
+          <TabsList className="grid grid-cols-4 mb-4">
+            <TabsTrigger value="evidence-based">Científico</TabsTrigger>
+            <TabsTrigger value="weekly">Semanal</TabsTrigger>
             <TabsTrigger value="calculator">Calculadora</TabsTrigger>
             <TabsTrigger value="water">Hidratação</TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="evidence-based" className="space-y-6">
+            <EvidenceBasedDietPlan userProfile={profile} />
+          </TabsContent>
           
           <TabsContent value="weekly" className="space-y-6">
             <WeeklyDietPlan 

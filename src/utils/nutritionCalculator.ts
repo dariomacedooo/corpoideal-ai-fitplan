@@ -1,3 +1,4 @@
+
 // Utility functions for accurate nutrition calculations
 import { 
   calculateMifflinStJeor, 
@@ -14,6 +15,50 @@ export interface NutritionValues {
   carbs: number;
   fat: number;
 }
+
+// Macronutrient ratios based on scientific evidence
+export interface MacronutrientPrescription {
+  proteinPerKg: number;
+  carbsPerKg: number;
+  fatPerKg: number;
+  calorieAdjustment: number; // kcal to add/subtract from TDEE
+}
+
+export const EVIDENCE_BASED_MACROS: Record<string, MacronutrientPrescription> = {
+  'ganhar-massa': {
+    proteinPerKg: 2.0,
+    carbsPerKg: 5.5,
+    fatPerKg: 1.0,
+    calorieAdjustment: 300
+  },
+  'perder-peso': {
+    proteinPerKg: 2.4,
+    carbsPerKg: 3.5,
+    fatPerKg: 0.8,
+    calorieAdjustment: -400
+  },
+  'manter-peso': {
+    proteinPerKg: 2.2,
+    carbsPerKg: 4.5,
+    fatPerKg: 0.9,
+    calorieAdjustment: 0
+  },
+  'ganhar-peso': {
+    proteinPerKg: 2.0,
+    carbsPerKg: 5.5,
+    fatPerKg: 1.0,
+    calorieAdjustment: 300
+  }
+};
+
+// Meal distribution based on scientific evidence
+export const MEAL_DISTRIBUTION = {
+  'cafe': { caloriePercent: 0.25, proteinPercent: 0.20 },
+  'lanche-manha': { caloriePercent: 0.10, proteinPercent: 0.15 },
+  'almoco': { caloriePercent: 0.30, proteinPercent: 0.25 },
+  'lanche-tarde': { caloriePercent: 0.15, proteinPercent: 0.20 },
+  'jantar': { caloriePercent: 0.20, proteinPercent: 0.20 }
+};
 
 // Food database with accurate nutrition per 100g
 const FOOD_DATABASE: Record<string, NutritionValues> = {
@@ -53,6 +98,44 @@ const FOOD_DATABASE: Record<string, NutritionValues> = {
   'whey': { calories: 400, protein: 80, carbs: 6, fat: 4 },
   'aveia': { calories: 389, protein: 17, carbs: 66, fat: 7 },
   'castanhas': { calories: 654, protein: 15, carbs: 12, fat: 66 },
+};
+
+// Calculate evidence-based nutrition prescription
+export const calculateEvidenceBasedNutrition = (
+  weight: number,
+  tdee: number,
+  goal: string
+): { calories: number; protein: number; carbs: number; fat: number } => {
+  const prescription = EVIDENCE_BASED_MACROS[goal] || EVIDENCE_BASED_MACROS['manter-peso'];
+  
+  // Calculate total calories
+  const totalCalories = tdee + prescription.calorieAdjustment;
+  
+  // Calculate macros based on body weight (scientific approach)
+  const proteinGrams = Math.round(weight * prescription.proteinPerKg);
+  const carbsGrams = Math.round(weight * prescription.carbsPerKg);
+  const fatGrams = Math.round(weight * prescription.fatPerKg);
+  
+  return {
+    calories: Math.round(totalCalories),
+    protein: proteinGrams,
+    carbs: carbsGrams,
+    fat: fatGrams
+  };
+};
+
+// Calculate meal-specific nutrition
+export const calculateMealNutrition = (
+  totalCalories: number,
+  totalProtein: number,
+  mealType: keyof typeof MEAL_DISTRIBUTION
+) => {
+  const distribution = MEAL_DISTRIBUTION[mealType];
+  
+  return {
+    calories: Math.round(totalCalories * distribution.caloriePercent),
+    protein: Math.round(totalProtein * distribution.proteinPercent)
+  };
 };
 
 export const estimateNutritionValues = (foodName: string, portion: string): NutritionValues => {
@@ -140,45 +223,18 @@ export const calculateTotalDailyEnergyExpenditure = (bmr: number, activityLevel:
 
 // Adjust calories based on goal with scientific approach
 export const adjustCaloriesForGoal = (tdee: number, goal: string): number => {
-  switch (goal) {
-    case 'perder-peso':
-      return tdee * 0.85; // 15% deficit for sustainable fat loss
-    case 'ganhar-massa':
-    case 'ganhar-musculos':
-    case 'ganhar-peso':
-      return tdee * 1.15; // 15% surplus for lean mass gain
-    case 'manter-peso':
-    default:
-      return tdee;
-  }
+  const prescription = EVIDENCE_BASED_MACROS[goal] || EVIDENCE_BASED_MACROS['manter-peso'];
+  return tdee + prescription.calorieAdjustment;
 };
 
 // Calculate macros based on goal and body composition
 export const calculateMacros = (calories: number, goal: string, weight: number) => {
-  let proteinRatio: number;
-  let fatRatio: number;
-  
-  switch (goal) {
-    case 'ganhar-massa':
-    case 'ganhar-musculos':
-      proteinRatio = 0.25; // 25% proteína para hipertrofia
-      fatRatio = 0.25;     // 25% gordura
-      break;
-    case 'perder-peso':
-      proteinRatio = 0.30; // 30% proteína para preservar massa magra
-      fatRatio = 0.20;     // 20% gordura
-      break;
-    default:
-      proteinRatio = 0.25; // 25% proteína padrão
-      fatRatio = 0.25;     // 25% gordura padrão
-  }
-  
-  const carbRatio = 1 - proteinRatio - fatRatio;
+  const prescription = EVIDENCE_BASED_MACROS[goal] || EVIDENCE_BASED_MACROS['manter-peso'];
   
   return {
-    protein: Math.round((calories * proteinRatio) / 4), // 4 cal/g
-    carbs: Math.round((calories * carbRatio) / 4),      // 4 cal/g
-    fat: Math.round((calories * fatRatio) / 9)          // 9 cal/g
+    protein: Math.round(weight * prescription.proteinPerKg),
+    carbs: Math.round(weight * prescription.carbsPerKg),
+    fat: Math.round(weight * prescription.fatPerKg)
   };
 };
 
