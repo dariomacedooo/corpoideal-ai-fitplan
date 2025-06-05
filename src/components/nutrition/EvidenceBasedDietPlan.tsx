@@ -173,17 +173,24 @@ export function EvidenceBasedDietPlan({ userProfile }: EvidenceBasedDietPlanProp
     // Add goal-specific modifications
     if (goal === 'ganhar-massa') {
       // Add more calorie-dense foods for bulking
-      baseFoods[mealType]?.[budgetTier]?.push(
-        { name: 'Castanhas', protein: 4, calories: 160, cost: budgetTier === 'low' ? 'médio' : 'baixo' }
-      );
+      const mealFoods = baseFoods[mealType];
+      if (mealFoods && mealFoods[budgetTier]) {
+        mealFoods[budgetTier].push(
+          { name: 'Castanhas', protein: 4, calories: 160, cost: budgetTier === 'low' ? 'médio' : 'baixo' }
+        );
+      }
     } else if (goal === 'perder-peso') {
       // Focus on high-protein, low-calorie foods for cutting
-      baseFoods[mealType]?.[budgetTier] = baseFoods[mealType]?.[budgetTier]?.filter(food => 
-        food.protein > 0 && food.calories < 200
-      );
+      const mealFoods = baseFoods[mealType];
+      if (mealFoods && mealFoods[budgetTier]) {
+        baseFoods[mealType][budgetTier] = mealFoods[budgetTier].filter(food => 
+          food.protein > 0 && food.calories < 200
+        );
+      }
     }
 
-    return baseFoods[mealType]?.[budgetTier] || [];
+    const mealFoods = baseFoods[mealType];
+    return mealFoods && mealFoods[budgetTier] ? mealFoods[budgetTier] : [];
   };
 
   const selectFoodsForMeal = (foodOptions: any[], target: { calories: number; protein: number }) => {
