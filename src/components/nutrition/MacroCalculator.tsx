@@ -15,7 +15,7 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { Calculator } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { calculateBMR, calculateTDEE, adjustCaloriesForGoal } from "@/utils/nutritionCalculator";
+import { calculateBMR, calculateTotalDailyEnergyExpenditure, adjustCaloriesForGoal } from "@/utils/nutritionCalculator";
 
 export function MacroCalculator() {
   const { profile } = useUserProfile();
@@ -96,8 +96,8 @@ export function MacroCalculator() {
     // Calculate BMR using the nutrition calculator utility
     const bmr = calculateBMR(weightNum, heightNum, ageNum, gender);
     
-    // Calculate TDEE
-    const tdee = calculateTDEE(bmr, activityLevel);
+    // Calculate TDEE using the renamed function
+    const tdee = calculateTotalDailyEnergyExpenditure(bmr, activityLevel);
     
     // Adjust for goal
     const finalCalories = adjustCaloriesForGoal(tdee, goal);
