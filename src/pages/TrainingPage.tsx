@@ -1,9 +1,9 @@
-
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { WorkoutPlan } from "@/components/training/WorkoutPlan";
 import { LoadProgress } from "@/components/training/LoadProgress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScientificWorkoutPlan } from "@/components/training/ScientificWorkoutPlan";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
@@ -354,11 +354,21 @@ const TrainingPage = () => {
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Nível {profile.trainingExperience}
         </p>
         
-        <Tabs defaultValue="workout" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="workout">Plano de Treino</TabsTrigger>
-            <TabsTrigger value="progress">Progresso de Cargas</TabsTrigger>
+        <Tabs defaultValue={profile.trainingExperience === 'iniciante' ? 'workout' : 'scientific'} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="scientific">Científico</TabsTrigger>
+            <TabsTrigger value="workout">Plano Básico</TabsTrigger>
+            <TabsTrigger value="progress">Progresso</TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="scientific" className="mt-6">
+            <ScientificWorkoutPlan 
+              goal={profile.goal}
+              trainingLocation={profile.trainingLocation}
+              experience={profile.trainingExperience}
+              daysPerWeek={5}
+            />
+          </TabsContent>
           
           <TabsContent value="workout" className="mt-6">
             <WorkoutPlan 

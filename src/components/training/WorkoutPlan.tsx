@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dumbbell, Clock, Target, TrendingUp } from "lucide-react";
 import { advancedWorkouts } from "@/data/advancedWorkouts";
 import { LoadManager } from "./LoadManager";
+import { BookOpen } from "lucide-react";
 
 interface Exercise {
   name: string;
@@ -112,6 +113,27 @@ export function WorkoutPlan({ goal, workoutDays, trainingLocation, experience }:
     }
     return "Base sólida de movimentos fundamentais com progressão gradual.";
   };
+
+  // Check if we should use scientific workout
+  const shouldUseScientificWorkout = experience === 'avancado' || experience === 'intermediario';
+
+  // If advanced or intermediate, redirect to scientific workout
+  if (shouldUseScientificWorkout) {
+    return (
+      <div className="text-center p-6 bg-blue-50 border border-blue-200 rounded-lg">
+        <BookOpen className="h-12 w-12 mx-auto mb-4 text-corpoideal-purple" />
+        <h3 className="text-lg font-bold text-corpoideal-purple mb-2">
+          Treino Científico Disponível
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Para seu nível ({experience}), recomendamos o protocolo científico baseado em evidências.
+        </p>
+        <p className="text-xs text-gray-500">
+          Acesse a aba "Científico" na página de treino para ver seu plano otimizado.
+        </p>
+      </div>
+    );
+  }
 
   // Get location-specific instructions
   const getTrainingLocationInstructions = () => {
