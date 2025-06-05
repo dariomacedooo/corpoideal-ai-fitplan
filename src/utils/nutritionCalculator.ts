@@ -2,8 +2,9 @@
 import { 
   calculateMifflinStJeor, 
   calculateCunningham, 
-  calculateTDEE,
+  calculateTDEE as calculateTDEEFromAnthropometric,
   performAnthropometricAnalysis,
+  formatAnthropometricResults,
   type AnthropometricData 
 } from './anthropometricCalculations';
 
@@ -132,9 +133,9 @@ export const calculateBMR = (weight: number, height: number, age: number, gender
   return calculateMifflinStJeor(weight, height, age, gender);
 };
 
-// Calculate TDEE with improved accuracy
-export const calculateTDEE = (bmr: number, activityLevel: string): number => {
-  return calculateTDEE(bmr, activityLevel);
+// Calculate TDEE with improved accuracy (renamed to avoid conflict)
+export const calculateTotalDailyEnergyExpenditure = (bmr: number, activityLevel: string): number => {
+  return calculateTDEEFromAnthropometric(bmr, activityLevel);
 };
 
 // Adjust calories based on goal with scientific approach
@@ -219,3 +220,6 @@ export const getComprehensiveAnalysis = (userData: {
   
   return performAnthropometricAnalysis(anthropometricData);
 };
+
+// Re-export formatAnthropometricResults from anthropometricCalculations
+export { formatAnthropometricResults };
