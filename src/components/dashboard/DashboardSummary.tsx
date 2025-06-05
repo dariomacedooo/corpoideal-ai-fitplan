@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Calendar, Dumbbell, Apple, TrendingUp, Award, Zap, Target, Clock, Fire } from "lucide-react";
+import { Calendar, Dumbbell, Apple, TrendingUp, Award, Zap, Target, Clock, Flame } from "lucide-react";
 
 interface DashboardSummaryProps {
   userName?: string;
@@ -23,7 +22,7 @@ export function DashboardSummary({ userName }: DashboardSummaryProps) {
   // Mock data for achievement stats
   const achievements = [
     { name: "Treinos completados", value: "8/20", progress: 40, icon: Dumbbell },
-    { name: "Dias seguidos", value: "5", progress: 50, icon: Fire },
+    { name: "Dias seguidos", value: "5", progress: 50, icon: Flame },
     { name: "Refeições registradas", value: "21/30", progress: 70, icon: Apple },
   ];
 
@@ -60,7 +59,7 @@ export function DashboardSummary({ userName }: DashboardSummaryProps) {
               <p className="text-velocity-lime font-bold">3 Semanas</p>
             </div>
             <div className="velocity-card text-center">
-              <Fire className="h-6 w-6 text-velocity-electric mx-auto mb-2" />
+              <Flame className="h-6 w-6 text-velocity-electric mx-auto mb-2" />
               <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Streak</p>
               <p className="text-velocity-lime font-bold">5 Dias</p>
             </div>
@@ -189,7 +188,7 @@ export function DashboardSummary({ userName }: DashboardSummaryProps) {
           <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Exercícios</p>
         </div>
         <div className="velocity-card text-center">
-          <Fire className="h-8 w-8 text-velocity-electric mx-auto mb-3" />
+          <Flame className="h-8 w-8 text-velocity-electric mx-auto mb-3" />
           <p className="text-2xl font-bold text-velocity-lime">2.4k</p>
           <p className="text-xs text-velocity-lime/60 uppercase tracking-wide">Calorias</p>
         </div>
