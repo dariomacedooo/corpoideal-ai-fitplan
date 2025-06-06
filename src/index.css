@@ -100,7 +100,7 @@
   }
 
   .fitness-progress-fill {
-    @apply h-full bg-gradient-to-r from-fitness-lime to-fitness-coral rounded-full transition-all duration-800 ease-out;
+    @apply h-full bg-gradient-to-r from-fitness-lime to-fitness-coral rounded-full transition-all duration-700 ease-out;
   }
 
   /* Cards específicos */
