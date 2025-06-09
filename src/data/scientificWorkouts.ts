@@ -9,6 +9,7 @@ interface Exercise {
   type?: 'compound' | 'isolation';
   videoUrl?: string;
   tip?: string;
+  equipment?: string;
 }
 
 interface WorkoutDay {
@@ -247,28 +248,24 @@ const calculateDayVolume = (exercises: Exercise[], level: typeof trainingLevels.
       reps = Math.round((min + max) / 2);
     }
     const volume = sets * reps;
-    switch (ex.focusMuscle || ex.name) {
-      case 'Peito':
+    // Classify exercise by name
+    switch (ex.name) {
       case 'Supino Reto':
       case 'Supino Inclinado':
         totalVolume.chest += volume;
         break;
-      case 'Costas':
       case 'Remada Curvada':
       case 'Barra Fixa':
         totalVolume.back += volume;
         break;
-      case 'Ombros':
       case 'Desenvolvimento com Halteres':
       case 'Elevação Lateral':
         totalVolume.shoulders += volume;
         break;
-      case 'Tríceps':
-      case 'Rosca Direta':
       case 'Tríceps Pulley':
+      case 'Rosca Direta':
         totalVolume.arms += volume;
         break;
-      case 'Pernas':
       case 'Agachamento Livre':
         totalVolume.legs += volume;
         break;
@@ -355,52 +352,42 @@ const generateDefaultFemaleWorkout = (experience: string, location: string, days
   }));
 };
 
-const getFemaleExercisesForDay = (focus: string, experience: string, location: string) => {
+const getFemaleExercisesForDay = (focus: string, experience: string, location: string): Exercise[] => {
   const difficultyFilter = experience === 'iniciante' ? 
     (ex: any) => ex.difficulty !== 'avancado' : 
     () => true;
+
+  const mapFemaleExerciseToExercise = (ex: any): Exercise => ({
+    name: ex.name,
+    sets: ex.sets,
+    reps: ex.reps,
+    type: ex.targetMuscles.includes('Glúteo') ? 'compound' : 'isolation',
+    videoUrl: ex.videoUrl,
+    tip: ex.technique,
+    equipment: ex.equipment
+  });
 
   switch (focus) {
     case 'Glúteos e Pernas':
       return [
         ...femaleExercises.gluteos.filter(difficultyFilter).slice(0, 3),
         ...femaleExercises.pernas.filter(difficultyFilter).slice(0, 2)
-      ].map(ex => ({
-        ...ex,
-        type: 'compound',
-        videoUrl: ex.videoUrl,
-        tip: ex.technique
-      }));
+      ].map(mapFemaleExerciseToExercise);
       
     case 'Core e Superiores':
       return [
         ...femaleExercises.abdomen.filter(difficultyFilter).slice(0, 2),
         ...femaleExercises.superiores.filter(difficultyFilter).slice(0, 2)
-      ].map(ex => ({
-        ...ex,
-        type: 'isolation',
-        videoUrl: ex.videoUrl,
-        tip: ex.technique
-      }));
+      ].map(mapFemaleExerciseToExercise);
       
     case 'Cardio e Funcional':
       return [
         ...femaleExercises.cardio.filter(difficultyFilter),
         ...femaleExercises.abdomen.filter(difficultyFilter).slice(0, 1)
-      ].map(ex => ({
-        ...ex,
-        type: 'compound',
-        videoUrl: ex.videoUrl,
-        tip: ex.technique
-      }));
+      ].map(mapFemaleExerciseToExercise);
       
     default:
-      return femaleExercises.gluteos.filter(difficultyFilter).slice(0, 3).map(ex => ({
-        ...ex,
-        type: 'compound',
-        videoUrl: ex.videoUrl,
-        tip: ex.technique
-      }));
+      return femaleExercises.gluteos.filter(difficultyFilter).slice(0, 3).map(mapFemaleExerciseToExercise);
   }
 };
 
@@ -412,11 +399,14 @@ const expandToWeeklySchedule = (plan: any, daysPerWeek: number, ageGroup: string
   const mainDay: WorkoutDay = {
     day: 'Segunda',
     focus: plan.name,
-    exercises: plan.exercises.map((ex: any) => ({
-      ...ex,
+    exercises: plan.exercises.map((ex: any): Exercise => ({
+      name: ex.name,
+      sets: ex.sets,
+      reps: ex.reps,
       type: ex.targetMuscles.includes('Glúteo') ? 'compound' : 'isolation',
       videoUrl: ex.videoUrl,
-      tip: ex.technique
+      tip: ex.technique,
+      equipment: ex.equipment
     })),
     totalVolume: { chest: 0, back: 2, shoulders: 2, arms: 2, legs: 18 }
   };
@@ -433,11 +423,14 @@ const expandToWeeklySchedule = (plan: any, daysPerWeek: number, ageGroup: string
     result.push({
       day: days[i],
       focus,
-      exercises: exercises.map((ex: any) => ({
-        ...ex,
+      exercises: exercises.map((ex: any): Exercise => ({
+        name: ex.name,
+        sets: ex.sets,
+        reps: ex.reps,
         type: 'compound',
         videoUrl: ex.videoUrl,
-        tip: ex.technique
+        tip: ex.technique,
+        equipment: ex.equipment
       })),
       totalVolume: { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 8 }
     });

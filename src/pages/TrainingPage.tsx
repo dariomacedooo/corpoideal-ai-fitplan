@@ -326,8 +326,8 @@ const TrainingPage = () => {
     // Exercícios ao ar livre
   });
 
-  const isFemale = profile.gender === 'feminino';
-  const userAge = profile.age || 25;
+  const isFemale = profile?.gender === 'feminino' || profile?.sex === 'feminino';
+  const userAge = profile?.age ? parseInt(profile.age, 10) : 25;
 
   if (!profile) {
     return (

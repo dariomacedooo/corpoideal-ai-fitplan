@@ -6,6 +6,7 @@ export interface UserProfile {
   weight: string;
   age: string;
   sex: string;
+  gender: string;
   bodyFat: string;
   lifestyle: string;
   trainingExperience: string;
@@ -58,6 +59,8 @@ export const useUserProfile = () => {
         return 'Ganhar Peso';
       case 'manter-peso':
         return 'Manter Peso';
+      case 'definir-musculos':
+        return 'Definir Músculos';
       default:
         return 'Personalizado';
     }
