@@ -63,22 +63,18 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Novo esquema de cores moderno
-				fitness: {
-					black: '#0a0a0a',
-					'dark-gray': '#1a1a1a',
-					'card-bg': '#2a2a2a',
-					lime: '#c3ff00',
-					'lime-alt': '#b8ff00',
-					coral: '#ff6b47',
-					white: '#ffffff',
-					'text-secondary': '#a0a0a0',
+				// Custom colors for CorpoIdeal AI
+				corpoideal: {
+					purple: '#8B5CF6',
+					darkpurple: '#6E59A5',
+					lightpurple: '#D6BCFA',
+					gray: '#8E9196',
+					dark: '#1A1F2C',
 				}
 			},
 			fontFamily: {
-				sans: ['Inter', 'system-ui', 'sans-serif'],
-				mono: ['JetBrains Mono', 'Consolas', 'monospace'],
-				display: ['Inter', 'system-ui', 'sans-serif'],
+				sans: ['Poppins', 'sans-serif'],
+				body: ['Roboto', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -122,47 +118,12 @@ export default {
 					  opacity: '1'
 					}
 				},
-				'pulse-lime': {
-					'0%, 100%': {
-						boxShadow: '0 0 20px rgba(195, 255, 0, 0.4)'
-					},
-					'50%': {
-						boxShadow: '0 0 40px rgba(195, 255, 0, 0.8)'
-					}
-				},
-				'slide-up': {
-					'0%': {
-						transform: 'translateY(20px)',
-						opacity: '0'
-					},
-					'100%': {
-						transform: 'translateY(0)',
-						opacity: '1'
-					}
-				},
-				'progress-fill': {
-					'0%': {
-						width: '0%'
-					},
-					'100%': {
-						width: 'var(--progress-width)'
-					}
-				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
-				'pulse-lime': 'pulse-lime 2s ease-in-out infinite',
-				'slide-up': 'slide-up 0.4s ease-out',
-				'progress-fill': 'progress-fill 0.8s ease-out',
-			},
-			backgroundImage: {
-				'fitness-gradient': 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%)',
-				'lime-gradient': 'linear-gradient(135deg, #c3ff00 0%, #b8ff00 100%)',
-				'coral-gradient': 'linear-gradient(135deg, #ff6b47 0%, #ff8a73 100%)',
-				'progress-gradient': 'linear-gradient(90deg, #c3ff00 0%, #ff6b47 100%)',
 			}
 		}
 	},

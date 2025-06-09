@@ -1,6 +1,5 @@
 
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,35 +7,65 @@
 
 @layer base {
   :root {
-    --background: 10 10% 4%;
-    --foreground: 0 0% 100%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 16%;
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 0 0% 16%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 74 100% 63%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 258 91% 66%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 16%;
+    --secondary: 260 31% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 16%;
-    --muted-foreground: 0 0% 63%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 74 100% 63%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 250 95% 92%;
+    --accent-foreground: 260 31% 50%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
-    --ring: 74 100% 63%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 258 91% 66%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 258 91% 66%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 31% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 250 95% 92%;
+    --accent-foreground: 260 31% 50%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
 
@@ -46,141 +75,36 @@
   }
 
   body {
-    @apply bg-fitness-black text-fitness-white font-sans;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-    min-height: 100vh;
-  }
-
-  html {
-    scroll-behavior: smooth;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
 @layer components {
-  /* Navegação inferior */
   .bottom-nav-item {
-    @apply flex flex-col items-center justify-center text-xs transition-all duration-300 hover:scale-105;
+    @apply flex flex-col items-center justify-center text-xs;
   }
   
   .bottom-nav-icon {
-    @apply h-5 w-5 mb-1 transition-all duration-300;
+    @apply h-5 w-5 mb-1;
   }
 
-  /* Componentes de fitness */
-  .fitness-card {
-    @apply bg-fitness-card-bg/90 backdrop-blur-sm rounded-2xl p-6 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
+  .upload-area {
+    @apply border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors;
   }
   
-  .fitness-button-primary {
-    @apply bg-fitness-lime text-black font-bold py-4 px-8 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg;
-    box-shadow: 0 0 20px rgba(195, 255, 0, 0.3);
-  }
-
-  .fitness-button-primary:hover {
-    box-shadow: 0 0 30px rgba(195, 255, 0, 0.5);
-  }
-
-  .fitness-button-secondary {
-    @apply border-2 border-white text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 hover:bg-white hover:text-black;
+  .photo-preview {
+    @apply w-full h-full object-cover rounded-lg;
   }
   
-  .fitness-metric {
-    @apply text-4xl font-black font-mono text-fitness-lime;
+  .section-title {
+    @apply text-2xl font-semibold text-corpoideal-dark;
   }
-
-  .fitness-metric-small {
-    @apply text-2xl font-bold font-mono text-fitness-lime;
-  }
-
-  .fitness-section-title {
-    @apply text-2xl font-bold text-white uppercase tracking-wide mb-6;
-  }
-
-  .fitness-progress-bar {
-    @apply w-full bg-gray-800 rounded-full h-3 overflow-hidden;
-  }
-
-  .fitness-progress-fill {
-    @apply h-full bg-gradient-to-r from-fitness-lime to-fitness-coral rounded-full transition-all duration-700 ease-out;
-  }
-
-  /* Cards específicos */
+  
   .workout-card {
-    @apply fitness-card hover:border-fitness-lime/30;
+    @apply bg-white rounded-lg shadow-md p-4;
   }
   
   .nutrition-card {
-    @apply fitness-card hover:border-fitness-coral/30;
-  }
-
-  .progress-card {
-    @apply fitness-card;
-  }
-
-  /* Inputs customizados */
-  .fitness-input {
-    @apply bg-fitness-card-bg/50 border border-white/20 text-white placeholder-fitness-text-secondary rounded-xl px-4 py-3 focus:border-fitness-lime focus:ring-2 focus:ring-fitness-lime/20 transition-all duration-300;
-  }
-
-  /* Efeitos visuais */
-  .glass-effect {
-    @apply backdrop-blur-sm bg-white/5 border border-white/10;
-  }
-
-  .glow-lime {
-    box-shadow: 0 0 20px rgba(195, 255, 0, 0.3);
-  }
-
-  .glow-coral {
-    box-shadow: 0 0 20px rgba(255, 107, 71, 0.3);
-  }
-
-  /* Overlays */
-  .fitness-overlay {
-    @apply absolute inset-0 bg-black/60 backdrop-blur-sm;
-  }
-
-  .fitness-overlay-light {
-    @apply absolute inset-0 bg-black/40;
+    @apply bg-white rounded-lg shadow-md p-4;
   }
 }
-
-/* Animações personalizadas */
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-.shimmer {
-  background: linear-gradient(90deg, transparent, rgba(195, 255, 0, 0.2), transparent);
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
-}
-
-/* Scrollbar personalizada */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a1a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #c3ff00, #ff6b47);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #b8ff00, #ff8a73);
-}
-
-/* Estados de loading */
-.skeleton {
-  @apply bg-fitness-card-bg/50 animate-pulse rounded-xl;
-}
-
