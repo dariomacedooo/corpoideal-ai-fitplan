@@ -1,3 +1,4 @@
+
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { WorkoutPlan } from "@/components/training/WorkoutPlan";
@@ -342,8 +343,8 @@ const TrainingPage = () => {
       <div className="pb-16 pt-14">
         <AppHeader />
         <div className="px-4 py-6">
-          <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Seu Plano de Treino</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="main-title mb-4">Seu Plano de Treino</h1>
+          <p className="subtitle mb-6">
             Complete seu perfil primeiro para ver seu plano personalizado.
           </p>
         </div>
@@ -353,14 +354,14 @@ const TrainingPage = () => {
   }
 
   return (
-    <div className="pb-16 pt-14">
+    <div className="pb-16 pt-14 bg-background min-h-screen">
       <AppHeader />
       
       <div className="px-4 py-6">
-        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">
+        <h1 className="main-title mb-2">
           Treino - {profile.name || 'Usuário'}
         </h1>
-        <p className="text-gray-600 mb-6">
+        <p className="subtitle mb-6">
           Treino personalizado para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
           profile.goal === 'perder-peso' ? 'Perda de Peso' : 
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Nível {profile.trainingExperience}
@@ -368,12 +369,39 @@ const TrainingPage = () => {
         </p>
         
         <Tabs defaultValue={isFemale ? 'female' : 'customizer'} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="customizer">Personalizar</TabsTrigger>
-            {isFemale && <TabsTrigger value="female">Feminino</TabsTrigger>}
-            <TabsTrigger value="scientific">Científico</TabsTrigger>
-            <TabsTrigger value="workout">Plano Básico</TabsTrigger>
-            <TabsTrigger value="progress">Progresso</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 bg-card-soft rounded-2xl p-1 shadow-subtle">
+            <TabsTrigger 
+              value="customizer" 
+              className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
+            >
+              Personalizar
+            </TabsTrigger>
+            {isFemale && (
+              <TabsTrigger 
+                value="female"
+                className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
+              >
+                Feminino
+              </TabsTrigger>
+            )}
+            <TabsTrigger 
+              value="scientific"
+              className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
+            >
+              Científico
+            </TabsTrigger>
+            <TabsTrigger 
+              value="workout"
+              className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
+            >
+              Plano Básico
+            </TabsTrigger>
+            <TabsTrigger 
+              value="progress"
+              className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
+            >
+              Progresso
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="customizer" className="mt-6">

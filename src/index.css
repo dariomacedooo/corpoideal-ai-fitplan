@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,10 +7,10 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 98%;
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 100%;
+    --card: 0 0% 98%;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
@@ -35,7 +35,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 258 91% 66%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
 
   .dark {
@@ -75,11 +75,39 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-inter;
   }
 }
 
 @layer components {
+  .main-title {
+    @apply font-montserrat font-bold text-2xl lg:text-3xl text-corpoideal-purple tracking-tight;
+  }
+  
+  .subtitle {
+    @apply font-inter font-normal text-base text-corpoideal-gray tracking-normal;
+  }
+  
+  .info-card {
+    @apply bg-card-soft rounded-2xl p-4 shadow-subtle border border-border-soft;
+  }
+  
+  .workout-summary-card {
+    @apply bg-gradient-to-br from-purple-soft to-purple-light rounded-2xl p-6 shadow-modern border border-purple-border;
+  }
+  
+  .intensity-card {
+    @apply bg-gradient-to-br from-orange-soft to-orange-light rounded-2xl p-4 shadow-modern border border-orange-border;
+  }
+  
+  .active-tab {
+    @apply bg-gradient-to-r from-purple-vibrant to-purple-deep text-white shadow-modern;
+  }
+  
+  .modern-button {
+    @apply bg-gradient-to-r from-purple-vibrant to-purple-deep hover:from-purple-deep hover:to-purple-darker text-white font-medium rounded-2xl px-6 py-3 shadow-modern transition-all duration-200 hover:shadow-lg hover:scale-105;
+  }
+
   .bottom-nav-item {
     @apply flex flex-col items-center justify-center text-xs;
   }
@@ -89,22 +117,22 @@
   }
 
   .upload-area {
-    @apply border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors;
+    @apply border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shadow-subtle;
   }
   
   .photo-preview {
-    @apply w-full h-full object-cover rounded-lg;
+    @apply w-full h-full object-cover rounded-2xl;
   }
   
   .section-title {
-    @apply text-2xl font-semibold text-corpoideal-dark;
+    @apply text-2xl font-semibold text-corpoideal-dark font-montserrat;
   }
   
   .workout-card {
-    @apply bg-white rounded-lg shadow-md p-4;
+    @apply bg-card-soft rounded-2xl shadow-modern p-4 border border-border-soft;
   }
   
   .nutrition-card {
-    @apply bg-white rounded-lg shadow-md p-4;
+    @apply bg-card-soft rounded-2xl shadow-modern p-4 border border-border-soft;
   }
 }
