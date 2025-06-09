@@ -2,6 +2,7 @@ import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { WorkoutPlan } from "@/components/training/WorkoutPlan";
 import { LoadProgress } from "@/components/training/LoadProgress";
+import { WorkoutCustomizer } from "@/components/training/WorkoutCustomizer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScientificWorkoutPlan } from "@/components/training/ScientificWorkoutPlan";
 import { FemaleWorkoutPlan } from "@/components/training/FemaleWorkoutPlan";
@@ -11,6 +12,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 const TrainingPage = () => {
   const { profile } = useUserProfile();
   const [workoutDays, setWorkoutDays] = useState([]);
+  const [customWorkout, setCustomWorkout] = useState([]);
 
   useEffect(() => {
     if (profile?.goal && profile?.trainingExperience && profile?.trainingLocation) {
@@ -22,6 +24,12 @@ const TrainingPage = () => {
       setWorkoutDays(generatedWorkout);
     }
   }, [profile]);
+
+  const handleSaveCustomWorkout = (workout: any[]) => {
+    setCustomWorkout(workout);
+    // Aqui você pode adicionar lógica para salvar no localStorage ou backend
+    localStorage.setItem('customWorkout', JSON.stringify(workout));
+  };
 
   const generateWorkoutPlan = (goal: string, experience: string, location: string) => {
     // Workouts específicos baseados no objetivo
@@ -359,13 +367,22 @@ const TrainingPage = () => {
           {isFemale && ` • Foco Feminino`}
         </p>
         
-        <Tabs defaultValue={isFemale ? 'female' : (profile.trainingExperience === 'iniciante' ? 'workout' : 'scientific')} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue={isFemale ? 'female' : 'customizer'} className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="customizer">Personalizar</TabsTrigger>
             {isFemale && <TabsTrigger value="female">Feminino</TabsTrigger>}
             <TabsTrigger value="scientific">Científico</TabsTrigger>
             <TabsTrigger value="workout">Plano Básico</TabsTrigger>
             <TabsTrigger value="progress">Progresso</TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="customizer" className="mt-6">
+            <WorkoutCustomizer 
+              initialWorkout={customWorkout}
+              onSaveWorkout={handleSaveCustomWorkout}
+              isVisible={true}
+            />
+          </TabsContent>
           
           {isFemale && (
             <TabsContent value="female" className="mt-6">
