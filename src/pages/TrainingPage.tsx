@@ -4,6 +4,7 @@ import { WorkoutPlan } from "@/components/training/WorkoutPlan";
 import { LoadProgress } from "@/components/training/LoadProgress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScientificWorkoutPlan } from "@/components/training/ScientificWorkoutPlan";
+import { FemaleWorkoutPlan } from "@/components/training/FemaleWorkoutPlan";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
@@ -325,6 +326,9 @@ const TrainingPage = () => {
     // Exercícios ao ar livre
   });
 
+  const isFemale = profile.gender === 'feminino';
+  const userAge = profile.age || 25;
+
   if (!profile) {
     return (
       <div className="pb-16 pt-14">
@@ -352,14 +356,27 @@ const TrainingPage = () => {
           Treino personalizado para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
           profile.goal === 'perder-peso' ? 'Perda de Peso' : 
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Nível {profile.trainingExperience}
+          {isFemale && ` • Foco Feminino`}
         </p>
         
-        <Tabs defaultValue={profile.trainingExperience === 'iniciante' ? 'workout' : 'scientific'} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue={isFemale ? 'female' : (profile.trainingExperience === 'iniciante' ? 'workout' : 'scientific')} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            {isFemale && <TabsTrigger value="female">Feminino</TabsTrigger>}
             <TabsTrigger value="scientific">Científico</TabsTrigger>
             <TabsTrigger value="workout">Plano Básico</TabsTrigger>
             <TabsTrigger value="progress">Progresso</TabsTrigger>
           </TabsList>
+          
+          {isFemale && (
+            <TabsContent value="female" className="mt-6">
+              <FemaleWorkoutPlan 
+                age={userAge}
+                experience={profile.trainingExperience}
+                goal={profile.goal}
+                hormonePhase="folicular"
+              />
+            </TabsContent>
+          )}
           
           <TabsContent value="scientific" className="mt-6">
             <ScientificWorkoutPlan 

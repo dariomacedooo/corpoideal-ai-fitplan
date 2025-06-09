@@ -1,22 +1,20 @@
+import { trainingLevels, getTrainingSplit } from "@/utils/trainingCalculator";
 
-import { trainingLevels, getTrainingSplit } from '@/utils/trainingCalculator';
+import { femaleWorkoutPlans, femaleExercises } from './femaleWorkouts';
 
-interface ScientificExercise {
+interface Exercise {
   name: string;
-  sets: string;
+  sets: number;
   reps: string;
-  videoUrl: string;
-  tip: string;
-  equipment?: string;
-  muscleGroup: string;
-  type: 'compound' | 'isolation';
-  weeklyVolume: number;
+  type?: 'compound' | 'isolation';
+  videoUrl?: string;
+  tip?: string;
 }
 
-interface ScientificWorkoutDay {
+interface WorkoutDay {
   day: string;
   focus: string;
-  exercises: ScientificExercise[];
+  exercises: Exercise[];
   totalVolume: {
     chest: number;
     back: number;
@@ -26,417 +24,424 @@ interface ScientificWorkoutDay {
   };
 }
 
-export const generateScientificWorkout = (
-  experience: string,
-  trainingLocation: string,
-  goal: string,
-  daysPerWeek: number = 5
-): ScientificWorkoutDay[] => {
-  const level = trainingLevels[experience] || trainingLevels.iniciante;
-  const split = getTrainingSplit(daysPerWeek);
-  
-  // Base exercises for different training splits
-  if (split.type === 'Full Body') {
-    return generateFullBodyWorkout(level, trainingLocation, goal);
-  } else if (split.type === 'Upper/Lower') {
-    return generateUpperLowerWorkout(level, trainingLocation, goal);
-  } else {
-    return generatePushPullLegsWorkout(level, trainingLocation, goal);
+const trainingTemplates: Record<string, Record<string, Record<string, WorkoutDay[]>>> = {
+  iniciante: {
+    'ganhar-massa': {
+      academia: [
+        {
+          day: 'Segunda',
+          focus: 'Peito e Tríceps',
+          exercises: [
+            { name: 'Supino Reto', sets: 3, reps: '10-12' },
+            { name: 'Supino Inclinado', sets: 3, reps: '10-12' },
+            { name: 'Tríceps Pulley', sets: 3, reps: '12-15' }
+          ],
+          totalVolume: { chest: 9, back: 0, shoulders: 0, arms: 9, legs: 0 }
+        },
+        {
+          day: 'Quarta',
+          focus: 'Costas e Bíceps',
+          exercises: [
+            { name: 'Remada Curvada', sets: 3, reps: '10-12' },
+            { name: 'Barra Fixa Assistida', sets: 3, reps: '8-10' },
+            { name: 'Rosca Direta', sets: 3, reps: '12-15' }
+          ],
+          totalVolume: { chest: 0, back: 9, shoulders: 0, arms: 9, legs: 0 }
+        },
+        {
+          day: 'Sexta',
+          focus: 'Pernas e Ombros',
+          exercises: [
+            { name: 'Agachamento Livre', sets: 3, reps: '10-12' },
+            { name: 'Desenvolvimento com Halteres', sets: 3, reps: '10-12' },
+            { name: 'Elevação Lateral', sets: 3, reps: '12-15' }
+          ],
+          totalVolume: { chest: 0, back: 0, shoulders: 9, arms: 0, legs: 9 }
+        }
+      ]
+    },
+    perder_peso: {
+      academia: [
+        {
+          day: 'Segunda',
+          focus: 'Cardio e Core',
+          exercises: [
+            { name: 'Esteira', sets: 1, reps: '30 min' },
+            { name: 'Prancha', sets: 3, reps: '30s' }
+          ],
+          totalVolume: { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 0 }
+        },
+        {
+          day: 'Quarta',
+          focus: 'Treino Funcional',
+          exercises: [
+            { name: 'Agachamento com Salto', sets: 3, reps: '12-15' },
+            { name: 'Burpee', sets: 3, reps: '10-12' }
+          ],
+          totalVolume: { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 0 }
+        },
+        {
+          day: 'Sexta',
+          focus: 'Circuito de Força',
+          exercises: [
+            { name: 'Flexão', sets: 3, reps: '10-12' },
+            { name: 'Remada com Elástico', sets: 3, reps: '12-15' }
+          ],
+          totalVolume: { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 0 }
+        }
+      ]
+    }
+  },
+  intermediario: {
+    ganhar_massa: {
+      academia: [
+        {
+          day: 'Segunda',
+          focus: 'Peito e Tríceps',
+          exercises: [
+            { name: 'Supino Reto', sets: 4, reps: '8-10' },
+            { name: 'Supino Inclinado', sets: 4, reps: '8-10' },
+            { name: 'Tríceps Pulley', sets: 4, reps: '10-12' }
+          ],
+          totalVolume: { chest: 12, back: 0, shoulders: 0, arms: 12, legs: 0 }
+        },
+        {
+          day: 'Terça',
+          focus: 'Costas e Bíceps',
+          exercises: [
+            { name: 'Remada Curvada', sets: 4, reps: '8-10' },
+            { name: 'Barra Fixa', sets: 4, reps: '6-8' },
+            { name: 'Rosca Direta', sets: 4, reps: '10-12' }
+          ],
+          totalVolume: { chest: 0, back: 12, shoulders: 0, arms: 12, legs: 0 }
+        },
+        {
+          day: 'Quinta',
+          focus: 'Pernas e Ombros',
+          exercises: [
+            { name: 'Agachamento Livre', sets: 4, reps: '8-10' },
+            { name: 'Desenvolvimento com Halteres', sets: 4, reps: '8-10' },
+            { name: 'Elevação Lateral', sets: 4, reps: '10-12' }
+          ],
+          totalVolume: { chest: 0, back: 0, shoulders: 12, arms: 0, legs: 12 }
+        }
+      ]
+    }
+  },
+  avancado: {
+    ganhar_massa: {
+      academia: [
+        {
+          day: 'Segunda',
+          focus: 'Peito e Tríceps',
+          exercises: [
+            { name: 'Supino Reto', sets: 5, reps: '6-8' },
+            { name: 'Supino Inclinado', sets: 5, reps: '6-8' },
+            { name: 'Tríceps Pulley', sets: 5, reps: '8-10' }
+          ],
+          totalVolume: { chest: 15, back: 0, shoulders: 0, arms: 15, legs: 0 }
+        },
+        {
+          day: 'Terça',
+          focus: 'Costas e Bíceps',
+          exercises: [
+            { name: 'Remada Curvada', sets: 5, reps: '6-8' },
+            { name: 'Barra Fixa', sets: 5, reps: '6-8' },
+            { name: 'Rosca Direta', sets: 5, reps: '8-10' }
+          ],
+          totalVolume: { chest: 0, back: 15, shoulders: 0, arms: 15, legs: 0 }
+        },
+        {
+          day: 'Quinta',
+          focus: 'Pernas e Ombros',
+          exercises: [
+            { name: 'Agachamento Livre', sets: 5, reps: '6-8' },
+            { name: 'Desenvolvimento com Halteres', sets: 5, reps: '6-8' },
+            { name: 'Elevação Lateral', sets: 5, reps: '8-10' }
+          ],
+          totalVolume: { chest: 0, back: 0, shoulders: 15, arms: 0, legs: 15 }
+        }
+      ]
+    }
   }
 };
 
-const generatePushPullLegsWorkout = (
-  level: any,
-  location: string,
-  goal: string
-): ScientificWorkoutDay[] => {
-  const isGym = location === 'academia';
-  
-  return [
-    {
-      day: 'Segunda',
-      focus: 'Push (Peito, Ombros, Tríceps)',
-      exercises: [
-        {
-          name: isGym ? 'Supino Reto' : 'Flexão',
-          sets: level.name === 'Avançado' ? '4-5' : level.name === 'Intermediário' ? '3-4' : '2-3',
-          reps: level.name === 'Avançado' ? '6-8 (RIR 1-2)' : level.name === 'Intermediário' ? '8-10 (RIR 2-3)' : '10-12 (RIR 3-4)',
-          videoUrl: 'https://www.youtube.com/watch?v=gRVjAtPip0Y',
-          tip: `${level.progressionStrategy}. Descanso: ${level.restPeriods.compound}`,
-          equipment: isGym ? 'Barra e banco' : 'Peso corporal',
-          muscleGroup: 'chest',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: isGym ? 'Supino Inclinado' : 'Flexão Inclinada',
-          sets: level.name === 'Avançado' ? '3-4' : level.name === 'Intermediário' ? '3' : '2-3',
-          reps: level.name === 'Avançado' ? '8-10 (RIR 1-2)' : level.name === 'Intermediário' ? '10-12 (RIR 2-3)' : '12-15 (RIR 3-4)',
-          videoUrl: 'https://www.youtube.com/watch?v=IP4oeKMOb_s',
-          tip: `Técnicas aplicadas: ${level.techniques.join(', ')}`,
-          equipment: isGym ? 'Banco inclinado' : 'Superfície elevada',
-          muscleGroup: 'chest',
-          type: 'compound',
-          weeklyVolume: 3
-        },
-        {
-          name: isGym ? 'Desenvolvimento Militar' : 'Desenvolvimento com Halteres',
-          sets: level.name === 'Avançado' ? '4' : level.name === 'Intermediário' ? '3' : '2-3',
-          reps: level.name === 'Avançado' ? '6-8 (RIR 1-2)' : '8-12 (RIR 2-3)',
-          videoUrl: 'https://www.youtube.com/watch?v=qEwKCR5JCog',
-          tip: `Volume semanal alvo ombros: ${level.volumeRanges.shoulders[0]}-${level.volumeRanges.shoulders[1]} séries`,
-          equipment: isGym ? 'Barra' : 'Halteres',
-          muscleGroup: 'shoulders',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: 'Elevação Lateral',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '12-15 + drop-set' : '10-15',
-          videoUrl: 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
-          tip: `RIR: ${level.rir}. Descanso: ${level.restPeriods.isolation}`,
-          equipment: 'Halteres',
-          muscleGroup: 'shoulders',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: isGym ? 'Tríceps Pulley' : 'Tríceps Mergulho',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '10-12 + rest-pause' : '10-15',
-          videoUrl: 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-          tip: `Volume semanal braços: ${level.volumeRanges.arms[0]}-${level.volumeRanges.arms[1]} séries`,
-          equipment: isGym ? 'Cabo' : 'Cadeira/Banco',
-          muscleGroup: 'arms',
-          type: 'isolation',
-          weeklyVolume: 3
-        }
-      ],
-      totalVolume: {
-        chest: 7,
-        back: 0,
-        shoulders: 7,
-        arms: 3,
-        legs: 0
-      }
-    },
-    {
-      day: 'Terça',
-      focus: 'Pull (Costas, Bíceps)',
-      exercises: [
-        {
-          name: isGym ? 'Puxada Frente' : 'Barra Fixa/Australiana',
-          sets: level.name === 'Avançado' ? '4-5' : level.name === 'Intermediário' ? '3-4' : '2-3',
-          reps: level.name === 'Avançado' ? '6-8 (RIR 1-2)' : '8-12 (RIR 2-3)',
-          videoUrl: 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
-          tip: `Periodização: ${level.progressionStrategy}`,
-          equipment: isGym ? 'Puxador' : 'Barra/Mesa',
-          muscleGroup: 'back',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: 'Remada Curvada',
-          sets: level.name === 'Avançado' ? '4' : level.name === 'Intermediário' ? '3' : '2-3',
-          reps: level.name === 'Avançado' ? '8-10 (RIR 1-2)' : '10-12 (RIR 2-3)',
-          videoUrl: 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-          tip: `Volume semanal costas: ${level.volumeRanges.back[0]}-${level.volumeRanges.back[1]} séries`,
-          equipment: isGym ? 'Barra' : 'Halteres',
-          muscleGroup: 'back',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: 'Remada Unilateral',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '10-12 cada lado' : '12-15 cada lado',
-          videoUrl: 'https://www.youtube.com/watch?v=roCP6wCXPqo',
-          tip: level.name === 'Avançado' ? 'Aplicar cluster sets se necessário' : 'Foco na contração das escápulas',
-          equipment: 'Halteres',
-          muscleGroup: 'back',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Rosca Direta',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '8-10 + rest-pause' : '10-12',
-          videoUrl: 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo',
-          tip: `Técnicas: ${level.techniques.slice(0, 2).join(', ')}`,
-          equipment: isGym ? 'Barra' : 'Halteres',
-          muscleGroup: 'arms',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Rosca Martelo',
-          sets: level.name === 'Avançado' ? '3' : '2-3',
-          reps: level.name === 'Avançado' ? '12-15' : '12-15',
-          videoUrl: 'https://www.youtube.com/watch?v=zC3nLlEvin4',
-          tip: `RIR: ${level.rir}`,
-          equipment: 'Halteres',
-          muscleGroup: 'arms',
-          type: 'isolation',
-          weeklyVolume: 3
-        }
-      ],
-      totalVolume: {
-        chest: 0,
-        back: 11,
-        shoulders: 0,
-        arms: 6,
-        legs: 0
-      }
-    },
-    {
-      day: 'Quarta',
-      focus: 'Legs (Pernas Completas)',
-      exercises: [
-        {
-          name: isGym ? 'Agachamento Livre' : 'Agachamento',
-          sets: level.name === 'Avançado' ? '4-5' : level.name === 'Intermediário' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '6-8 (RIR 1-2)' : '8-12 (RIR 2-3)',
-          videoUrl: 'https://www.youtube.com/watch?v=Dy28eq2PjcM',
-          tip: `Movimento rei. Progressão: ${level.progressionStrategy}`,
-          equipment: isGym ? 'Barra' : 'Peso corporal',
-          muscleGroup: 'legs',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: isGym ? 'Leg Press' : 'Agachamento Búlgaro',
-          sets: level.name === 'Avançado' ? '4' : level.name === 'Intermediário' ? '3' : '3',
-          reps: level.name === 'Avançado' ? '10-12' : '12-15',
-          videoUrl: 'https://www.youtube.com/watch?v=IZxyjW7MPJQ',
-          tip: `Volume semanal pernas: ${level.volumeRanges.legs[0]}-${level.volumeRanges.legs[1]} séries`,
-          equipment: isGym ? 'Leg Press' : 'Peso corporal',
-          muscleGroup: 'legs',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: 'Stiff/RDL',
-          sets: level.name === 'Avançado' ? '4' : '3',
-          reps: level.name === 'Avançado' ? '8-10 (RIR 1-2)' : '10-12',
-          videoUrl: 'https://www.youtube.com/watch?v=1uDiW5-_Jps',
-          tip: level.name === 'Avançado' ? 'Tempo sob tensão: 3-1-2-1' : 'Foco na fase excêntrica',
-          equipment: isGym ? 'Barra' : 'Halteres',
-          muscleGroup: 'legs',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: isGym ? 'Cadeira Extensora' : 'Afundo',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '12-15 + drop-set' : '12-15',
-          videoUrl: 'https://www.youtube.com/watch?v=YyvSfVjQeL0',
-          tip: `Descanso: ${level.restPeriods.isolation}`,
-          equipment: isGym ? 'Máquina' : 'Peso corporal',
-          muscleGroup: 'legs',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: isGym ? 'Mesa Flexora' : 'Flexão Nórdica',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '10-12' : '8-12',
-          videoUrl: 'https://www.youtube.com/watch?v=ELOCsoDSmrg',
-          tip: level.name === 'Avançado' ? 'Possível rest-pause na última série' : 'Controle da fase excêntrica',
-          equipment: isGym ? 'Máquina' : 'Peso corporal',
-          muscleGroup: 'legs',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Panturrilha',
-          sets: level.name === 'Avançado' ? '4' : '3',
-          reps: level.name === 'Avançado' ? '15-20' : '15-20',
-          videoUrl: 'https://www.youtube.com/watch?v=JJ1TcgVeOyI',
-          tip: 'Amplitude máxima, pausa na contração',
-          equipment: isGym ? 'Máquina' : 'Step/Degrau',
-          muscleGroup: 'legs',
-          type: 'isolation',
-          weeklyVolume: 4
-        }
-      ],
-      totalVolume: {
-        chest: 0,
-        back: 0,
-        shoulders: 0,
-        arms: 0,
-        legs: 22
-      }
-    },
-    {
-      day: 'Quinta',
-      focus: 'Push (Peito, Ombros, Tríceps) - Volume B',
-      exercises: [
-        {
-          name: isGym ? 'Supino Inclinado Halteres' : 'Flexão Diamante',
-          sets: level.name === 'Avançado' ? '4' : level.name === 'Intermediário' ? '3' : '3',
-          reps: level.name === 'Avançado' ? '8-10 (RIR 1-2)' : '10-12 (RIR 2-3)',
-          videoUrl: 'https://www.youtube.com/watch?v=IP4oeKMOb_s',
-          tip: 'Variação para estímulo diferente',
-          equipment: isGym ? 'Halteres' : 'Peso corporal',
-          muscleGroup: 'chest',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: 'Crucifixo',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '10-12 + drop-set' : '12-15',
-          videoUrl: 'https://www.youtube.com/watch?v=eozdVDA78K0',
-          tip: level.name === 'Avançado' ? 'Aplicar pré-exaustão se indicado' : 'Amplitude completa',
-          equipment: 'Halteres',
-          muscleGroup: 'chest',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Elevação Frontal',
-          sets: level.name === 'Avançado' ? '3' : '2-3',
-          reps: level.name === 'Avançado' ? '12-15' : '12-15',
-          videoUrl: 'https://www.youtube.com/watch?v=qzaXBB_1w68',
-          tip: 'Complemento para ombro anterior',
-          equipment: 'Halteres',
-          muscleGroup: 'shoulders',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Crucifixo Inverso',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '12-15' : '12-15',
-          videoUrl: 'https://www.youtube.com/watch?v=ea7qmaN3AOk',
-          tip: 'Essencial para ombro posterior',
-          equipment: 'Halteres',
-          muscleGroup: 'shoulders',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Tríceps Francês',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '10-12' : '10-12',
-          videoUrl: 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
-          tip: `Volume total braços: ${level.volumeRanges.arms[0]}-${level.volumeRanges.arms[1]} séries/semana`,
-          equipment: 'Halteres',
-          muscleGroup: 'arms',
-          type: 'isolation',
-          weeklyVolume: 3
-        }
-      ],
-      totalVolume: {
-        chest: 7,
-        back: 0,
-        shoulders: 6,
-        arms: 3,
-        legs: 0
-      }
-    },
-    {
-      day: 'Sexta',
-      focus: 'Pull (Costas, Bíceps) - Volume B',
-      exercises: [
-        {
-          name: isGym ? 'Remada Máquina' : 'Remada Invertida',
-          sets: level.name === 'Avançado' ? '4' : level.name === 'Intermediário' ? '3' : '3',
-          reps: level.name === 'Avançado' ? '8-10 (RIR 1-2)' : '10-12',
-          videoUrl: 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-          tip: 'Variação de pegada para estímulo completo',
-          equipment: isGym ? 'Máquina' : 'Mesa/Banco',
-          muscleGroup: 'back',
-          type: 'compound',
-          weeklyVolume: 4
-        },
-        {
-          name: isGym ? 'Pulldown Pegada Fechada' : 'Barra Fixa Pegada Fechada',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '10-12' : '10-12',
-          videoUrl: 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
-          tip: 'Foco no latíssimo',
-          equipment: isGym ? 'Puxador' : 'Barra',
-          muscleGroup: 'back',
-          type: 'compound',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Face Pull',
-          sets: level.name === 'Avançado' ? '3' : '2-3',
-          reps: level.name === 'Avançado' ? '15-20' : '15-20',
-          videoUrl: 'https://www.youtube.com/watch?v=rep-qVOkqgk',
-          tip: 'Saúde do ombro posterior',
-          equipment: isGym ? 'Cabo' : 'Elástico',
-          muscleGroup: 'back',
-          type: 'isolation',
-          weeklyVolume: 3
-        },
-        {
-          name: 'Rosca 21',
-          sets: level.name === 'Avançado' ? '2-3' : '2',
-          reps: level.name === 'Avançado' ? '21 reps (7+7+7)' : '21 reps',
-          videoUrl: 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo',
-          tip: level.name === 'Avançado' ? 'Técnica avançada de intensidade' : 'Técnica de variação',
-          equipment: 'Halteres',
-          muscleGroup: 'arms',
-          type: 'isolation',
-          weeklyVolume: 2
-        }
-      ],
-      totalVolume: {
-        chest: 0,
-        back: 10,
-        shoulders: 0,
-        arms: 2,
-        legs: 0
-      }
-    },
-    {
-      day: 'Sábado',
-      focus: 'Core e Funcional/Descanso Ativo',
-      exercises: [
-        {
-          name: 'Prancha',
-          sets: level.name === 'Avançado' ? '3-4' : '3',
-          reps: level.name === 'Avançado' ? '60-90s' : '30-60s',
-          videoUrl: 'https://www.youtube.com/watch?v=ASdvN_XEl_c',
-          tip: 'Estabilização do core',
-          equipment: 'Peso corporal',
-          muscleGroup: 'arms',
-          type: 'isolation',
-          weeklyVolume: 0
-        },
-        {
-          name: 'Caminhada/Cardio Leve',
-          sets: '1',
-          reps: '30-45 min',
-          videoUrl: 'https://www.youtube.com/watch?v=NKDNgK7HB0s',
-          tip: 'Recuperação ativa',
-          equipment: 'Nenhum',
-          muscleGroup: 'legs',
-          type: 'compound',
-          weeklyVolume: 0
-        }
-      ],
-      totalVolume: {
-        chest: 0,
-        back: 0,
-        shoulders: 0,
-        arms: 0,
-        legs: 0
-      }
+const adjustSetsForLevel = (sets: number, level: typeof trainingLevels.iniciante) => {
+  if (level.name === 'Iniciante') return Math.max(2, sets - 1);
+  if (level.name === 'Intermediário') return sets;
+  if (level.name === 'Avançado') return sets + 1;
+  return sets;
+};
+
+const adjustRepsForLevel = (reps: string, level: typeof trainingLevels.iniciante) => {
+  if (level.name === 'Iniciante') return reps;
+  if (level.name === 'Intermediário') return reps;
+  if (level.name === 'Avançado') {
+    // Decrease reps range for advanced
+    const match = reps.match(/(\d+)-(\d+)/);
+    if (match) {
+      const min = parseInt(match[1], 10);
+      const max = parseInt(match[2], 10);
+      return `${Math.max(min - 2, 4)}-${Math.max(max - 2, 6)}`;
     }
+    return reps;
+  }
+  return reps;
+};
+
+const getExerciseType = (exerciseName: string) => {
+  const compoundExercises = [
+    'Supino Reto',
+    'Supino Inclinado',
+    'Remada Curvada',
+    'Barra Fixa',
+    'Agachamento Livre',
+    'Desenvolvimento com Halteres',
+    'Elevação Lateral',
+    'Tríceps Pulley',
+    'Rosca Direta'
   ];
+  return compoundExercises.includes(exerciseName) ? 'compound' : 'isolation';
 };
 
-const generateFullBodyWorkout = (level: any, location: string, goal: string): ScientificWorkoutDay[] => {
-  // Implementação para Full Body (2-3 dias)
-  return [];
+const getVideoUrl = (exerciseName: string) => {
+  const videoMap: Record<string, string> = {
+    'Supino Reto': 'https://www.youtube.com/watch?v=gRVjAtPip0Y',
+    'Supino Inclinado': 'https://www.youtube.com/watch?v=IP4oeKMOb_s',
+    'Remada Curvada': 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
+    'Barra Fixa': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
+    'Agachamento Livre': 'https://www.youtube.com/watch?v=Dy28eq2PjcM',
+    'Desenvolvimento com Halteres': 'https://www.youtube.com/watch?v=qEwKCR5JCog',
+    'Elevação Lateral': 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
+    'Tríceps Pulley': 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
+    'Rosca Direta': 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo'
+  };
+  return videoMap[exerciseName] || '';
 };
 
-const generateUpperLowerWorkout = (level: any, location: string, goal: string): ScientificWorkoutDay[] => {
-  // Implementação para Upper/Lower (4 dias)
-  return [];
+const getScientificTip = (exerciseName: string, level: typeof trainingLevels.iniciante) => {
+  const tips: Record<string, string> = {
+    'Supino Reto': 'Mantenha os ombros retraídos e controle a descida',
+    'Supino Inclinado': 'Foque na contração do peitoral superior',
+    'Remada Curvada': 'Mantenha as costas retas e contraia as escápulas',
+    'Barra Fixa': 'Use pegada pronada e mantenha o peito para fora',
+    'Agachamento Livre': 'Desça até 90 graus, joelhos alinhados',
+    'Desenvolvimento com Halteres': 'Não trave os cotovelos no topo',
+    'Elevação Lateral': 'Cotovelos ligeiramente flexionados',
+    'Tríceps Pulley': 'Mantenha os cotovelos fixos ao lado do corpo',
+    'Rosca Direta': 'Evite balanço do corpo, concentre no bíceps'
+  };
+  return tips[exerciseName] || '';
+};
+
+const calculateDayVolume = (exercises: Exercise[], level: typeof trainingLevels.iniciante) => {
+  // Simplified volume calculation: sets * reps (average)
+  let totalVolume = { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 0 };
+  exercises.forEach(ex => {
+    const sets = adjustSetsForLevel(ex.sets, level);
+    const repsMatch = ex.reps.match(/(\d+)-?(\d+)?/);
+    let reps = 0;
+    if (repsMatch) {
+      const min = parseInt(repsMatch[1], 10);
+      const max = repsMatch[2] ? parseInt(repsMatch[2], 10) : min;
+      reps = Math.round((min + max) / 2);
+    }
+    const volume = sets * reps;
+    switch (ex.focusMuscle || ex.name) {
+      case 'Peito':
+      case 'Supino Reto':
+      case 'Supino Inclinado':
+        totalVolume.chest += volume;
+        break;
+      case 'Costas':
+      case 'Remada Curvada':
+      case 'Barra Fixa':
+        totalVolume.back += volume;
+        break;
+      case 'Ombros':
+      case 'Desenvolvimento com Halteres':
+      case 'Elevação Lateral':
+        totalVolume.shoulders += volume;
+        break;
+      case 'Tríceps':
+      case 'Rosca Direta':
+      case 'Tríceps Pulley':
+        totalVolume.arms += volume;
+        break;
+      case 'Pernas':
+      case 'Agachamento Livre':
+        totalVolume.legs += volume;
+        break;
+      default:
+        break;
+    }
+  });
+  return totalVolume;
+};
+
+export const generateScientificWorkout = (
+  experience: string, 
+  location: string, 
+  goal: string, 
+  daysPerWeek: number,
+  gender?: string,
+  age?: number
+): WorkoutDay[] => {
+  // Se for usuário feminino, usar treinos específicos
+  if (gender === 'feminino' && age) {
+    return generateFemaleWorkout(experience, location, goal, daysPerWeek, age);
+  }
+
+  const level = trainingLevels[experience] || trainingLevels.iniciante;
+  const split = getTrainingSplit(daysPerWeek);
+  
+  const baseWorkout = trainingTemplates[experience]?.[goal]?.[location] || 
+                     trainingTemplates.intermediario.ganhar_massa.academia;
+
+  return baseWorkout.map(day => ({
+    ...day,
+    exercises: day.exercises.map(exercise => ({
+      ...exercise,
+      sets: adjustSetsForLevel(exercise.sets, level),
+      reps: adjustRepsForLevel(exercise.reps, level),
+      type: getExerciseType(exercise.name),
+      videoUrl: exercise.videoUrl || getVideoUrl(exercise.name),
+      tip: exercise.tip || getScientificTip(exercise.name, level)
+    })),
+    totalVolume: calculateDayVolume(day.exercises, level)
+  }));
+};
+
+const generateFemaleWorkout = (
+  experience: string,
+  location: string, 
+  goal: string,
+  daysPerWeek: number,
+  age: number
+): WorkoutDay[] => {
+  const getAgeGroup = (age: number): string => {
+    if (age >= 17 && age <= 25) return '17-25';
+    if (age >= 26 && age <= 39) return '26-39';
+    if (age >= 40 && age <= 59) return '40-59';
+    if (age >= 60) return '60+';
+    return '17-25';
+  };
+
+  const ageGroup = getAgeGroup(age);
+  const plans = femaleWorkoutPlans[ageGroup];
+  
+  if (!plans || plans.length === 0) {
+    return generateDefaultFemaleWorkout(experience, location, daysPerWeek);
+  }
+
+  // Encontrar plano que melhor corresponde ao objetivo
+  const matchingPlan = plans.find(plan => 
+    plan.objective.includes(goal) || plan.level === experience
+  ) || plans[0];
+
+  // Expandir para dias da semana solicitados
+  return expandToWeeklySchedule(matchingPlan, daysPerWeek, ageGroup);
+};
+
+const generateDefaultFemaleWorkout = (experience: string, location: string, daysPerWeek: number): WorkoutDay[] => {
+  const days = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+  const focuses = ['Glúteos e Pernas', 'Core e Superiores', 'Cardio e Funcional'];
+  
+  return Array.from({ length: daysPerWeek }, (_, index) => ({
+    day: days[index],
+    focus: focuses[index % focuses.length],
+    exercises: getFemaleExercisesForDay(focuses[index % focuses.length], experience, location),
+    totalVolume: { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 15 }
+  }));
+};
+
+const getFemaleExercisesForDay = (focus: string, experience: string, location: string) => {
+  const difficultyFilter = experience === 'iniciante' ? 
+    (ex: any) => ex.difficulty !== 'avancado' : 
+    () => true;
+
+  switch (focus) {
+    case 'Glúteos e Pernas':
+      return [
+        ...femaleExercises.gluteos.filter(difficultyFilter).slice(0, 3),
+        ...femaleExercises.pernas.filter(difficultyFilter).slice(0, 2)
+      ].map(ex => ({
+        ...ex,
+        type: 'compound',
+        videoUrl: ex.videoUrl,
+        tip: ex.technique
+      }));
+      
+    case 'Core e Superiores':
+      return [
+        ...femaleExercises.abdomen.filter(difficultyFilter).slice(0, 2),
+        ...femaleExercises.superiores.filter(difficultyFilter).slice(0, 2)
+      ].map(ex => ({
+        ...ex,
+        type: 'isolation',
+        videoUrl: ex.videoUrl,
+        tip: ex.technique
+      }));
+      
+    case 'Cardio e Funcional':
+      return [
+        ...femaleExercises.cardio.filter(difficultyFilter),
+        ...femaleExercises.abdomen.filter(difficultyFilter).slice(0, 1)
+      ].map(ex => ({
+        ...ex,
+        type: 'compound',
+        videoUrl: ex.videoUrl,
+        tip: ex.technique
+      }));
+      
+    default:
+      return femaleExercises.gluteos.filter(difficultyFilter).slice(0, 3).map(ex => ({
+        ...ex,
+        type: 'compound',
+        videoUrl: ex.videoUrl,
+        tip: ex.technique
+      }));
+  }
+};
+
+const expandToWeeklySchedule = (plan: any, daysPerWeek: number, ageGroup: string): WorkoutDay[] => {
+  const days = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+  const result: WorkoutDay[] = [];
+
+  // Dia principal do plano
+  const mainDay: WorkoutDay = {
+    day: 'Segunda',
+    focus: plan.name,
+    exercises: plan.exercises.map((ex: any) => ({
+      ...ex,
+      type: ex.targetMuscles.includes('Glúteo') ? 'compound' : 'isolation',
+      videoUrl: ex.videoUrl,
+      tip: ex.technique
+    })),
+    totalVolume: { chest: 0, back: 2, shoulders: 2, arms: 2, legs: 18 }
+  };
+
+  result.push(mainDay);
+
+  // Adicionar dias complementares
+  for (let i = 1; i < daysPerWeek; i++) {
+    const focus = i % 2 === 0 ? 'Core e Mobilidade' : 'Cardio e Funcionais';
+    const exercises = i % 2 === 0 ? 
+      femaleExercises.abdomen.slice(0, 3) : 
+      femaleExercises.cardio.slice(0, 2);
+
+    result.push({
+      day: days[i],
+      focus,
+      exercises: exercises.map((ex: any) => ({
+        ...ex,
+        type: 'compound',
+        videoUrl: ex.videoUrl,
+        tip: ex.technique
+      })),
+      totalVolume: { chest: 0, back: 0, shoulders: 0, arms: 0, legs: 8 }
+    });
+  }
+
+  return result;
 };
