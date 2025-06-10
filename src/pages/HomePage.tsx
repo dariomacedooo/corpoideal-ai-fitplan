@@ -2,10 +2,14 @@
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { DashboardSummary } from "@/components/dashboard/DashboardSummary";
+import { UserWelcome } from "@/components/dashboard/UserWelcome";
+import { NextWorkout } from "@/components/dashboard/NextWorkout";
+import { NextMeal } from "@/components/dashboard/NextMeal";
+import { WeeklyCalendar } from "@/components/dashboard/WeeklyCalendar";
+import { WeeklyProgress } from "@/components/dashboard/WeeklyProgress";
+import { WaterIntakeWidget } from "@/components/dashboard/WaterIntakeWidget";
 import { AICoachTips } from "@/components/dashboard/AICoachTips";
 import { MotivationalQuote } from "@/components/dashboard/MotivationalQuote";
-import { GoalsProgress } from "@/components/dashboard/GoalsProgress";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useNavigate } from "react-router-dom";
 
@@ -46,50 +50,41 @@ const HomePage = () => {
       <AppHeader />
       
       <div className="px-4 py-6 space-y-6">
-        {/* Saudação e Foto do Usuário */}
-        <div className="relative h-48 md:h-64 rounded-2xl overflow-hidden mb-6 shadow-modern">
-          <img 
-            src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=1740&auto=format&fit=crop"
-            alt="Background motivacional"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-corpoideal-darkpurple/90 to-transparent">
-            <div className="flex items-center h-full px-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">
-                    {profile.name?.charAt(0).toUpperCase() || 'U'}
-                  </span>
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-white mb-1">
-                    Olá, {profile.name || 'Atleta'}! 💪
-                  </h1>
-                  <p className="text-white/90">
-                    Pronto para mais um dia de evolução?
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Boas-vindas personalizadas */}
+        <UserWelcome />
 
-        {/* Frase Motivacional */}
+        {/* Frase motivacional */}
         <MotivationalQuote />
 
-        {/* Layout em Grid para Desktop, Stack para Mobile */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Coluna Principal - Informações do Dashboard */}
-          <div className="lg:col-span-2 space-y-6">
-            <DashboardSummary userName={profile.name} />
-            <AICoachTips />
+        {/* Grid principal com layout responsivo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Próximo treino */}
+          <div className="md:col-span-1">
+            <NextWorkout />
           </div>
           
-          {/* Coluna Lateral - Metas e Progresso */}
-          <div className="lg:col-span-1">
-            <GoalsProgress />
+          {/* Próxima refeição */}
+          <div className="md:col-span-1">
+            <NextMeal />
+          </div>
+          
+          {/* Hidratação */}
+          <div className="md:col-span-2 lg:col-span-1">
+            <WaterIntakeWidget />
           </div>
         </div>
+
+        {/* Segunda linha do grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Calendário semanal */}
+          <WeeklyCalendar />
+          
+          {/* Progresso semanal */}
+          <WeeklyProgress />
+        </div>
+
+        {/* Dicas do coach IA */}
+        <AICoachTips />
       </div>
       
       <BottomNav />
