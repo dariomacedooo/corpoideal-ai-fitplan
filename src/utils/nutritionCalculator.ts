@@ -1,4 +1,3 @@
-
 // Utility functions for accurate nutrition calculations
 import { 
   calculateMifflinStJeor, 
@@ -279,3 +278,125 @@ export const getComprehensiveAnalysis = (userData: {
 
 // Re-export formatAnthropometricResults from anthropometricCalculations
 export { formatAnthropometricResults };
+
+// Updated budget-based food suggestions for Brazilian reality
+const getFoodOptionsByBudgetAndGoal = (mealType: string, budgetTier: string, goal: string) => {
+  const baseFoods: Record<string, any> = {
+    'cafe': {
+      'low': [ // R$ 80-150: foco em alimentos básicos e baratos
+        { name: 'Ovos mexidos (2 unidades)', protein: 12, calories: 140, cost: 'baixo' },
+        { name: 'Pão francês (2 unidades)', protein: 4, calories: 140, cost: 'baixo' },
+        { name: 'Banana (1 unidade)', protein: 1, calories: 105, cost: 'baixo' },
+        { name: 'Café preto', protein: 0, calories: 5, cost: 'baixo' },
+        { name: 'Leite (200ml)', protein: 6, calories: 120, cost: 'baixo' }
+      ],
+      'medium': [ // R$ 151-250: incluindo aveia e whey básico
+        { name: 'Ovos mexidos (3 unidades)', protein: 18, calories: 210, cost: 'baixo' },
+        { name: 'Aveia (40g)', protein: 5, calories: 150, cost: 'médio' },
+        { name: 'Whey protein (30g)', protein: 24, calories: 120, cost: 'médio' },
+        { name: 'Banana (1 unidade)', protein: 1, calories: 105, cost: 'baixo' },
+        { name: 'Leite (200ml)', protein: 6, calories: 120, cost: 'baixo' }
+      ],
+      'high': [ // R$ 251-400: alimentos mais variados
+        { name: 'Clara de ovo (4 unidades)', protein: 16, calories: 80, cost: 'médio' },
+        { name: 'Aveia (50g)', protein: 6, calories: 190, cost: 'médio' },
+        { name: 'Whey isolado (30g)', protein: 25, calories: 110, cost: 'alto' },
+        { name: 'Frutas vermelhas (100g)', protein: 1, calories: 60, cost: 'alto' },
+        { name: 'Castanha do Brasil (4 unidades)', protein: 3, calories: 80, cost: 'alto' }
+      ],
+      'premium': [ // R$ 400+: alimentos premium
+        { name: 'Clara de ovo orgânica (5 unidades)', protein: 20, calories: 100, cost: 'alto' },
+        { name: 'Quinoa (40g)', protein: 6, calories: 180, cost: 'alto' },
+        { name: 'Whey hidrolisado (30g)', protein: 26, calories: 115, cost: 'alto' },
+        { name: 'Açaí natural (100g)', protein: 2, calories: 120, cost: 'alto' },
+        { name: 'Chia (15g)', protein: 2, calories: 75, cost: 'alto' }
+      ]
+    },
+    'almoco': {
+      'low': [ // R$ 80-150
+        { name: 'Peito de frango (100g)', protein: 25, calories: 165, cost: 'baixo' },
+        { name: 'Arroz branco (80g)', protein: 3, calories: 130, cost: 'baixo' },
+        { name: 'Feijão carioca (60g)', protein: 8, calories: 120, cost: 'baixo' },
+        { name: 'Salada verde simples', protein: 2, calories: 20, cost: 'baixo' },
+        { name: 'Óleo de soja (5ml)', protein: 0, calories: 40, cost: 'baixo' }
+      ],
+      'medium': [ // R$ 151-250
+        { name: 'Peito de frango (120g)', protein: 30, calories: 200, cost: 'baixo' },
+        { name: 'Arroz integral (80g)', protein: 3, calories: 130, cost: 'médio' },
+        { name: 'Feijão preto (60g)', protein: 8, calories: 120, cost: 'baixo' },
+        { name: 'Brócolis refogado (100g)', protein: 3, calories: 25, cost: 'médio' },
+        { name: 'Azeite de oliva (10ml)', protein: 0, calories: 80, cost: 'médio' }
+      ],
+      'high': [ // R$ 251-400
+        { name: 'Filé de tilápia (150g)', protein: 30, calories: 180, cost: 'médio' },
+        { name: 'Batata doce (120g)', protein: 2, calories: 100, cost: 'médio' },
+        { name: 'Quinoa (50g)', protein: 6, calories: 180, cost: 'alto' },
+        { name: 'Aspargos grelhados (100g)', protein: 3, calories: 20, cost: 'alto' },
+        { name: 'Azeite extra virgem (10ml)', protein: 0, calories: 80, cost: 'alto' }
+      ],
+      'premium': [ // R$ 400+
+        { name: 'Salmão (120g)', protein: 25, calories: 200, cost: 'alto' },
+        { name: 'Arroz integral orgânico (80g)', protein: 3, calories: 130, cost: 'alto' },
+        { name: 'Quinoa tricolor (60g)', protein: 7, calories: 220, cost: 'alto' },
+        { name: 'Mix de vegetais orgânicos', protein: 4, calories: 30, cost: 'alto' },
+        { name: 'Azeite extravirgem premium (10ml)', protein: 0, calories: 80, cost: 'alto' }
+      ]
+    },
+    'lanche-tarde': {
+      'low': [ // R$ 80-150
+        { name: 'Iogurte natural (150g)', protein: 6, calories: 90, cost: 'baixo' },
+        { name: 'Banana (1 unidade)', protein: 1, calories: 105, cost: 'baixo' },
+        { name: 'Pão integral (2 fatias)', protein: 6, calories: 160, cost: 'médio' }
+      ],
+      'medium': [ // R$ 151-250
+        { name: 'Iogurte grego (150g)', protein: 15, calories: 130, cost: 'médio' },
+        { name: 'Granola caseira (30g)', protein: 3, calories: 140, cost: 'médio' },
+        { name: 'Whey protein (20g)', protein: 16, calories: 80, cost: 'médio' }
+      ],
+      'high': [ // R$ 251-400
+        { name: 'Iogurte grego zero (150g)', protein: 15, calories: 90, cost: 'médio' },
+        { name: 'Mix de castanhas (20g)', protein: 4, calories: 140, cost: 'alto' },
+        { name: 'Whey isolado (20g)', protein: 17, calories: 75, cost: 'alto' }
+      ],
+      'premium': [ // R$ 400+
+        { name: 'Iogurte grego orgânico (150g)', protein: 15, calories: 90, cost: 'alto' },
+        { name: 'Castanhas premium (25g)', protein: 5, calories: 160, cost: 'alto' },
+        { name: 'Whey hidrolisado (20g)', protein: 18, calories: 75, cost: 'alto' }
+      ]
+    }
+  };
+
+  // Determine budget tier from the new values
+  let tier = 'low';
+  if (budgetTier === '151-250') tier = 'medium';
+  else if (budgetTier === '251-400') tier = 'high';
+  else if (budgetTier === '400+') tier = 'premium';
+
+  // Add goal-specific modifications
+  if (goal === 'ganhar-massa') {
+    // Add more calorie-dense foods for bulking
+    const mealFoods = baseFoods[mealType];
+    if (mealFoods && mealFoods[tier]) {
+      if (tier === 'low') {
+        mealFoods[tier].push(
+          { name: 'Amendoim (20g)', protein: 5, calories: 120, cost: 'baixo' }
+        );
+      } else {
+        mealFoods[tier].push(
+          { name: 'Mix de oleaginosas (25g)', protein: 6, calories: 160, cost: 'médio' }
+        );
+      }
+    }
+  } else if (goal === 'perder-peso') {
+    // Focus on high-protein, low-calorie foods for cutting
+    const mealFoods = baseFoods[mealType];
+    if (mealFoods && mealFoods[tier]) {
+      baseFoods[mealType][tier] = mealFoods[tier].filter(food => 
+        food.protein > 0 && food.calories < 200
+      );
+    }
+  }
+
+  const mealFoods = baseFoods[mealType];
+  return mealFoods && mealFoods[tier] ? mealFoods[tier] : [];
+};

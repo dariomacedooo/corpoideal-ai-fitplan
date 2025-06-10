@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 
 export interface UserProfile {
+  name?: string;
   height: string;
   weight: string;
   age: string;
@@ -25,7 +26,6 @@ export interface UserProfile {
   rightCalf: string;
   goal: string;
   profileCompleted: boolean;
-  name?: string;
 }
 
 export const useUserProfile = () => {
