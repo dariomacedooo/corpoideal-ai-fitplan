@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,7 @@ import {
   Timer,
   Zap,
   BookOpen,
-  Stretching
+  FlexibilityIcon as Stretch
 } from 'lucide-react';
 import { 
   scientificExerciseDatabase, 
@@ -322,7 +321,7 @@ export function WorkoutCustomizer({
                         Exercícios
                       </TabsTrigger>
                       <TabsTrigger value="stretches" className="flex items-center">
-                        <Stretching className="h-4 w-4 mr-2" />
+                        <Stretch className="h-4 w-4 mr-2" />
                         Alongamentos
                       </TabsTrigger>
                     </TabsList>
@@ -482,7 +481,7 @@ export function WorkoutCustomizer({
                         <div>
                           <h4 className="font-medium flex items-center">
                             {exercise.name}
-                            {exercise.isStretch && <Stretching className="h-4 w-4 ml-2 text-green-500" />}
+                            {exercise.isStretch && <Stretch className="h-4 w-4 ml-2 text-green-500" />}
                             {exercise.scientificSource && <Zap className="h-4 w-4 ml-2 text-blue-500" />}
                           </h4>
                           <Badge variant="secondary" className="text-xs mt-1">
