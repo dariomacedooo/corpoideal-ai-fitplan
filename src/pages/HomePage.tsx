@@ -22,8 +22,8 @@ const HomePage = () => {
       return;
     }
     
-    // Only require basic profile completion (name and goal)
-    if (!profile || !profile.name || !profile.goal) {
+    // Check for basic profile (name is enough for home page)
+    if (!profile || !profile.name) {
       navigate('/profile');
       return;
     }

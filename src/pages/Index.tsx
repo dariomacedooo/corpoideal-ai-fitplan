@@ -36,7 +36,7 @@ const Index = () => {
           navigate('/profile');
         }
       } else {
-        // Redirect to auth page
+        // Not logged in, redirect to auth page
         navigate('/auth');
       }
     } catch (error) {
@@ -49,6 +49,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-corpoideal-purple mx-auto mb-4"></div>
         <h1 className="text-4xl font-bold text-corpoideal-purple mb-2">CorpoIdeal AI</h1>
         <p className="text-gray-600">Carregando...</p>
       </div>

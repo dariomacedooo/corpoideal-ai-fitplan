@@ -21,13 +21,19 @@ export function AppHeader() {
   
   const handleLogout = () => {
     try {
+      // Clear all user data
       localStorage.removeItem('userLoggedIn');
+      localStorage.removeItem('userProfile');
+      localStorage.removeItem('frontPhotoUrl');
+      localStorage.removeItem('sidePhotoUrl');
+      localStorage.removeItem('backPhotoUrl');
+      
       setIsLoggedIn(false);
       toast({
         title: "Logout realizado",
         description: "Esperamos vê-lo novamente em breve!",
       });
-      navigate('/');
+      navigate('/auth');
     } catch (error) {
       console.error('Error accessing localStorage:', error);
       toast({
