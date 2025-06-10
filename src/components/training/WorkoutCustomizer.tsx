@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ import {
   Timer,
   Zap,
   BookOpen,
-  FlexibilityIcon as Stretch
+  Activity as Stretch
 } from 'lucide-react';
 import { 
   scientificExerciseDatabase, 
