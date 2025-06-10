@@ -41,9 +41,29 @@ const AnalysisPage = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleShowProjection = () => {
+    console.log('Mostrando projeção de resultados');
+    // TODO: Implementar modal ou navegação para projeção
+  };
+
+  const handleShowGoals = () => {
+    console.log('Definindo objetivos');
+    // TODO: Implementar navegação para definição de metas
+  };
+
   if (isLoading) {
     return <LoadingAnalysis />;
   }
+
+  // Mock analysis data
+  const analysisData = {
+    shoulders: "Leve assimetria detectada",
+    hips: "Alinhamento adequado",
+    knees: "Valgo dinâmico bilateral",
+    spine: "Hiperlordose lombar",
+    feet: "Pronação leve no pé esquerdo",
+    symmetry: "Boa simetria geral"
+  };
 
   return (
     <div className="pb-16 pt-14 bg-background min-h-screen">
@@ -139,13 +159,17 @@ const AnalysisPage = () => {
         {/* Análise postural detalhada */}
         <PosturalAnalysis 
           frontPhotoUrl={frontPhotoUrl}
-          sidePhotoUrl={sidePhotoUrl}
+          leftSidePhotoUrl={sidePhotoUrl}
+          rightSidePhotoUrl={sidePhotoUrl}
           backPhotoUrl={backPhotoUrl}
-          userProfile={userProfile}
+          analysisData={analysisData}
         />
 
         {/* Ações da análise */}
-        <AnalysisActions />
+        <AnalysisActions 
+          onShowProjection={handleShowProjection}
+          onShowGoals={handleShowGoals}
+        />
       </div>
       
       <BottomNav />
