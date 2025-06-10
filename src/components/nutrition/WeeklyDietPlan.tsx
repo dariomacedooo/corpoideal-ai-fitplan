@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Apple } from "lucide-react";
+import { Calendar, Apple, AlertTriangle } from "lucide-react";
 import { estimateNutritionValues } from "@/utils/nutritionCalculator";
 
 interface WeeklyDietPlanProps {
@@ -52,85 +52,105 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
   const dayTotals = currentDayData ? calculateDayTotals(currentDayData.meals) : null;
 
   return (
-    <Card className="w-full animate-fade-in">
-      <CardHeader>
+    <Card className="w-full animate-fade-in bg-white dark:bg-gray-800 shadow-modern rounded-2xl border-0">
+      <CardHeader className="pb-4">
         <CardTitle className="text-xl text-corpoideal-purple flex items-center">
           <Calendar className="h-5 w-5 mr-2" />
           Plano Semanal - {dietData.type}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <Tabs value={selectedDay} onValueChange={setSelectedDay}>
-          <TabsList className="grid grid-cols-7 mb-4">
+          <TabsList className="grid grid-cols-7 mb-6 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
             {daysOfWeek.map((day) => (
-              <TabsTrigger key={day.key} value={day.key} className="text-xs">
+              <TabsTrigger 
+                key={day.key} 
+                value={day.key} 
+                className="text-xs sm:text-sm font-medium rounded-lg data-[state=active]:bg-corpoideal-purple data-[state=active]:text-white transition-all duration-200"
+              >
                 {day.label}
               </TabsTrigger>
             ))}
           </TabsList>
           
           {daysOfWeek.map((day) => (
-            <TabsContent key={day.key} value={day.key} className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-medium text-lg">{day.fullName}</h3>
+            <TabsContent key={day.key} value={day.key} className="space-y-6 mt-0">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <h3 className="font-bold text-lg text-gray-900 dark:text-white">{day.fullName}</h3>
                 {dayTotals && (
-                  <Badge className="bg-corpoideal-purple/10 text-corpoideal-purple border-0">
+                  <Badge className="bg-corpoideal-purple/10 text-corpoideal-purple border-0 px-4 py-2 text-sm font-medium self-start sm:self-center">
                     {dayTotals.calories} kcal
                   </Badge>
                 )}
               </div>
 
               {dayTotals && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  <h4 className="text-sm font-medium text-corpoideal-purple mb-2">Resumo Nutricional do Dia</h4>
-                  <div className="grid grid-cols-4 gap-2 text-center">
-                    <div>
-                      <span className="text-sm font-bold block">{dayTotals.calories}</span>
-                      <span className="text-xs text-gray-500">kcal</span>
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 border border-purple-100 dark:border-gray-600">
+                  <h4 className="text-sm font-bold text-corpoideal-purple mb-3 flex items-center">
+                    <Apple className="h-4 w-4 mr-2" />
+                    Resumo Nutricional do Dia
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.calories}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">kcal</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block">{dayTotals.protein}g</span>
-                      <span className="text-xs text-gray-500">Proteínas</span>
+                    <div className="text-center">
+                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.protein}g</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Proteínas</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block">{dayTotals.carbs}g</span>
-                      <span className="text-xs text-gray-500">Carbos</span>
+                    <div className="text-center">
+                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.carbs}g</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Carbos</span>
                     </div>
-                    <div>
-                      <span className="text-sm font-bold block">{dayTotals.fat}g</span>
-                      <span className="text-xs text-gray-500">Gorduras</span>
+                    <div className="text-center">
+                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.fat}g</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Gorduras</span>
                     </div>
                   </div>
                 </div>
               )}
               
               <div className="space-y-4">
+                {currentDayData?.meals.length === 0 && (
+                  <div className="text-center py-8">
+                    <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Algumas refeições foram filtradas devido às suas restrições alimentares.
+                    </p>
+                  </div>
+                )}
+                
                 {currentDayData?.meals.map((meal: any, index: number) => {
+                  if (meal.foods.length === 0) return null;
+                  
                   const mealCalories = meal.foods.reduce((total: number, food: any) => {
                     return total + estimateNutritionValues(food.name, food.portion).calories;
                   }, 0);
 
                   return (
-                    <div key={index} className="nutrition-card p-4 border border-gray-200 rounded-lg">
-                      <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-medium">{meal.name}</h4>
-                        <div className="flex items-center gap-2">
-                          <Badge className="bg-corpoideal-purple/10 text-corpoideal-purple border-0">
+                    <div key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-4 shadow-subtle">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
+                        <h4 className="font-bold text-gray-900 dark:text-white">{meal.name}</h4>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge className="bg-corpoideal-purple/10 text-corpoideal-purple border-0 text-xs">
                             {Math.round(mealCalories)} kcal
                           </Badge>
-                          <Badge variant="outline" className="text-xs">{meal.time}</Badge>
+                          <Badge variant="outline" className="text-xs border-gray-300 dark:border-gray-600">
+                            {meal.time}
+                          </Badge>
                         </div>
                       </div>
                       
-                      <ul className="text-sm space-y-1">
+                      <ul className="text-sm space-y-2">
                         {meal.foods.map((food: any, idx: number) => {
                           const nutrition = estimateNutritionValues(food.name, food.portion);
                           return (
-                            <li key={idx} className="flex justify-between">
-                              <span>{food.name}</span>
-                              <div className="flex items-center gap-2">
-                                <span className="text-gray-500">{food.portion}</span>
-                                <span className="text-xs text-corpoideal-purple">{nutrition.calories} kcal</span>
+                            <li key={idx} className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                              <span className="text-gray-900 dark:text-white font-medium">{food.name}</span>
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="text-gray-500 dark:text-gray-400">{food.portion}</span>
+                                <span className="text-xs text-corpoideal-purple font-medium">{nutrition.calories} kcal</span>
                               </div>
                             </li>
                           );

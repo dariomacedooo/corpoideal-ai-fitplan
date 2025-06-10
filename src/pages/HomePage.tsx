@@ -22,16 +22,9 @@ const HomePage = () => {
       return;
     }
     
-    // Check if profile is completed
-    if (!profile || !profile.profileCompleted) {
+    // Only require basic profile completion (name and goal)
+    if (!profile || !profile.name || !profile.goal) {
       navigate('/profile');
-      return;
-    }
-    
-    // Check if photos are uploaded
-    const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
-    if (!frontPhotoUrl) {
-      navigate('/upload');
       return;
     }
   }, [profile, navigate]);

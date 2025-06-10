@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 export interface UserProfile {
@@ -34,12 +33,21 @@ export const useUserProfile = () => {
   useEffect(() => {
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
+      const parsedProfile = JSON.parse(savedProfile);
+      // Ensure gender matches sex for compatibility
+      if (parsedProfile.sex && !parsedProfile.gender) {
+        parsedProfile.gender = parsedProfile.sex;
+      }
+      setProfile(parsedProfile);
     }
   }, []);
 
   const updateProfile = (newProfile: Partial<UserProfile>) => {
     const updatedProfile = { ...profile, ...newProfile };
+    // Keep gender and sex in sync
+    if (newProfile.sex) {
+      updatedProfile.gender = newProfile.sex;
+    }
     setProfile(updatedProfile as UserProfile);
     localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
   };
