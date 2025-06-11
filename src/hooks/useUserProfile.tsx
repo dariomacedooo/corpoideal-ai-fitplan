@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 export interface UserProfile {
@@ -11,6 +12,7 @@ export interface UserProfile {
   lifestyle: string;
   trainingExperience: string;
   trainingLocation: string;
+  trainingDays: string[]; // Dias de treino selecionados
   healthIssues: string[];
   additionalInfo: string;
   budget: string;
@@ -37,6 +39,10 @@ export const useUserProfile = () => {
       // Ensure gender matches sex for compatibility
       if (parsedProfile.sex && !parsedProfile.gender) {
         parsedProfile.gender = parsedProfile.sex;
+      }
+      // Ensure trainingDays exists
+      if (!parsedProfile.trainingDays) {
+        parsedProfile.trainingDays = ['segunda', 'quarta', 'sexta'];
       }
       setProfile(parsedProfile);
     }
@@ -74,9 +80,26 @@ export const useUserProfile = () => {
     }
   };
 
+  const getTrainingDaysText = () => {
+    if (!profile?.trainingDays) return 'Seg/Qua/Sex';
+    
+    const dayMap: Record<string, string> = {
+      'segunda': 'Seg',
+      'terca': 'Ter',
+      'quarta': 'Qua',
+      'quinta': 'Qui',
+      'sexta': 'Sex',
+      'sabado': 'Sáb',
+      'domingo': 'Dom'
+    };
+    
+    return profile.trainingDays.map(day => dayMap[day] || day).join('/');
+  };
+
   return {
     profile,
     updateProfile,
-    getGoalText
+    getGoalText,
+    getTrainingDaysText
   };
 };

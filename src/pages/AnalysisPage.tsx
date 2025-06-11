@@ -3,173 +3,103 @@ import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { LoadingAnalysis } from "@/components/analysis/LoadingAnalysis";
-import { ProfileSummary } from "@/components/analysis/ProfileSummary";
+import { PhotosGallery } from "@/components/analysis/PhotosGallery";
+import { BodyAnalysis } from "@/components/analysis/BodyAnalysis";
 import { PosturalAnalysis } from "@/components/analysis/PosturalAnalysis";
-import { AnalysisActions } from "@/components/analysis/AnalysisActions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Camera, User, Activity } from "lucide-react";
+import { ProfileSummary } from "@/components/analysis/ProfileSummary";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const AnalysisPage = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState(null);
-  const [frontPhotoUrl, setFrontPhotoUrl] = useState<string | null>(null);
-  const [sidePhotoUrl, setSidePhotoUrl] = useState<string | null>(null);
-  const [backPhotoUrl, setBackPhotoUrl] = useState<string | null>(null);
+  const [userPhotos, setUserPhotos] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Load user profile
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      setUserProfile(JSON.parse(savedProfile));
-    }
-
-    // Load photos
-    const frontUrl = localStorage.getItem('frontPhotoUrl');
-    const sideUrl = localStorage.getItem('sidePhotoUrl');
-    const backUrl = localStorage.getItem('backPhotoUrl');
-    
-    setFrontPhotoUrl(frontUrl);
-    setSidePhotoUrl(sideUrl);
-    setBackPhotoUrl(backUrl);
-
     // Simulate analysis loading
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 3000);
 
+    // Load photos and profile
+    const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+    const backPhotoUrl = localStorage.getItem('backPhotoUrl');
+    const leftSidePhotoUrl = localStorage.getItem('leftSidePhotoUrl');
+    const rightSidePhotoUrl = localStorage.getItem('rightSidePhotoUrl');
+    const sidePhotoUrl = localStorage.getItem('sidePhotoUrl'); // For backward compatibility
+    
+    if (frontPhotoUrl) {
+      setUserPhotos({
+        front: frontPhotoUrl,
+        back: backPhotoUrl,
+        leftSide: leftSidePhotoUrl,
+        rightSide: rightSidePhotoUrl,
+        side: sidePhotoUrl
+      });
+    }
+
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      setUserProfile(JSON.parse(savedProfile));
+    }
+
     return () => clearTimeout(timer);
   }, []);
 
-  const handleShowProjection = () => {
-    console.log('Mostrando projeção de resultados');
-    // TODO: Implementar modal ou navegação para projeção
-  };
-
-  const handleShowGoals = () => {
-    console.log('Definindo objetivos');
-    // TODO: Implementar navegação para definição de metas
+  const handleContinueToHome = () => {
+    toast({
+      title: "Análise completa!",
+      description: "Agora você pode acessar seu dashboard personalizado.",
+    });
+    navigate('/home');
   };
 
   if (isLoading) {
-    return <LoadingAnalysis />;
+    return (
+      <div className="pb-16 pt-14">
+        <AppHeader />
+        <LoadingAnalysis />
+        <BottomNav />
+      </div>
+    );
   }
-
-  // Mock analysis data
-  const analysisData = {
-    shoulders: "Leve assimetria detectada",
-    hips: "Alinhamento adequado",
-    knees: "Valgo dinâmico bilateral",
-    spine: "Hiperlordose lombar",
-    feet: "Pronação leve no pé esquerdo",
-    symmetry: "Boa simetria geral"
-  };
 
   return (
     <div className="pb-16 pt-14 bg-background min-h-screen">
       <AppHeader />
       
-      <div className="px-4 py-6 space-y-6">
-        <div className="text-center mb-6">
-          <h1 className="main-title mb-2">Análise Corporal Completa</h1>
-          <p className="subtitle">
-            Análise baseada em suas fotos e dados antropométricos
-          </p>
+      <div className="px-4 py-6">
+        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Análise Corporal Completa</h1>
+        <p className="text-gray-600 mb-6">
+          Sua análise foi concluída! Veja os resultados abaixo.
+        </p>
+
+        <div className="space-y-6">
+          {/* Profile Summary */}
+          <ProfileSummary userProfile={userProfile} />
+
+          {/* Photos Gallery */}
+          <PhotosGallery userPhotos={userPhotos} />
+
+          {/* Body Analysis */}
+          <BodyAnalysis userPhotos={userPhotos} userProfile={userProfile} />
+
+          {/* Postural Analysis */}
+          <PosturalAnalysis userPhotos={userPhotos} />
+
+          {/* Continue Button */}
+          <div className="pt-6 border-t">
+            <Button 
+              onClick={handleContinueToHome}
+              className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple text-lg py-3"
+            >
+              Continuar para Dashboard
+            </Button>
+          </div>
         </div>
-
-        {/* Resumo do perfil */}
-        <ProfileSummary userProfile={userProfile} />
-
-        {/* Galeria de fotos analisadas */}
-        {(frontPhotoUrl || sidePhotoUrl || backPhotoUrl) && (
-          <Card className="info-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center text-corpoideal-purple">
-                <Camera className="h-5 w-5 mr-2" />
-                Fotos Analisadas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {frontPhotoUrl && (
-                  <div className="space-y-2">
-                    <Badge variant="outline" className="w-full justify-center">Frontal</Badge>
-                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-border-soft shadow-subtle">
-                      <img 
-                        src={frontPhotoUrl} 
-                        alt="Foto frontal" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                )}
-                {sidePhotoUrl && (
-                  <div className="space-y-2">
-                    <Badge variant="outline" className="w-full justify-center">Lateral</Badge>
-                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-border-soft shadow-subtle">
-                      <img 
-                        src={sidePhotoUrl} 
-                        alt="Foto lateral" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                )}
-                {backPhotoUrl && (
-                  <div className="space-y-2">
-                    <Badge variant="outline" className="w-full justify-center">Posterior</Badge>
-                    <div className="aspect-[3/4] rounded-xl overflow-hidden border border-border-soft shadow-subtle">
-                      <img 
-                        src={backPhotoUrl} 
-                        alt="Foto posterior" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Imagem relacionada à análise postural */}
-        <Card className="info-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center text-corpoideal-purple">
-              <Activity className="h-5 w-5 mr-2" />
-              Análise Postural Avançada
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center space-y-4">
-              <div className="w-full max-w-md">
-                <img 
-                  src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1000&auto=format&fit=crop"
-                  alt="Análise postural"
-                  className="w-full rounded-xl shadow-modern"
-                />
-              </div>
-              <p className="text-sm text-gray-600 text-center">
-                Nossa IA analisa mais de 50 pontos corporais para identificar desvios posturais e desequilíbrios musculares
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Análise postural detalhada */}
-        <PosturalAnalysis 
-          frontPhotoUrl={frontPhotoUrl}
-          leftSidePhotoUrl={sidePhotoUrl}
-          rightSidePhotoUrl={sidePhotoUrl}
-          backPhotoUrl={backPhotoUrl}
-          analysisData={analysisData}
-        />
-
-        {/* Ações da análise */}
-        <AnalysisActions 
-          onShowProjection={handleShowProjection}
-          onShowGoals={handleShowGoals}
-        />
       </div>
       
       <BottomNav />

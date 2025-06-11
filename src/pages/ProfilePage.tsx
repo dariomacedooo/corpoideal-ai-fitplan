@@ -14,6 +14,7 @@ import { User, Dumbbell } from "lucide-react";
 import { BasicMeasurementsForm } from "@/components/profile/BasicMeasurementsForm";
 import { LifestyleForm } from "@/components/profile/LifestyleForm";
 import { TrainingExperienceForm } from "@/components/profile/TrainingExperienceForm";
+import { TrainingDaysForm } from "@/components/profile/TrainingDaysForm";
 import { HealthIssuesForm } from "@/components/profile/HealthIssuesForm";
 import { AdditionalInfoForm } from "@/components/profile/AdditionalInfoForm";
 import { BudgetForm } from "@/components/profile/BudgetForm";
@@ -36,6 +37,7 @@ const ProfilePage = () => {
   const [lifestyle, setLifestyle] = useState('');
   const [trainingExperience, setTrainingExperience] = useState('');
   const [trainingLocation, setTrainingLocation] = useState('');
+  const [trainingDays, setTrainingDays] = useState<string[]>(['segunda', 'quarta', 'sexta']);
   
   // Orçamento
   const [budget, setBudget] = useState('');
@@ -72,6 +74,7 @@ const ProfilePage = () => {
       setLifestyle(profile.lifestyle || '');
       setTrainingExperience(profile.trainingExperience || '');
       setTrainingLocation(profile.trainingLocation || '');
+      setTrainingDays(profile.trainingDays || ['segunda', 'quarta', 'sexta']);
       setHealthIssues(profile.healthIssues || []);
       setAdditionalInfo(profile.additionalInfo || '');
       setBodyFat(profile.bodyFat || '');
@@ -127,6 +130,16 @@ const ProfilePage = () => {
       });
       return;
     }
+
+    // Validação dos dias de treino
+    if (trainingDays.length === 0) {
+      toast({
+        title: "Dias de treino obrigatórios",
+        description: "Por favor, selecione pelo menos um dia para treinar.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Save profile data
     const profileData = {
@@ -140,6 +153,7 @@ const ProfilePage = () => {
       lifestyle,
       trainingExperience,
       trainingLocation,
+      trainingDays,
       healthIssues,
       additionalInfo,
       budget,
@@ -307,20 +321,26 @@ const ProfilePage = () => {
             trainingLocation={trainingLocation}
             setTrainingLocation={setTrainingLocation}
           />
+
+          {/* 6. Dias de treino */}
+          <TrainingDaysForm
+            trainingDays={trainingDays}
+            setTrainingDays={setTrainingDays}
+          />
           
-          {/* 6. Orçamento */}
+          {/* 7. Orçamento */}
           <BudgetForm
             budget={budget}
             setBudget={setBudget}
           />
           
-          {/* 7. Problemas de saúde */}
+          {/* 8. Problemas de saúde */}
           <HealthIssuesForm
             healthIssues={healthIssues}
             toggleHealthIssue={toggleHealthIssue}
           />
           
-          {/* 8. Informações adicionais */}
+          {/* 9. Informações adicionais */}
           <AdditionalInfoForm
             additionalInfo={additionalInfo}
             setAdditionalInfo={setAdditionalInfo}

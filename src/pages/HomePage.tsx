@@ -26,8 +26,8 @@ const HomePage = () => {
       return;
     }
     
-    // Check for basic profile (name is enough for home page)
-    if (!profile || !profile.name) {
+    // If no profile at all, redirect to profile page
+    if (!profile) {
       navigate('/profile');
       return;
     }
