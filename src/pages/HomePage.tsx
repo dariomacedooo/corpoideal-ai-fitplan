@@ -31,6 +31,15 @@ const HomePage = () => {
       navigate('/profile');
       return;
     }
+
+    // Check if analysis is completed to allow full navigation
+    const analysisCompleted = localStorage.getItem('analysisCompleted') === 'true';
+    
+    // If profile is complete but analysis not done, redirect to photo upload
+    if (profile.profileCompleted && !analysisCompleted) {
+      navigate('/photo-upload');
+      return;
+    }
   }, [profile, navigate]);
 
   if (!profile) {

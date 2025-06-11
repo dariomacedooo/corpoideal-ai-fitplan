@@ -8,17 +8,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { weeklyDiets } from "@/data/weeklyDiets";
+import { useNavigate } from "react-router-dom";
 
 const NutritionPage = () => {
   const { profile } = useUserProfile();
+  const navigate = useNavigate();
   const [userWeight, setUserWeight] = useState<number>(70);
   
-  // Get user weight from profile
   useEffect(() => {
+    // Check if analysis is completed to allow access
+    const analysisCompleted = localStorage.getItem('analysisCompleted') === 'true';
+    
+    if (!analysisCompleted) {
+      navigate('/');
+      return;
+    }
+
     if (profile?.weight) {
       setUserWeight(parseInt(profile.weight));
     }
-  }, [profile]);
+  }, [profile, navigate]);
 
   // Get diet based on user goal and consider allergies/health issues
   const getUserDiet = () => {
@@ -64,6 +73,7 @@ const NutritionPage = () => {
   };
 
   const currentDiet = getUserDiet();
+  const usePersonalizedPlan = localStorage.getItem('usePersonalizedPlan') === 'true';
 
   if (!profile) {
     return (
@@ -89,7 +99,7 @@ const NutritionPage = () => {
           Plano Nutricional - {profile.name || 'Usuário'}
         </h1>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Alimentação personalizada para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
+          {usePersonalizedPlan ? 'Dieta IA Personalizada' : 'Dieta Científica Personalizada'} para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
           profile.goal === 'perder-peso' ? 'Perda de Peso' : 
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Orçamento: {profile.budget}
         </p>
@@ -100,7 +110,7 @@ const NutritionPage = () => {
               value="weekly"
               className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
             >
-              Dieta Semanal
+              {usePersonalizedPlan ? 'Dieta IA' : 'Dieta Base'}
             </TabsTrigger>
             <TabsTrigger 
               value="calculator"

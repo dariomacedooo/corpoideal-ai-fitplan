@@ -10,13 +10,23 @@ import { FemaleWorkoutPlan } from "@/components/training/FemaleWorkoutPlan";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { generateWorkoutPlan } from "@/utils/workoutGenerator";
+import { useNavigate } from "react-router-dom";
 
 const TrainingPage = () => {
   const { profile } = useUserProfile();
+  const navigate = useNavigate();
   const [workoutDays, setWorkoutDays] = useState([]);
   const [customWorkout, setCustomWorkout] = useState([]);
 
   useEffect(() => {
+    // Check if analysis is completed to allow access
+    const analysisCompleted = localStorage.getItem('analysisCompleted') === 'true';
+    
+    if (!analysisCompleted) {
+      navigate('/');
+      return;
+    }
+
     if (profile?.goal && profile?.trainingExperience && profile?.trainingLocation && profile?.trainingDays) {
       const generatedWorkout = generateWorkoutPlan(
         profile.goal,
@@ -28,7 +38,7 @@ const TrainingPage = () => {
       );
       setWorkoutDays(generatedWorkout);
     }
-  }, [profile]);
+  }, [profile, navigate]);
 
   const handleSaveCustomWorkout = (workout: any[]) => {
     setCustomWorkout(workout);
@@ -37,6 +47,7 @@ const TrainingPage = () => {
 
   const isFemale = profile?.sex === 'feminino';
   const userAge = profile?.age ? parseInt(profile.age, 10) : 25;
+  const usePersonalizedPlan = localStorage.getItem('usePersonalizedPlan') === 'true';
 
   if (!profile) {
     return (
@@ -62,25 +73,25 @@ const TrainingPage = () => {
           Treino - {profile.name || 'Usuário'}
         </h1>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Treino personalizado para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
+          {usePersonalizedPlan ? 'Treino IA Personalizado' : 'Treino Científico Personalizado'} para {profile.goal === 'ganhar-massa' ? 'Ganho de Massa' : 
           profile.goal === 'perder-peso' ? 'Perda de Peso' : 
           profile.goal === 'ganhar-peso' ? 'Ganho de Peso' : 'Manutenção'} • Nível {profile.trainingExperience}
           {isFemale && ` • Foco Feminino`} • Dias: {profile.trainingDays?.join(', ') || 'Seg/Qua/Sex'}
         </p>
         
-        <Tabs defaultValue="generated" className="w-full">
+        <Tabs defaultValue={usePersonalizedPlan ? "generated" : "customizer"} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-card-soft rounded-2xl p-1 shadow-subtle">
             <TabsTrigger 
               value="generated"
               className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
             >
-              Seu Treino
+              {usePersonalizedPlan ? 'Treino IA' : 'Treino Base'}
             </TabsTrigger>
             <TabsTrigger 
               value="customizer" 
               className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
             >
-              Personalizar
+              Científico
             </TabsTrigger>
             <TabsTrigger 
               value="progress"

@@ -8,8 +8,10 @@ import { BodyAnalysis } from "@/components/analysis/BodyAnalysis";
 import { PosturalAnalysis } from "@/components/analysis/PosturalAnalysis";
 import { ProfileSummary } from "@/components/analysis/ProfileSummary";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { Dumbbell, Target, Utensils, Brain } from "lucide-react";
 
 const AnalysisPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -49,12 +51,30 @@ const AnalysisPage = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleContinueToHome = () => {
+  const handleGeneratePersonalizedPlan = () => {
+    // Mark analysis as complete and enable app areas
+    localStorage.setItem('analysisCompleted', 'true');
+    localStorage.setItem('usePersonalizedPlan', 'true');
+    
     toast({
       title: "Análise completa!",
-      description: "Agora você pode acessar seu dashboard personalizado.",
+      description: "Gerando seu treino e dieta personalizados com base no seu perfil.",
     });
-    navigate('/home');
+    
+    navigate('/training');
+  };
+
+  const handleCreateCustomPlan = () => {
+    // Mark analysis as complete and enable app areas
+    localStorage.setItem('analysisCompleted', 'true');
+    localStorage.setItem('usePersonalizedPlan', 'false');
+    
+    toast({
+      title: "Análise completa!",
+      description: "Agora você pode criar seu treino e dieta personalizados.",
+    });
+    
+    navigate('/training');
   };
 
   if (isLoading) {
@@ -121,15 +141,65 @@ const AnalysisPage = () => {
             }}
           />
 
-          {/* Continue Button */}
-          <div className="pt-6 border-t">
-            <Button 
-              onClick={handleContinueToHome}
-              className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple text-lg py-3"
-            >
-              Continuar para Dashboard
-            </Button>
-          </div>
+          {/* Plan Options */}
+          <Card className="border-2 border-corpoideal-purple/20">
+            <CardHeader>
+              <CardTitle className="flex items-center text-corpoideal-purple">
+                <Target className="h-5 w-5 mr-2" />
+                Escolha sua próxima etapa
+              </CardTitle>
+              <p className="text-gray-600">
+                Com base na sua análise corporal e perfil, escolha como deseja prosseguir:
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Personalized Plan Option */}
+                <Card className="hover:border-corpoideal-purple/50 transition-colors cursor-pointer" 
+                      onClick={handleGeneratePersonalizedPlan}>
+                  <CardContent className="p-6 text-center">
+                    <div className="bg-corpoideal-purple/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                      <Brain className="h-8 w-8 text-corpoideal-purple" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Treino e Dieta Personalizados</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Baseado no seu perfil, objetivo e análise corporal. 
+                      Gerado automaticamente pela IA.
+                    </p>
+                    <Button className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
+                      <Dumbbell className="h-4 w-4 mr-2" />
+                      Gerar Plano IA
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Custom Plan Option */}
+                <Card className="hover:border-orange-500/50 transition-colors cursor-pointer" 
+                      onClick={handleCreateCustomPlan}>
+                  <CardContent className="p-6 text-center">
+                    <div className="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                      <Target className="h-8 w-8 text-orange-500" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Criar Meu Treino Personalizado</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Monte seu próprio treino e dieta com nossa base de exercícios 
+                      científicos e orientações nutricionais.
+                    </p>
+                    <Button variant="outline" className="w-full border-orange-500 text-orange-500 hover:bg-orange-50">
+                      <Utensils className="h-4 w-4 mr-2" />
+                      Personalizar
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  💡 <strong>Dica:</strong> Você poderá alterar entre as opções a qualquer momento nas áreas de Treino e Nutrição.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
       

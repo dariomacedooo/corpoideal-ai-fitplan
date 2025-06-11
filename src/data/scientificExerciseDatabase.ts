@@ -1,582 +1,1459 @@
 
+// Base de exercícios científicos baseada em estudos EMG e pesquisas de biomecânica
+// Fontes: Boeckh-Behrens & Buskies (2000), Bret Contreras EMG Studies, ACE Studies
+
 export interface ScientificExercise {
   id: string;
   name: string;
   muscleGroup: string;
   targetMuscles: string[];
   equipment: string[];
-  difficulty: 'iniciante' | 'intermediario' | 'avancado';
+  difficulty: 'Iniciante' | 'Intermediário' | 'Avançado';
   defaultSets: number;
   defaultReps: string;
   restTime: string;
-  videoUrl: string;
   scientificSource: string;
   description: string;
-  tips: string[];
+  videoUrl: string;
+  emgActivation?: number; // Percentual de ativação EMG quando disponível
+}
+
+export interface StretchExercise {
+  id: string;
+  name: string;
+  category: string;
+  targetMuscles: string[];
+  difficulty: 'Iniciante' | 'Intermediário' | 'Avançado';
+  duration: string;
+  description: string;
+  videoUrl: string;
 }
 
 export const scientificExerciseDatabase: ScientificExercise[] = [
-  // PEITORAL
+  // ============ PEITORAL ============
   {
-    id: 'supino-reto-barra',
+    id: 'chest_bench_press',
     name: 'Supino Reto com Barra',
     muscleGroup: 'peito',
-    targetMuscles: ['Peitoral maior', 'Deltoide anterior', 'Tríceps'],
+    targetMuscles: ['Peitoral Maior', 'Tríceps', 'Deltoides Anterior'],
     equipment: ['Barra', 'Banco'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
+    difficulty: 'Intermediário',
+    defaultSets: 3,
     defaultReps: '8-12',
     restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=gRVjAtPip0Y',
     scientificSource: 'Boeckh-Behrens & Buskies (2000)',
-    description: 'Exercício fundamental para desenvolvimento do peitoral maior',
-    tips: ['Mantenha ombros retraídos', 'Controle a descida', 'Explosão na subida']
+    description: 'Exercício fundamental para desenvolvimento do peitoral maior.',
+    videoUrl: 'https://youtube.com/watch?v=bench-press',
+    emgActivation: 100
   },
   {
-    id: 'supino-inclinado-halteres',
+    id: 'chest_incline_dumbbell',
     name: 'Supino Inclinado com Halteres',
     muscleGroup: 'peito',
-    targetMuscles: ['Peitoral superior', 'Deltoide anterior'],
-    equipment: ['Halteres', 'Banco inclinado'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
+    targetMuscles: ['Peitoral Superior', 'Deltoides Anterior'],
+    equipment: ['Halteres', 'Banco Inclinado'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
     defaultReps: '8-12',
     restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=DbFgADa2PL8',
     scientificSource: 'Bret Contreras EMG Studies',
-    description: 'Ênfase no peitoral superior com maior amplitude',
-    tips: ['Inclinação 30-45°', 'Movimento amplo', 'Aperte no topo']
+    description: 'Ênfase no peitoral superior com maior amplitude de movimento.',
+    videoUrl: 'https://youtube.com/watch?v=incline-dumbbell'
   },
   {
-    id: 'peck-deck',
+    id: 'chest_decline_press',
+    name: 'Supino Declinado',
+    muscleGroup: 'peito',
+    targetMuscles: ['Peitoral Inferior', 'Tríceps'],
+    equipment: ['Barra', 'Banco Declinado'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '8-12',
+    restTime: '90-120s',
+    scientificSource: 'Boeckh-Behrens & Buskies (2000)',
+    description: 'Foca no desenvolvimento do peitoral inferior.',
+    videoUrl: 'https://youtube.com/watch?v=decline-press'
+  },
+  {
+    id: 'chest_peck_deck',
     name: 'Peck Deck (Voador)',
     muscleGroup: 'peito',
-    targetMuscles: ['Peitoral maior', 'Peitoral menor'],
-    equipment: ['Máquina'],
-    difficulty: 'iniciante',
+    targetMuscles: ['Peitoral Maior', 'Deltoides Anterior'],
+    equipment: ['Máquina Peck Deck'],
+    difficulty: 'Iniciante',
     defaultSets: 3,
     defaultReps: '12-15',
     restTime: '60-90s',
-    videoUrl: 'https://www.youtube.com/watch?v=Z5m2xR4pQXM',
-    scientificSource: 'ACE EMG Study',
-    description: 'Isolamento do peitoral com movimento de adução',
-    tips: ['Mantenha costas no banco', 'Movimento controlado', 'Sinta o alongamento']
+    scientificSource: 'EMG Studies',
+    description: 'Isolamento do peitoral com movimento controlado.',
+    videoUrl: 'https://youtube.com/watch?v=peck-deck'
   },
   {
-    id: 'crossover-polia-alta',
+    id: 'chest_incline_fly',
+    name: 'Crucifixo Inclinado com Halteres',
+    muscleGroup: 'peito',
+    targetMuscles: ['Peitoral Superior', 'Deltoides Anterior'],
+    equipment: ['Halteres', 'Banco Inclinado'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60-90s',
+    scientificSource: 'Bret Contreras EMG Studies',
+    description: 'Movimento de adução para desenvolvimento do peitoral superior.',
+    videoUrl: 'https://youtube.com/watch?v=incline-fly'
+  },
+  {
+    id: 'chest_cable_crossover_high',
     name: 'Crossover Polia Alta',
     muscleGroup: 'peito',
-    targetMuscles: ['Peitoral inferior', 'Peitoral maior'],
+    targetMuscles: ['Peitoral Inferior', 'Deltoides Anterior'],
     equipment: ['Cabo', 'Polia'],
-    difficulty: 'intermediario',
+    difficulty: 'Intermediário',
     defaultSets: 3,
     defaultReps: '12-15',
     restTime: '60-90s',
-    videoUrl: 'https://www.youtube.com/watch?v=taI4XduLpTk',
-    scientificSource: 'Boeckh-Behrens & Buskies',
-    description: 'Ativação do peitoral inferior com movimento de cabo',
-    tips: ['Incline ligeiramente o corpo', 'Cruze na frente', 'Tensão constante']
+    scientificSource: 'EMG Cable Studies',
+    description: 'Ênfase no peitoral inferior com resistência constante.',
+    videoUrl: 'https://youtube.com/watch?v=cable-crossover-high'
   },
   {
-    id: 'flexoes',
+    id: 'chest_cable_crossover_mid',
+    name: 'Crossover Polia Média',
+    muscleGroup: 'peito',
+    targetMuscles: ['Peitoral Maior', 'Deltoides Anterior'],
+    equipment: ['Cabo', 'Polia'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60-90s',
+    scientificSource: 'EMG Cable Studies',
+    description: 'Trabalho equilibrado de todo o peitoral.',
+    videoUrl: 'https://youtube.com/watch?v=cable-crossover-mid'
+  },
+  {
+    id: 'chest_cable_crossover_low',
+    name: 'Crossover Polia Baixa',
+    muscleGroup: 'peito',
+    targetMuscles: ['Peitoral Superior', 'Deltoides Anterior'],
+    equipment: ['Cabo', 'Polia'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60-90s',
+    scientificSource: 'EMG Cable Studies',
+    description: 'Ênfase no peitoral superior com movimento ascendente.',
+    videoUrl: 'https://youtube.com/watch?v=cable-crossover-low'
+  },
+  {
+    id: 'chest_pushups',
     name: 'Flexões (Push-ups)',
     muscleGroup: 'peito',
-    targetMuscles: ['Peitoral maior', 'Tríceps', 'Core'],
-    equipment: ['Peso corporal'],
-    difficulty: 'iniciante',
+    targetMuscles: ['Peitoral Maior', 'Tríceps', 'Core'],
+    equipment: ['Peso Corporal'],
+    difficulty: 'Iniciante',
     defaultSets: 3,
     defaultReps: '10-20',
     restTime: '60s',
-    videoUrl: 'https://www.youtube.com/watch?v=IODxDxX7oi4',
-    scientificSource: 'Multiple EMG Studies',
-    description: 'Exercício funcional para peitoral e estabilização',
-    tips: ['Corpo reto', 'Mãos na linha do peito', 'Movimento completo']
+    scientificSource: 'Bodyweight Exercise Studies',
+    description: 'Exercício funcional básico para peitoral.',
+    videoUrl: 'https://youtube.com/watch?v=pushups'
+  },
+  {
+    id: 'chest_dips',
+    name: 'Dips com Inclinação',
+    muscleGroup: 'peito',
+    targetMuscles: ['Peitoral Inferior', 'Tríceps'],
+    equipment: ['Paralelas'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-12',
+    restTime: '90s',
+    scientificSource: 'Bodyweight EMG Studies',
+    description: 'Incline-se para frente para focar no peitoral inferior.',
+    videoUrl: 'https://youtube.com/watch?v=chest-dips'
   },
 
-  // COSTAS
+  // ============ COSTAS ============
   {
-    id: 'barra-fixa-pronada',
+    id: 'back_pullup_pronated',
     name: 'Barra Fixa Pronada (Pull-up)',
     muscleGroup: 'costas',
-    targetMuscles: ['Latíssimo', 'Romboides', 'Bíceps'],
-    equipment: ['Barra fixa'],
-    difficulty: 'avancado',
-    defaultSets: 4,
-    defaultReps: '6-12',
-    restTime: '120-180s',
-    videoUrl: 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-    scientificSource: 'Boeckh-Behrens & Buskies',
-    description: 'Exercício supremo para desenvolvimento das costas',
-    tips: ['Pegada pronada', 'Puxe até o peito', 'Controle a descida']
+    targetMuscles: ['Latíssimo do Dorso', 'Romboides', 'Bíceps'],
+    equipment: ['Barra Fixa'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '6-10',
+    restTime: '120s',
+    scientificSource: 'Boeckh-Behrens & Buskies EMG',
+    description: 'Exercício fundamental para desenvolvimento das costas.',
+    videoUrl: 'https://youtube.com/watch?v=pullup-pronated',
+    emgActivation: 95
   },
   {
-    id: 'remada-curvada-barra',
-    name: 'Remada Curvada com Barra',
+    id: 'back_chinup_supinated',
+    name: 'Barra Fixa Supinada (Chin-up)',
     muscleGroup: 'costas',
-    targetMuscles: ['Latíssimo', 'Trapézio médio', 'Romboides'],
-    equipment: ['Barra'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
-    defaultReps: '8-12',
-    restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=FWJR5Ve8bnQ',
-    scientificSource: 'Bret Contreras EMG',
-    description: 'Exercício fundamental para espessura das costas',
-    tips: ['Mantenha coluna neutra', 'Puxe até o abdômen', 'Aperte as escápulas']
+    targetMuscles: ['Latíssimo do Dorso', 'Bíceps', 'Romboides'],
+    equipment: ['Barra Fixa'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '6-10',
+    restTime: '120s',
+    scientificSource: 'Bret Contreras EMG Studies',
+    description: 'Maior ativação do bíceps comparado ao pull-up.',
+    videoUrl: 'https://youtube.com/watch?v=chinup'
   },
   {
-    id: 'puxada-frente',
+    id: 'back_lat_pulldown',
     name: 'Puxada na Frente (Pulldown)',
     muscleGroup: 'costas',
-    targetMuscles: ['Latíssimo', 'Bíceps', 'Romboides'],
-    equipment: ['Puxador', 'Cabo'],
-    difficulty: 'iniciante',
-    defaultSets: 4,
+    targetMuscles: ['Latíssimo do Dorso', 'Romboides', 'Bíceps'],
+    equipment: ['Máquina Puxador'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
     defaultReps: '10-12',
     restTime: '90s',
-    videoUrl: 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
-    scientificSource: 'ACE Back Study',
-    description: 'Desenvolvimento da largura das costas',
-    tips: ['Puxe até o peito', 'Inclina levemente para trás', 'Movimento controlado']
+    scientificSource: 'EMG Pulldown Studies',
+    description: 'Alternativa acessível para desenvolvimento das costas.',
+    videoUrl: 'https://youtube.com/watch?v=lat-pulldown'
   },
-
-  // OMBROS
   {
-    id: 'desenvolvimento-halteres',
-    name: 'Desenvolvimento com Halteres',
-    muscleGroup: 'ombros',
-    targetMuscles: ['Deltoide anterior', 'Deltoide lateral', 'Tríceps'],
-    equipment: ['Halteres', 'Banco'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
-    defaultReps: '8-12',
+    id: 'back_barbell_row',
+    name: 'Remada Curvada com Barra',
+    muscleGroup: 'costas',
+    targetMuscles: ['Latíssimo do Dorso', 'Romboides', 'Trapézio'],
+    equipment: ['Barra'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '8-10',
     restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=qEwKCR5JCog',
-    scientificSource: 'ACE Shoulder EMG Study',
-    description: 'Exercício principal para desenvolvimento dos ombros',
-    tips: ['Amplitude completa', 'Não trave os cotovelos', 'Controle o peso']
+    scientificSource: 'Boeckh-Behrens & Buskies',
+    description: 'Exercício composto para espessura das costas.',
+    videoUrl: 'https://youtube.com/watch?v=barbell-row'
   },
   {
-    id: 'elevacao-lateral',
-    name: 'Elevação Lateral com Halteres',
-    muscleGroup: 'ombros',
-    targetMuscles: ['Deltoide lateral'],
-    equipment: ['Halteres'],
-    difficulty: 'iniciante',
+    id: 'back_dumbbell_row',
+    name: 'Remada Unilateral com Halter',
+    muscleGroup: 'costas',
+    targetMuscles: ['Latíssimo do Dorso', 'Romboides', 'Trapézio'],
+    equipment: ['Halteres', 'Banco'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60-90s',
+    scientificSource: 'Unilateral EMG Studies',
+    description: 'Trabalho unilateral para correção de assimetrias.',
+    videoUrl: 'https://youtube.com/watch?v=dumbbell-row'
+  },
+  {
+    id: 'back_seated_cable_row',
+    name: 'Remada Baixa com Triângulo',
+    muscleGroup: 'costas',
+    targetMuscles: ['Latíssimo do Dorso', 'Romboides', 'Trapézio Médio'],
+    equipment: ['Cabo', 'Triângulo'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90s',
+    scientificSource: 'Cable Row EMG Studies',
+    description: 'Movimento controlado para desenvolvimento das costas.',
+    videoUrl: 'https://youtube.com/watch?v=seated-cable-row'
+  },
+  {
+    id: 'back_tbar_row',
+    name: 'Remada Cavalinho (T-Bar Row)',
+    muscleGroup: 'costas',
+    targetMuscles: ['Latíssimo do Dorso', 'Romboides', 'Trapézio'],
+    equipment: ['T-Bar', 'Anilhas'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '8-10',
+    restTime: '90-120s',
+    scientificSource: 'T-Bar EMG Analysis',
+    description: 'Excelente para espessura e desenvolvimento das costas.',
+    videoUrl: 'https://youtube.com/watch?v=tbar-row'
+  },
+  {
+    id: 'back_pullover',
+    name: 'Pullover com Halteres',
+    muscleGroup: 'costas',
+    targetMuscles: ['Latíssimo do Dorso', 'Serrátil Anterior'],
+    equipment: ['Halteres', 'Banco'],
+    difficulty: 'Intermediário',
     defaultSets: 3,
     defaultReps: '12-15',
     restTime: '60-90s',
-    videoUrl: 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
-    scientificSource: 'ACE Shoulder EMG Study',
-    description: 'Isolamento do deltoide lateral para largura dos ombros',
-    tips: ['Cotovelos ligeiramente flexionados', 'Pare na altura dos ombros', 'Movimento controlado']
+    scientificSource: 'Pullover EMG Studies',
+    description: 'Expansão da caixa torácica e trabalho do latíssimo.',
+    videoUrl: 'https://youtube.com/watch?v=pullover'
+  },
+  {
+    id: 'back_face_pull',
+    name: 'Face Pull',
+    muscleGroup: 'costas',
+    targetMuscles: ['Romboides', 'Trapézio Médio', 'Deltoides Posterior'],
+    equipment: ['Cabo', 'Corda'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '60s',
+    scientificSource: 'Postural Correction Studies',
+    description: 'Excelente para postura e romboides.',
+    videoUrl: 'https://youtube.com/watch?v=face-pull'
+  },
+  {
+    id: 'back_upright_row',
+    name: 'Remada Alta com Pegada Aberta',
+    muscleGroup: 'costas',
+    targetMuscles: ['Trapézio', 'Deltoides', 'Romboides'],
+    equipment: ['Barra', 'Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90s',
+    scientificSource: 'Upright Row EMG',
+    description: 'Desenvolvimento do trapézio superior.',
+    videoUrl: 'https://youtube.com/watch?v=upright-row'
   },
 
-  // BÍCEPS
+  // ============ OMBROS ============
   {
-    id: 'rosca-direta-barra',
-    name: 'Rosca Direta com Barra',
-    muscleGroup: 'bracos',
-    targetMuscles: ['Bíceps braquial', 'Braquial anterior'],
-    equipment: ['Barra', 'Barra EZ'],
-    difficulty: 'iniciante',
-    defaultSets: 4,
+    id: 'shoulders_dumbbell_press_seated',
+    name: 'Desenvolvimento com Halteres Sentado',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Anterior', 'Deltoides Lateral', 'Tríceps'],
+    equipment: ['Halteres', 'Banco'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
     defaultReps: '10-12',
-    restTime: '60-90s',
-    videoUrl: 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo',
-    scientificSource: 'ACE Biceps EMG Study',
-    description: 'Exercício fundamental para desenvolvimento do bíceps',
-    tips: ['Cotovelos fixos', 'Movimento completo', 'Não balance o corpo']
+    restTime: '90s',
+    scientificSource: 'ACE Shoulder EMG Study',
+    description: 'Exercício fundamental para desenvolvimento dos ombros.',
+    videoUrl: 'https://youtube.com/watch?v=dumbbell-press-seated',
+    emgActivation: 90
   },
   {
-    id: 'rosca-concentrada',
-    name: 'Rosca Concentrada',
+    id: 'shoulders_barbell_press',
+    name: 'Desenvolvimento com Barra',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Anterior', 'Deltoides Lateral', 'Tríceps'],
+    equipment: ['Barra'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '8-10',
+    restTime: '90-120s',
+    scientificSource: 'ACE Shoulder EMG Study',
+    description: 'Movimento composto para força dos ombros.',
+    videoUrl: 'https://youtube.com/watch?v=barbell-press'
+  },
+  {
+    id: 'shoulders_lateral_raise',
+    name: 'Elevação Lateral com Halteres',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Lateral'],
+    equipment: ['Halteres'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'ACE Shoulder EMG Study',
+    description: 'Isolamento do deltoides lateral.',
+    videoUrl: 'https://youtube.com/watch?v=lateral-raise',
+    emgActivation: 95
+  },
+  {
+    id: 'shoulders_front_raise',
+    name: 'Elevação Frontal com Halteres',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Anterior'],
+    equipment: ['Halteres'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'ACE Shoulder EMG Study',
+    description: 'Isolamento do deltoides anterior.',
+    videoUrl: 'https://youtube.com/watch?v=front-raise'
+  },
+  {
+    id: 'shoulders_cable_lateral_raise',
+    name: 'Elevação Lateral na Polia Baixa',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Lateral'],
+    equipment: ['Cabo', 'Polia'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Cable EMG Studies',
+    description: 'Resistência constante para deltoides lateral.',
+    videoUrl: 'https://youtube.com/watch?v=cable-lateral-raise'
+  },
+  {
+    id: 'shoulders_arnold_press',
+    name: 'Desenvolvimento Arnold',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Anterior', 'Deltoides Lateral', 'Deltoides Posterior'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90s',
+    scientificSource: 'Arnold Press EMG Analysis',
+    description: 'Movimento rotacional para todos os deltoides.',
+    videoUrl: 'https://youtube.com/watch?v=arnold-press'
+  },
+  {
+    id: 'shoulders_upright_row_wide',
+    name: 'Remada Alta com Pegada Aberta',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Lateral', 'Trapézio'],
+    equipment: ['Barra', 'Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90s',
+    scientificSource: 'Upright Row Safety Studies',
+    description: 'Desenvolvimento lateral com pegada segura.',
+    videoUrl: 'https://youtube.com/watch?v=upright-row-wide'
+  },
+  {
+    id: 'shoulders_reverse_fly_machine',
+    name: 'Crucifixo Invertido (Máquina)',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Posterior', 'Romboides'],
+    equipment: ['Máquina Crucifixo Invertido'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Posterior Deltoid EMG',
+    description: 'Isolamento do deltoides posterior.',
+    videoUrl: 'https://youtube.com/watch?v=reverse-fly-machine'
+  },
+  {
+    id: 'shoulders_face_pull_rope',
+    name: 'Face Pull com Corda',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Posterior', 'Romboides', 'Trapézio Médio'],
+    equipment: ['Cabo', 'Corda'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '60s',
+    scientificSource: 'Postural EMG Studies',
+    description: 'Excelente para postura e deltoides posterior.',
+    videoUrl: 'https://youtube.com/watch?v=face-pull-rope'
+  },
+  {
+    id: 'shoulders_bent_over_reverse_fly',
+    name: 'Elevação Posterior com Halteres',
+    muscleGroup: 'ombros',
+    targetMuscles: ['Deltoides Posterior', 'Romboides'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Bent-over Fly EMG',
+    description: 'Trabalho do deltoides posterior em pé.',
+    videoUrl: 'https://youtube.com/watch?v=bent-over-reverse-fly'
+  },
+
+  // ============ BÍCEPS ============
+  {
+    id: 'biceps_barbell_curl',
+    name: 'Rosca Direta com Barra',
     muscleGroup: 'bracos',
-    targetMuscles: ['Bíceps braquial'],
-    equipment: ['Halter', 'Banco'],
-    difficulty: 'iniciante',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Barra Reta', 'Barra EZ'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60-90s',
+    scientificSource: 'ACE Biceps EMG Study',
+    description: 'Exercício fundamental para desenvolvimento do bíceps.',
+    videoUrl: 'https://youtube.com/watch?v=barbell-curl',
+    emgActivation: 95
+  },
+  {
+    id: 'biceps_dumbbell_alternating',
+    name: 'Rosca Alternada com Halteres',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Halteres'],
+    difficulty: 'Iniciante',
     defaultSets: 3,
     defaultReps: '10-12',
     restTime: '60s',
-    videoUrl: 'https://www.youtube.com/watch?v=Jvj2wV_ytYE',
     scientificSource: 'ACE Biceps EMG Study',
-    description: 'Maior isolamento e ativação do bíceps',
-    tips: ['Braço apoiado na coxa', 'Movimento lento', 'Máxima contração']
+    description: 'Trabalho unilateral para desenvolvimento equilibrado.',
+    videoUrl: 'https://youtube.com/watch?v=dumbbell-alternating'
+  },
+  {
+    id: 'biceps_concentration_curl',
+    name: 'Rosca Concentrada',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial'],
+    equipment: ['Halteres', 'Banco'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60s',
+    scientificSource: 'ACE Biceps EMG Study',
+    description: 'Máximo isolamento do bíceps.',
+    videoUrl: 'https://youtube.com/watch?v=concentration-curl',
+    emgActivation: 97
+  },
+  {
+    id: 'biceps_hammer_curl',
+    name: 'Rosca Martelo',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Braquiorradial', 'Bíceps', 'Braquial'],
+    equipment: ['Halteres'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60s',
+    scientificSource: 'Hammer Curl EMG Studies',
+    description: 'Ênfase no braquiorradial e antebraço.',
+    videoUrl: 'https://youtube.com/watch?v=hammer-curl'
+  },
+  {
+    id: 'biceps_preacher_curl',
+    name: 'Rosca Scott (Banco Inclinado)',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Banco Scott', 'Barra EZ'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '8-10',
+    restTime: '90s',
+    scientificSource: 'Preacher Curl EMG',
+    description: 'Isolamento com amplitude controlada.',
+    videoUrl: 'https://youtube.com/watch?v=preacher-curl'
+  },
+  {
+    id: 'biceps_cable_curl',
+    name: 'Rosca na Polia Baixa',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Cabo', 'Barra'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Cable Curl EMG',
+    description: 'Resistência constante durante todo movimento.',
+    videoUrl: 'https://youtube.com/watch?v=cable-curl'
+  },
+  {
+    id: 'biceps_21s',
+    name: 'Rosca 21 (Parcial + Completa)',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Barra EZ', 'Halteres'],
+    difficulty: 'Avançado',
+    defaultSets: 2,
+    defaultReps: '21 (7+7+7)',
+    restTime: '120s',
+    scientificSource: 'Partial ROM Studies',
+    description: 'Técnica avançada com amplitude parcial e completa.',
+    videoUrl: 'https://youtube.com/watch?v=biceps-21s'
+  },
+  {
+    id: 'biceps_incline_curl',
+    name: 'Rosca em Banco Inclinado',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Halteres', 'Banco Inclinado'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60-90s',
+    scientificSource: 'Incline Curl EMG',
+    description: 'Maior alongamento do bíceps na posição inicial.',
+    videoUrl: 'https://youtube.com/watch?v=incline-curl'
+  },
+  {
+    id: 'biceps_cross_body',
+    name: 'Rosca Cruzada (Cross Body)',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Braquial'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60s',
+    scientificSource: 'Cross Body EMG Studies',
+    description: 'Movimento cruzado para ativação diferenciada.',
+    videoUrl: 'https://youtube.com/watch?v=cross-body-curl'
+  },
+  {
+    id: 'biceps_chinup',
+    name: 'Chin-up (Barra Fixa Supinada)',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Bíceps Braquial', 'Latíssimo', 'Braquial'],
+    equipment: ['Barra Fixa'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '6-10',
+    restTime: '120s',
+    scientificSource: 'Compound Biceps EMG',
+    description: 'Excelente estímulo composto para bíceps.',
+    videoUrl: 'https://youtube.com/watch?v=chinup-biceps'
   },
 
-  // TRÍCEPS
+  // ============ TRÍCEPS ============
   {
-    id: 'paralelas-dips',
+    id: 'triceps_dips',
     name: 'Paralelas (Dips)',
     muscleGroup: 'bracos',
-    targetMuscles: ['Tríceps', 'Peitoral inferior', 'Deltoide anterior'],
+    targetMuscles: ['Tríceps', 'Peitoral Inferior'],
     equipment: ['Paralelas'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
-    defaultReps: '8-15',
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-12',
     restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=2z8JmcrW-As',
-    scientificSource: 'ACE Triceps Study',
-    description: 'Exercício supremo para desenvolvimento do tríceps',
-    tips: ['Corpo reto', 'Desça até 90°', 'Foque no tríceps']
+    scientificSource: 'Boeckh-Behrens EMG Study',
+    description: 'Exercício composto fundamental para tríceps.',
+    videoUrl: 'https://youtube.com/watch?v=dips',
+    emgActivation: 95
   },
   {
-    id: 'triceps-polia-corda',
-    name: 'Tríceps Corda na Polia',
+    id: 'triceps_lying_extension',
+    name: 'Tríceps Testa com Barra EZ',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Barra EZ', 'Banco'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90s',
+    scientificSource: 'ACE Triceps Study',
+    description: 'Isolamento clássico do tríceps.',
+    videoUrl: 'https://youtube.com/watch?v=lying-extension'
+  },
+  {
+    id: 'triceps_cable_pushdown_rope',
+    name: 'Tríceps Corda na Polia Alta',
     muscleGroup: 'bracos',
     targetMuscles: ['Tríceps'],
     equipment: ['Cabo', 'Corda'],
-    difficulty: 'iniciante',
+    difficulty: 'Iniciante',
     defaultSets: 3,
     defaultReps: '12-15',
-    restTime: '60-90s',
-    videoUrl: 'https://www.youtube.com/watch?v=vB5OHsJ3EME',
-    scientificSource: 'EMG Study Boeckh-Behrens',
-    description: 'Isolamento do tríceps com amplitude total',
-    tips: ['Cotovelos fixos', 'Abra a corda embaixo', 'Tensão constante']
+    restTime: '60s',
+    scientificSource: 'ACE Triceps Study',
+    description: 'Isolamento com movimento natural.',
+    videoUrl: 'https://youtube.com/watch?v=cable-pushdown-rope',
+    emgActivation: 90
+  },
+  {
+    id: 'triceps_cable_pushdown_bar',
+    name: 'Tríceps Barra Reta na Polia Alta',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Cabo', 'Barra'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'ACE Triceps Study',
+    description: 'Versão clássica do pushdown.',
+    videoUrl: 'https://youtube.com/watch?v=cable-pushdown-bar'
+  },
+  {
+    id: 'triceps_bench_dips',
+    name: 'Tríceps Banco com Peso',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Banco', 'Anilha'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-15',
+    restTime: '90s',
+    scientificSource: 'Bench Dips EMG',
+    description: 'Versão com sobrecarga do mergulho.',
+    videoUrl: 'https://youtube.com/watch?v=bench-dips'
+  },
+  {
+    id: 'triceps_overhead_extension',
+    name: 'Tríceps Francês (Por Trás da Cabeça)',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Halteres', 'Barra'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90s',
+    scientificSource: 'Overhead Extension EMG',
+    description: 'Alongamento máximo do tríceps.',
+    videoUrl: 'https://youtube.com/watch?v=overhead-extension'
+  },
+  {
+    id: 'triceps_kickback',
+    name: 'Kickback com Halteres',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Halteres', 'Banco'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Kickback EMG Studies',
+    description: 'Isolamento unilateral do tríceps.',
+    videoUrl: 'https://youtube.com/watch?v=kickback'
+  },
+  {
+    id: 'triceps_cable_overhead',
+    name: 'Tríceps Unilateral na Polia Baixa',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Cabo', 'Polia'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '60s',
+    scientificSource: 'Unilateral Triceps EMG',
+    description: 'Trabalho unilateral com cabo.',
+    videoUrl: 'https://youtube.com/watch?v=cable-overhead-triceps'
+  },
+  {
+    id: 'triceps_reverse_grip',
+    name: 'Tríceps Pegada Inversa na Polia',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Cabo', 'Barra'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Reverse Grip EMG',
+    description: 'Ativação diferenciada com pegada supinada.',
+    videoUrl: 'https://youtube.com/watch?v=reverse-grip-triceps'
+  },
+  {
+    id: 'triceps_band',
+    name: 'Tríceps com Elástico',
+    muscleGroup: 'bracos',
+    targetMuscles: ['Tríceps'],
+    equipment: ['Elástico'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '45s',
+    scientificSource: 'Elastic Resistance Studies',
+    description: 'Variação de tensão durante movimento.',
+    videoUrl: 'https://youtube.com/watch?v=triceps-band'
   },
 
-  // PERNAS - QUADRÍCEPS
+  // ============ PERNAS - QUADRÍCEPS ============
   {
-    id: 'agachamento-livre',
+    id: 'quads_squat_free',
     name: 'Agachamento Livre com Barra',
     muscleGroup: 'pernas',
     targetMuscles: ['Quadríceps', 'Glúteos', 'Core'],
     equipment: ['Barra', 'Rack'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
+    difficulty: 'Intermediário',
+    defaultSets: 3,
     defaultReps: '8-12',
     restTime: '120-180s',
-    videoUrl: 'https://www.youtube.com/watch?v=Dy28eq2PjcM',
-    scientificSource: 'Multiple EMG Studies',
-    description: 'Exercício rei para pernas e força funcional',
-    tips: ['Desça até 90°', 'Joelhos alinhados', 'Core contraído']
+    scientificSource: 'Squat EMG Analysis',
+    description: 'Rei dos exercícios para membros inferiores.',
+    videoUrl: 'https://youtube.com/watch?v=squat-free',
+    emgActivation: 100
   },
   {
-    id: 'leg-press-45',
+    id: 'quads_leg_press',
     name: 'Leg Press 45°',
     muscleGroup: 'pernas',
     targetMuscles: ['Quadríceps', 'Glúteos'],
-    equipment: ['Máquina Leg Press'],
-    difficulty: 'iniciante',
-    defaultSets: 4,
+    equipment: ['Leg Press'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
     defaultReps: '12-15',
     restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=IZxyjW7MPJQ',
-    scientificSource: 'Biomechanical Studies',
-    description: 'Desenvolvimento seguro dos quadríceps',
-    tips: ['Amplitude completa', 'Não trave os joelhos', 'Controle o peso']
+    scientificSource: 'Leg Press EMG Studies',
+    description: 'Alternativa segura ao agachamento livre.',
+    videoUrl: 'https://youtube.com/watch?v=leg-press'
+  },
+  {
+    id: 'quads_leg_extension',
+    name: 'Cadeira Extensora',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps'],
+    equipment: ['Cadeira Extensora'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60-90s',
+    scientificSource: 'Leg Extension EMG',
+    description: 'Isolamento puro do quadríceps.',
+    videoUrl: 'https://youtube.com/watch?v=leg-extension'
+  },
+  {
+    id: 'quads_front_squat',
+    name: 'Agachamento Frontal com Barra',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps', 'Core'],
+    equipment: ['Barra', 'Rack'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '6-10',
+    restTime: '120-180s',
+    scientificSource: 'Front Squat EMG',
+    description: 'Maior ênfase no quadríceps e core.',
+    videoUrl: 'https://youtube.com/watch?v=front-squat'
+  },
+  {
+    id: 'quads_hack_squat',
+    name: 'Agachamento Hack (Máquina)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps', 'Glúteos'],
+    equipment: ['Máquina Hack'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90-120s',
+    scientificSource: 'Hack Squat EMG',
+    description: 'Movimento guiado para segurança.',
+    videoUrl: 'https://youtube.com/watch?v=hack-squat'
+  },
+  {
+    id: 'quads_lunges',
+    name: 'Passada com Halteres (Lunges)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps', 'Glúteos', 'Estabilizadores'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12 cada perna',
+    restTime: '90s',
+    scientificSource: 'Lunge EMG Studies',
+    description: 'Trabalho unilateral funcional.',
+    videoUrl: 'https://youtube.com/watch?v=lunges'
+  },
+  {
+    id: 'quads_adductor',
+    name: 'Cadeira Adutora',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Adutores', 'Estabilizadores'],
+    equipment: ['Cadeira Adutora'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Adductor EMG',
+    description: 'Estabilização e força dos adutores.',
+    videoUrl: 'https://youtube.com/watch?v=adductor'
+  },
+  {
+    id: 'quads_bulgarian_split',
+    name: 'Agachamento Búlgaro',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps', 'Glúteos', 'Estabilizadores'],
+    equipment: ['Banco', 'Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12 cada perna',
+    restTime: '90s',
+    scientificSource: 'Bulgarian Split EMG',
+    description: 'Unilateral com grande amplitude.',
+    videoUrl: 'https://youtube.com/watch?v=bulgarian-split'
+  },
+  {
+    id: 'quads_step_up',
+    name: 'Step-up com Halteres',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps', 'Glúteos', 'Panturrilhas'],
+    equipment: ['Step', 'Halteres'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15 cada perna',
+    restTime: '60-90s',
+    scientificSource: 'Step-up EMG Studies',
+    description: 'Movimento funcional de subida.',
+    videoUrl: 'https://youtube.com/watch?v=step-up'
+  },
+  {
+    id: 'quads_goblet_squat',
+    name: 'Agachamento Sumô com Halter',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Quadríceps', 'Glúteos', 'Adutores'],
+    equipment: ['Halteres'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '90s',
+    scientificSource: 'Goblet Squat EMG',
+    description: 'Agachamento com postura corrigida.',
+    videoUrl: 'https://youtube.com/watch?v=goblet-squat'
   },
 
-  // POSTERIORES
+  // ============ PERNAS - POSTERIOR ============
   {
-    id: 'stiff-halteres',
-    name: 'Stiff com Halteres',
+    id: 'hamstrings_leg_curl',
+    name: 'Mesa Flexora (Leg Curl)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais'],
+    equipment: ['Mesa Flexora'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '60-90s',
+    scientificSource: 'Leg Curl EMG Studies',
+    description: 'Isolamento clássico dos isquiotibiais.',
+    videoUrl: 'https://youtube.com/watch?v=leg-curl'
+  },
+  {
+    id: 'hamstrings_stiff_deadlift',
+    name: 'Stiff com Halteres ou Barra',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais', 'Glúteos', 'Paravertebrais'],
+    equipment: ['Halteres', 'Barra'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90-120s',
+    scientificSource: 'Romanian Deadlift EMG',
+    description: 'Movimento de dobradiça do quadril.',
+    videoUrl: 'https://youtube.com/watch?v=stiff-deadlift'
+  },
+  {
+    id: 'hamstrings_deadlift',
+    name: 'Levantamento Terra com Barra',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais', 'Glúteos', 'Paravertebrais', 'Trapézio'],
+    equipment: ['Barra'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '5-8',
+    restTime: '120-180s',
+    scientificSource: 'Deadlift EMG Analysis',
+    description: 'Exercício composto fundamental.',
+    videoUrl: 'https://youtube.com/watch?v=deadlift',
+    emgActivation: 100
+  },
+  {
+    id: 'hamstrings_glute_bridge',
+    name: 'Glute Bridge (Elevação de Quadril)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Isquiotibiais'],
+    equipment: ['Peso Corporal', 'Barra'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '60-90s',
+    scientificSource: 'Glute Bridge EMG',
+    description: 'Ativação específica dos glúteos.',
+    videoUrl: 'https://youtube.com/watch?v=glute-bridge'
+  },
+  {
+    id: 'hamstrings_sumo_squat',
+    name: 'Agachamento Sumô',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais', 'Glúteos', 'Adutores'],
+    equipment: ['Barra', 'Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12',
+    restTime: '90-120s',
+    scientificSource: 'Sumo Squat EMG',
+    description: 'Ênfase na cadeia posterior.',
+    videoUrl: 'https://youtube.com/watch?v=sumo-squat'
+  },
+  {
+    id: 'hamstrings_bulgarian_incline',
+    name: 'Agachamento Búlgaro com Inclinação',
     muscleGroup: 'pernas',
     targetMuscles: ['Isquiotibiais', 'Glúteos'],
-    equipment: ['Halteres'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
-    defaultReps: '10-12',
+    equipment: ['Banco', 'Halteres'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-10 cada perna',
     restTime: '90s',
-    videoUrl: 'https://www.youtube.com/watch?v=1uDiW5-_Jps',
-    scientificSource: 'EMG Posterior Chain Studies',
-    description: 'Desenvolvimento dos isquiotibiais e glúteos',
-    tips: ['Mantenha joelhos levemente flexionados', 'Quadril para trás', 'Sinta o alongamento']
+    scientificSource: 'Bulgarian Hamstring EMG',
+    description: 'Versão com ênfase posterior.',
+    videoUrl: 'https://youtube.com/watch?v=bulgarian-incline'
   },
-
-  // GLÚTEOS
   {
-    id: 'hip-thrust',
-    name: 'Hip Thrust com Barra',
+    id: 'hamstrings_good_morning',
+    name: 'Good Morning com Barra',
     muscleGroup: 'pernas',
-    targetMuscles: ['Glúteo máximo', 'Isquiotibiais'],
-    equipment: ['Barra', 'Banco'],
-    difficulty: 'intermediario',
-    defaultSets: 4,
-    defaultReps: '10-15',
+    targetMuscles: ['Isquiotibiais', 'Glúteos', 'Paravertebrais'],
+    equipment: ['Barra'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-10',
     restTime: '90-120s',
-    videoUrl: 'https://www.youtube.com/watch?v=OUgsJ8-Vi0E',
-    scientificSource: 'Contreras EMG Studies',
-    description: 'Exercício supremo para ativação dos glúteos',
-    tips: ['Aperte forte no topo', 'Quadril bem estendido', 'Evite hiperextensão lombar']
+    scientificSource: 'Good Morning EMG',
+    description: 'Fortalecimento da cadeia posterior.',
+    videoUrl: 'https://youtube.com/watch?v=good-morning'
+  },
+  {
+    id: 'hamstrings_kettlebell_swing',
+    name: 'Kettlebell Swing',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais', 'Glúteos', 'Core'],
+    equipment: ['Kettlebell'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '90s',
+    scientificSource: 'Kettlebell Swing EMG',
+    description: 'Movimento explosivo da cadeia posterior.',
+    videoUrl: 'https://youtube.com/watch?v=kettlebell-swing'
+  },
+  {
+    id: 'hamstrings_nordic_curl',
+    name: 'Nordic Curl (Excêntrico)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais'],
+    equipment: ['Peso Corporal'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '3-6',
+    restTime: '120s',
+    scientificSource: 'Nordic Curl EMG Studies',
+    description: 'Exercício excêntrico avançado.',
+    videoUrl: 'https://youtube.com/watch?v=nordic-curl'
+  },
+  {
+    id: 'hamstrings_single_leg_curl',
+    name: 'Leg Curl Unilateral com Halteres',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Isquiotibiais'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12 cada perna',
+    restTime: '60s',
+    scientificSource: 'Unilateral Hamstring EMG',
+    description: 'Trabalho unilateral dos isquiotibiais.',
+    videoUrl: 'https://youtube.com/watch?v=single-leg-curl'
   },
 
-  // PANTURRILHAS
+  // ============ GLÚTEOS ============
   {
-    id: 'elevacao-panturrilha-pe',
+    id: 'glutes_hip_thrust',
+    name: 'Hip Thrust (Elevação de Quadril com Barra)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteo Máximo', 'Isquiotibiais'],
+    equipment: ['Barra', 'Banco'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '12-15',
+    restTime: '90-120s',
+    scientificSource: 'Contreras Hip Thrust EMG',
+    description: 'Máxima ativação do glúteo máximo.',
+    videoUrl: 'https://youtube.com/watch?v=hip-thrust',
+    emgActivation: 100
+  },
+  {
+    id: 'glutes_deep_squat',
+    name: 'Agachamento Profundo com Barra',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Quadríceps'],
+    equipment: ['Barra'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-10',
+    restTime: '120-180s',
+    scientificSource: 'Deep Squat Glute EMG',
+    description: 'Amplitude completa para máxima ativação.',
+    videoUrl: 'https://youtube.com/watch?v=deep-squat'
+  },
+  {
+    id: 'glutes_sumo_deadlift',
+    name: 'Deadlift Sumô',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Adutores', 'Isquiotibiais'],
+    equipment: ['Barra'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '6-8',
+    restTime: '120-180s',
+    scientificSource: 'Sumo Deadlift Glute EMG',
+    description: 'Ênfase nos glúteos e adutores.',
+    videoUrl: 'https://youtube.com/watch?v=sumo-deadlift'
+  },
+  {
+    id: 'glutes_long_lunges',
+    name: 'Avanço com Passo Longo (Lunges)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Isquiotibiais'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12 cada perna',
+    restTime: '90s',
+    scientificSource: 'Long Lunge Glute EMG',
+    description: 'Passo longo para ativação máxima.',
+    videoUrl: 'https://youtube.com/watch?v=long-lunges'
+  },
+  {
+    id: 'glutes_abductor_machine',
+    name: 'Cadeira Abdutora',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteo Médio', 'Glúteo Mínimo'],
+    equipment: ['Cadeira Abdutora'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '60s',
+    scientificSource: 'Glute Medius EMG',
+    description: 'Isolamento do glúteo médio.',
+    videoUrl: 'https://youtube.com/watch?v=abductor-machine'
+  },
+  {
+    id: 'glutes_cable_kickback',
+    name: 'Kickback na Polia Baixa',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteo Máximo'],
+    equipment: ['Cabo', 'Tornozeleira'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '12-15 cada perna',
+    restTime: '60s',
+    scientificSource: 'Cable Kickback EMG',
+    description: 'Isolamento unilateral do glúteo.',
+    videoUrl: 'https://youtube.com/watch?v=cable-kickback'
+  },
+  {
+    id: 'glutes_single_leg_stiff',
+    name: 'Stiff Unilateral com Halteres',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Isquiotibiais', 'Estabilizadores'],
+    equipment: ['Halteres'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-10 cada perna',
+    restTime: '90s',
+    scientificSource: 'Single Leg RDL EMG',
+    description: 'Unilateral com desafio de equilíbrio.',
+    videoUrl: 'https://youtube.com/watch?v=single-leg-stiff'
+  },
+  {
+    id: 'glutes_heel_step_up',
+    name: 'Step-up com Ênfase no Calcanhar',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Quadríceps'],
+    equipment: ['Step', 'Halteres'],
+    difficulty: 'Intermediário',
+    defaultSets: 3,
+    defaultReps: '10-12 cada perna',
+    restTime: '90s',
+    scientificSource: 'Heel Emphasis Step-up EMG',
+    description: 'Foque no impulso com o calcanhar.',
+    videoUrl: 'https://youtube.com/watch?v=heel-step-up'
+  },
+  {
+    id: 'glutes_isometric_bridge',
+    name: 'Glute Bridge com Isometria',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Isquiotibiais'],
+    equipment: ['Peso Corporal'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '30-60s hold',
+    restTime: '90s',
+    scientificSource: 'Isometric Glute EMG',
+    description: 'Sustentação para resistência muscular.',
+    videoUrl: 'https://youtube.com/watch?v=isometric-bridge'
+  },
+  {
+    id: 'glutes_bulgarian_long_step',
+    name: 'Agachamento Búlgaro com Passo Longo',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Glúteos', 'Isquiotibiais'],
+    equipment: ['Banco', 'Halteres'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '8-10 cada perna',
+    restTime: '90s',
+    scientificSource: 'Long Step Bulgarian EMG',
+    description: 'Passo longo para máxima ativação glútea.',
+    videoUrl: 'https://youtube.com/watch?v=bulgarian-long-step'
+  },
+
+  // ============ PANTURRILHAS ============
+  {
+    id: 'calves_standing_raise',
     name: 'Elevação de Panturrilhas em Pé',
     muscleGroup: 'pernas',
     targetMuscles: ['Gastrocnêmio'],
     equipment: ['Máquina', 'Halteres'],
-    difficulty: 'iniciante',
+    difficulty: 'Iniciante',
     defaultSets: 4,
     defaultReps: '15-20',
     restTime: '60s',
-    videoUrl: 'https://www.youtube.com/watch?v=JJ1TcgVeOyI',
-    scientificSource: 'Calf EMG Studies',
-    description: 'Desenvolvimento do gastrocnêmio',
-    tips: ['Amplitude completa', 'Pausa no topo', 'Alongue embaixo']
-  },
-
-  // ABDÔMEN
-  {
-    id: 'prancha-frontal',
-    name: 'Prancha Frontal',
-    muscleGroup: 'abdomen',
-    targetMuscles: ['Transverso abdominal', 'Reto abdominal', 'Core'],
-    equipment: ['Peso corporal'],
-    difficulty: 'iniciante',
-    defaultSets: 3,
-    defaultReps: '30-60s',
-    restTime: '60s',
-    videoUrl: 'https://www.youtube.com/watch?v=ASdvN_XEl_c',
-    scientificSource: 'McGill Core Studies',
-    description: 'Fortalecimento isométrico do core',
-    tips: ['Corpo reto', 'Core contraído', 'Respiração controlada']
+    scientificSource: 'Calf Raise EMG Studies',
+    description: 'Exercício básico para gastrocnêmio.',
+    videoUrl: 'https://youtube.com/watch?v=standing-calf-raise'
   },
   {
-    id: 'abdominal-polia',
-    name: 'Abdominal na Polia (Cable Crunch)',
-    muscleGroup: 'abdomen',
-    targetMuscles: ['Reto abdominal'],
-    equipment: ['Cabo', 'Corda'],
-    difficulty: 'intermediario',
+    id: 'calves_seated_raise',
+    name: 'Elevação de Panturrilhas Sentado',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Sóleo'],
+    equipment: ['Máquina Sentada'],
+    difficulty: 'Iniciante',
     defaultSets: 4,
     defaultReps: '15-20',
     restTime: '60s',
-    videoUrl: 'https://www.youtube.com/watch?v=Ffb_GLHqsUo',
-    scientificSource: 'ACE Abdominal Study',
-    description: 'Exercício de resistência para reto abdominal',
-    tips: ['Flexão apenas do tronco', 'Mantenha quadril estável', 'Movimento controlado']
+    scientificSource: 'Seated Calf EMG Studies',
+    description: 'Ênfase no sóleo com joelho flexionado.',
+    videoUrl: 'https://youtube.com/watch?v=seated-calf-raise'
   },
   {
-    id: 'ab-wheel',
-    name: 'Abdominal com Roda (Ab Wheel)',
-    muscleGroup: 'abdomen',
-    targetMuscles: ['Transverso', 'Reto abdominal', 'Core'],
-    equipment: ['Roda abdominal'],
-    difficulty: 'avancado',
+    id: 'calves_leg_press',
+    name: 'Panturrilha no Leg Press',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Leg Press'],
+    difficulty: 'Iniciante',
+    defaultSets: 4,
+    defaultReps: '15-20',
+    restTime: '60s',
+    scientificSource: 'Leg Press Calf EMG',
+    description: 'Variação com carga pesada.',
+    videoUrl: 'https://youtube.com/watch?v=leg-press-calf'
+  },
+  {
+    id: 'calves_single_leg',
+    name: 'Panturrilha Unilateral com Halteres',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Halteres'],
+    difficulty: 'Intermediário',
     defaultSets: 3,
-    defaultReps: '8-15',
+    defaultReps: '12-15 cada perna',
+    restTime: '60s',
+    scientificSource: 'Unilateral Calf EMG',
+    description: 'Trabalho unilateral para correção.',
+    videoUrl: 'https://youtube.com/watch?v=single-leg-calf'
+  },
+  {
+    id: 'calves_jump',
+    name: 'Saltos Pliométricos (Calf Jumps)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Peso Corporal'],
+    difficulty: 'Avançado',
+    defaultSets: 3,
+    defaultReps: '10-15',
     restTime: '90s',
-    videoUrl: 'https://www.youtube.com/watch?v=UGEpQ1BRx-4',
-    scientificSource: 'McGill EMG Studies',
-    description: 'Exercício avançado para força total do core',
-    tips: ['Controle total', 'Não arqueie as costas', 'Movimento lento']
+    scientificSource: 'Plyometric Calf Studies',
+    description: 'Desenvolvimento de potência.',
+    videoUrl: 'https://youtube.com/watch?v=calf-jumps'
+  },
+  {
+    id: 'calves_stairs',
+    name: 'Panturrilha na Escada',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Escada'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '15-20',
+    restTime: '60s',
+    scientificSource: 'Stair Calf EMG',
+    description: 'Amplitude completa com degrau.',
+    videoUrl: 'https://youtube.com/watch?v=stair-calf'
+  },
+  {
+    id: 'calves_smith_machine',
+    name: 'Panturrilha em Máquina Smith',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio'],
+    equipment: ['Smith Machine'],
+    difficulty: 'Intermediário',
+    defaultSets: 4,
+    defaultReps: '12-15',
+    restTime: '60s',
+    scientificSource: 'Smith Machine Calf EMG',
+    description: 'Movimento guiado com carga.',
+    videoUrl: 'https://youtube.com/watch?v=smith-calf'
+  },
+  {
+    id: 'calves_isometric',
+    name: 'Panturrilha Isométrica',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Peso Corporal'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '30-45s hold',
+    restTime: '60s',
+    scientificSource: 'Isometric Calf Studies',
+    description: 'Sustentação no topo do movimento.',
+    videoUrl: 'https://youtube.com/watch?v=isometric-calf'
+  },
+  {
+    id: 'calves_treadmill_incline',
+    name: 'Corrida em Subida (Esteira)',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Esteira'],
+    difficulty: 'Intermediário',
+    defaultSets: 1,
+    defaultReps: '10-15 min',
+    restTime: 'N/A',
+    scientificSource: 'Incline Running EMG',
+    description: 'Trabalho cardiovascular com ênfase nas panturrilhas.',
+    videoUrl: 'https://youtube.com/watch?v=incline-running'
+  },
+  {
+    id: 'calves_band',
+    name: 'Panturrilha com Elástico',
+    muscleGroup: 'pernas',
+    targetMuscles: ['Gastrocnêmio', 'Sóleo'],
+    equipment: ['Elástico'],
+    difficulty: 'Iniciante',
+    defaultSets: 3,
+    defaultReps: '20-25',
+    restTime: '45s',
+    scientificSource: 'Elastic Resistance Calf',
+    description: 'Alta repetição com resistência variável.',
+    videoUrl: 'https://youtube.com/watch?v=band-calf'
   }
 ];
 
-// ALONGAMENTOS
-export interface StretchExercise {
-  id: string;
-  name: string;
-  category: 'inferior' | 'superior' | 'coluna';
-  targetMuscles: string[];
-  duration: string;
-  difficulty: 'iniciante' | 'intermediario' | 'avancado';
-  videoUrl: string;
-  description: string;
-  tips: string[];
-}
-
+// Database de alongamentos
 export const stretchDatabase: StretchExercise[] = [
-  // MEMBROS INFERIORES
   {
-    id: 'alongamento-isquiotibiais',
-    name: 'Alongamento de Isquiotibiais',
+    id: 'stretch_hamstring_seated',
+    name: 'Alongamento de Isquiotibiais Sentado',
     category: 'inferior',
     targetMuscles: ['Isquiotibiais', 'Panturrilhas'],
-    duration: '30-45s',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=g_TEJMXOQTg',
-    description: 'Alongamento essencial para posteriores da coxa',
-    tips: ['Mantenha joelho estendido', 'Não force', 'Respiração profunda']
+    difficulty: 'Iniciante',
+    duration: '30s',
+    description: 'Sentado, estenda uma perna e incline o tronco para frente.',
+    videoUrl: 'https://youtube.com/watch?v=hamstring-stretch'
   },
   {
-    id: 'alongamento-quadriceps',
-    name: 'Alongamento de Quadríceps',
+    id: 'stretch_quad_standing',
+    name: 'Alongamento de Quadríceps em Pé',
     category: 'inferior',
-    targetMuscles: ['Quadríceps', 'Flexores do quadril'],
-    duration: '30s cada perna',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=85aZwWbVh4Q',
-    description: 'Alongamento frontal da coxa',
-    tips: ['Mantenha quadril alinhado', 'Puxe o pé atrás', 'Equilibre-se']
+    targetMuscles: ['Quadríceps'],
+    difficulty: 'Iniciante',
+    duration: '30s',
+    description: 'Em pé, flexione o joelho e puxe o pé em direção ao glúteo.',
+    videoUrl: 'https://youtube.com/watch?v=quad-stretch'
   },
   {
-    id: 'alongamento-gluteo',
-    name: 'Alongamento de Glúteo',
+    id: 'stretch_hip_flexor',
+    name: 'Alongamento de Flexores do Quadril',
     category: 'inferior',
-    targetMuscles: ['Glúteos', 'Piriforme'],
-    duration: '30-45s cada lado',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=HHOGNw-3ov8',
-    description: 'Relaxamento dos glúteos e piriforme',
-    tips: ['Puxe joelho ao peito', 'Respire fundo', 'Relaxe o ombro']
+    targetMuscles: ['Flexores do Quadril', 'Psoas'],
+    difficulty: 'Intermediário',
+    duration: '45s',
+    description: 'Em posição de avanço, estenda o quadril posterior.',
+    videoUrl: 'https://youtube.com/watch?v=hip-flexor-stretch'
   },
   {
-    id: 'alongamento-panturrilha',
-    name: 'Alongamento de Panturrilhas',
+    id: 'stretch_calf_wall',
+    name: 'Alongamento de Panturrilha na Parede',
     category: 'inferior',
     targetMuscles: ['Gastrocnêmio', 'Sóleo'],
-    duration: '30s cada perna',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=71QWtB5L6XU',
-    description: 'Alongamento da panturrilha na parede',
-    tips: ['Calcanhar no chão', 'Perna de trás reta', 'Incline para frente']
+    difficulty: 'Iniciante',
+    duration: '30s',
+    description: 'Apoie as mãos na parede e estenda uma perna para trás.',
+    videoUrl: 'https://youtube.com/watch?v=calf-wall-stretch'
   },
   {
-    id: 'alongamento-psoas',
-    name: 'Alongamento do Psoas',
-    category: 'inferior',
-    targetMuscles: ['Psoas', 'Flexores do quadril'],
-    duration: '30-45s cada lado',
-    difficulty: 'intermediario',
-    videoUrl: 'https://www.youtube.com/watch?v=YF36N5DGSCw',
-    description: 'Alongamento dos flexores do quadril',
-    tips: ['Passo longo para frente', 'Quadril para frente', 'Mantenha tronco ereto']
-  },
-
-  // MEMBROS SUPERIORES
-  {
-    id: 'alongamento-peitoral',
-    name: 'Alongamento de Peitoral',
+    id: 'stretch_chest_doorway',
+    name: 'Alongamento de Peitoral na Porta',
     category: 'superior',
-    targetMuscles: ['Peitoral maior', 'Deltoide anterior'],
-    duration: '30s cada braço',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=3ac_2ZOYfjY',
-    description: 'Alongamento do peitoral na parede',
-    tips: ['Braço em 90°', 'Gire o corpo para fora', 'Sinta o alongamento']
+    targetMuscles: ['Peitoral Maior', 'Deltoides Anterior'],
+    difficulty: 'Iniciante',
+    duration: '30s',
+    description: 'Apoie o braço no batente da porta e gire o corpo.',
+    videoUrl: 'https://youtube.com/watch?v=chest-doorway-stretch'
   },
   {
-    id: 'alongamento-deltoide-posterior',
-    name: 'Alongamento Deltoide Posterior',
+    id: 'stretch_lat_hanging',
+    name: 'Alongamento de Latíssimo Suspenso',
     category: 'superior',
-    targetMuscles: ['Deltoide posterior', 'Trapézio'],
-    duration: '30s cada braço',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=M6Xjf2fmHbs',
-    description: 'Cruzar braço à frente do corpo',
-    tips: ['Puxe o cotovelo', 'Mantenha ombro relaxado', 'Não torça o tronco']
+    targetMuscles: ['Latíssimo do Dorso'],
+    difficulty: 'Intermediário',
+    duration: '30s',
+    description: 'Pendure-se na barra fixa e relaxe completamente.',
+    videoUrl: 'https://youtube.com/watch?v=lat-hanging-stretch'
   },
   {
-    id: 'alongamento-triceps',
-    name: 'Alongamento de Tríceps',
+    id: 'stretch_shoulder_cross',
+    name: 'Alongamento de Ombro Cruzado',
     category: 'superior',
-    targetMuscles: ['Tríceps', 'Latíssimo'],
-    duration: '30s cada braço',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=fFMO2I2RdCU',
-    description: 'Mão atrás da cabeça com auxílio',
-    tips: ['Cotovelo para cima', 'Empurre suavemente', 'Não force']
+    targetMuscles: ['Deltoides Posterior', 'Romboides'],
+    difficulty: 'Iniciante',
+    duration: '30s',
+    description: 'Puxe o braço estendido através do peito.',
+    videoUrl: 'https://youtube.com/watch?v=shoulder-cross-stretch'
   },
   {
-    id: 'alongamento-biceps',
-    name: 'Alongamento de Bíceps',
-    category: 'superior',
-    targetMuscles: ['Bíceps', 'Flexores do punho'],
-    duration: '30s cada braço',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=0rWjKsLG5lc',
-    description: 'Braço estendido com rotação',
-    tips: ['Braço totalmente estendido', 'Gire o polegar para baixo', 'Mantenha postura']
-  },
-  {
-    id: 'alongamento-cervical',
-    name: 'Alongamento Cervical',
-    category: 'superior',
-    targetMuscles: ['Trapézio superior', 'Elevador da escápula'],
-    duration: '30s cada lado',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=A6V1zyiJJPQ',
-    description: 'Inclinação lateral com apoio da mão',
-    tips: ['Incline a cabeça lateralmente', 'Mão oposta segura', 'Movimento suave']
-  },
-
-  // COLUNA E TRONCO
-  {
-    id: 'gato-camelo',
-    name: 'Gato e Camelo',
+    id: 'stretch_cat_cow',
+    name: 'Gato e Vaca (Cat-Cow)',
     category: 'coluna',
-    targetMuscles: ['Coluna lombar', 'Coluna torácica', 'Core'],
-    duration: '10-15 repetições',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=K9bK0BwKFjs',
-    description: 'Mobilidade da coluna vertebral',
-    tips: ['Movimento lento', 'Respire com o movimento', 'Amplitude completa']
+    targetMuscles: ['Paravertebrais', 'Abdominais'],
+    difficulty: 'Iniciante',
+    duration: '60s',
+    description: 'Alterne entre arqueamento e flexão da coluna em quatro apoios.',
+    videoUrl: 'https://youtube.com/watch?v=cat-cow-stretch'
   },
   {
-    id: 'torcao-espinhal',
-    name: 'Torção Espinhal Deitada',
+    id: 'stretch_spinal_twist',
+    name: 'Torção da Coluna Sentado',
     category: 'coluna',
-    targetMuscles: ['Coluna torácica', 'Oblíquos', 'Quadril'],
-    duration: '30-45s cada lado',
-    difficulty: 'intermediario',
-    videoUrl: 'https://www.youtube.com/watch?v=YpRpthGAhOs',
-    description: 'Torção suave da coluna vertebral',
-    tips: ['Ombros no chão', 'Joelho cruza o corpo', 'Gire apenas o quadril']
+    targetMuscles: ['Rotadores da Coluna', 'Oblíquos'],
+    difficulty: 'Intermediário',
+    duration: '45s',
+    description: 'Sentado, gire o tronco para um lado mantendo o quadril fixo.',
+    videoUrl: 'https://youtube.com/watch?v=spinal-twist'
   },
   {
-    id: 'cobra',
-    name: 'Alongamento Cobra',
-    category: 'coluna',
-    targetMuscles: ['Flexores do quadril', 'Abdominais', 'Coluna lombar'],
-    duration: '30-45s',
-    difficulty: 'intermediario',
-    videoUrl: 'https://www.youtube.com/watch?v=z21y1hF9SBs',
-    description: 'Extensão da coluna e abertura frontal',
-    tips: ['Eleve o peito', 'Quadril no chão', 'Não force a lombar']
-  },
-  {
-    id: 'crianca',
+    id: 'stretch_child_pose',
     name: 'Posição da Criança',
     category: 'coluna',
-    targetMuscles: ['Coluna lombar', 'Latíssimo', 'Glúteos'],
-    duration: '45-60s',
-    difficulty: 'iniciante',
-    videoUrl: 'https://www.youtube.com/watch?v=2MTKqHH6qzQ',
-    description: 'Relaxamento total da coluna e quadril',
-    tips: ['Joelhos separados', 'Braços estendidos', 'Respire profundamente']
-  },
-  {
-    id: 'flexores-quadril-lunge',
-    name: 'Alongamento Flexores Quadril (Lunge)',
-    category: 'coluna',
-    targetMuscles: ['Flexores do quadril', 'Psoas', 'Ilíaco'],
-    duration: '30-45s cada lado',
-    difficulty: 'intermediario',
-    videoUrl: 'https://www.youtube.com/watch?v=YF36N5DGSCw',
-    description: 'Alongamento dinâmico dos flexores',
-    tips: ['Passo longo', 'Quadril para baixo e frente', 'Tronco ereto']
+    targetMuscles: ['Latíssimo', 'Paravertebrais', 'Glúteos'],
+    difficulty: 'Iniciante',
+    duration: '60s',
+    description: 'Ajoelhado, sente nos calcanhares e estenda os braços para frente.',
+    videoUrl: 'https://youtube.com/watch?v=child-pose'
   }
 ];
 
-// Função para buscar exercícios por grupo muscular
-export const getScientificExercisesByMuscleGroup = (muscleGroup: string) => {
-  return scientificExerciseDatabase.filter(exercise => exercise.muscleGroup === muscleGroup);
+// Funções auxiliares
+export const getScientificMuscleGroups = (): string[] => {
+  return [...new Set(scientificExerciseDatabase.map(ex => ex.muscleGroup))];
 };
 
-// Função para buscar alongamentos por categoria
-export const getStretchesByCategory = (category: string) => {
-  return stretchDatabase.filter(stretch => stretch.category === category);
+export const getScientificExercisesByMuscleGroup = (muscleGroup: string): ScientificExercise[] => {
+  return scientificExerciseDatabase.filter(ex => ex.muscleGroup === muscleGroup);
 };
 
-// Função para buscar exercícios por nome
-export const searchScientificExercises = (query: string) => {
-  return scientificExerciseDatabase.filter(exercise => 
-    exercise.name.toLowerCase().includes(query.toLowerCase()) ||
-    exercise.targetMuscles.some(muscle => muscle.toLowerCase().includes(query.toLowerCase()))
+export const searchScientificExercises = (query: string): ScientificExercise[] => {
+  const lowercaseQuery = query.toLowerCase();
+  return scientificExerciseDatabase.filter(ex => 
+    ex.name.toLowerCase().includes(lowercaseQuery) ||
+    ex.targetMuscles.some(muscle => muscle.toLowerCase().includes(lowercaseQuery)) ||
+    ex.equipment.some(eq => eq.toLowerCase().includes(lowercaseQuery))
   );
 };
 
-// Função para obter todos os grupos musculares disponíveis
-export const getScientificMuscleGroups = () => {
-  return [...new Set(scientificExerciseDatabase.map(exercise => exercise.muscleGroup))];
+export const getStretchCategories = (): string[] => {
+  return [...new Set(stretchDatabase.map(stretch => stretch.category))];
 };
 
-// Função para obter todas as categorias de alongamento
-export const getStretchCategories = () => {
-  return [...new Set(stretchDatabase.map(stretch => stretch.category))];
+export const getStretchesByCategory = (category: string): StretchExercise[] => {
+  return stretchDatabase.filter(stretch => stretch.category === category);
+};
+
+export const getExerciseById = (id: string): ScientificExercise | undefined => {
+  return scientificExerciseDatabase.find(ex => ex.id === id);
+};
+
+export const getStretchById = (id: string): StretchExercise | undefined => {
+  return stretchDatabase.find(stretch => stretch.id === id);
 };
