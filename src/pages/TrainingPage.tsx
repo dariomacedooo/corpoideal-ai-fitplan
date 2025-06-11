@@ -91,7 +91,12 @@ const TrainingPage = () => {
           </TabsList>
           
           <TabsContent value="generated" className="mt-6">
-            <WorkoutPlan workoutDays={workoutDays} />
+            <WorkoutPlan 
+              goal={profile.goal || 'manter-peso'}
+              workoutDays={workoutDays}
+              trainingLocation={profile.trainingLocation || 'academia'}
+              experience={profile.trainingExperience || 'iniciante'}
+            />
           </TabsContent>
           
           <TabsContent value="customizer" className="mt-6">

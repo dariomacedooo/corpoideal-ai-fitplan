@@ -82,13 +82,44 @@ const AnalysisPage = () => {
           <ProfileSummary userProfile={userProfile} />
 
           {/* Photos Gallery */}
-          <PhotosGallery userPhotos={userPhotos} />
+          <PhotosGallery 
+            frontPhotoUrl={userPhotos?.front || null}
+            backPhotoUrl={userPhotos?.back || null}
+            leftSidePhotoUrl={userPhotos?.leftSide || null}
+            rightSidePhotoUrl={userPhotos?.rightSide || null}
+          />
 
           {/* Body Analysis */}
-          <BodyAnalysis userPhotos={userPhotos} userProfile={userProfile} />
+          <BodyAnalysis 
+            posture="Moderada"
+            fatPercentage="Moderada"
+            symmetry="Equilibrado"
+            bmi={userProfile?.weight && userProfile?.height ? 
+              (parseFloat(userProfile.weight) / Math.pow(parseFloat(userProfile.height) / 100, 2)).toFixed(1) : 
+              undefined
+            }
+            measurements={{
+              waist: userProfile?.waist,
+              thigh: userProfile?.leftThigh,
+              calf: userProfile?.leftCalf
+            }}
+          />
 
           {/* Postural Analysis */}
-          <PosturalAnalysis userPhotos={userPhotos} />
+          <PosturalAnalysis 
+            frontPhotoUrl={userPhotos?.front || null}
+            backPhotoUrl={userPhotos?.back || null}
+            leftSidePhotoUrl={userPhotos?.leftSide || null}
+            rightSidePhotoUrl={userPhotos?.rightSide || null}
+            analysisData={{
+              shoulders: "Moderado",
+              hips: "Alinhado",
+              knees: "Moderado",
+              spine: "Bom",
+              feet: "Bom",
+              symmetry: "Equilibrado"
+            }}
+          />
 
           {/* Continue Button */}
           <div className="pt-6 border-t">
