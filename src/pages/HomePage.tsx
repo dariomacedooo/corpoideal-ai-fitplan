@@ -39,47 +39,23 @@ const HomePage = () => {
     waterIntake: 0,
     streak: 0
   });
-
+  
+  // useEffect para carregar stats semanais (mantido, pois não interfere na navegação)
   useEffect(() => {
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-    
-    if (!isLoggedIn) {
-      navigate('/auth');
-      return;
-    }
-    
-    // If no profile at all, redirect to profile page
-    if (!profile) {
-      navigate('/profile');
-      return;
-    }
-
-    // Check if analysis is completed to allow full navigation
-    const analysisCompleted = localStorage.getItem('analysisCompleted') === 'true';
-    
-    // If profile is complete but analysis not done, redirect to photo upload
-    if (profile.profileCompleted && !analysisCompleted) {
-      navigate('/upload');
-      return;
-    }
-
-    // Load weekly stats from localStorage
     const savedStats = localStorage.getItem('weeklyStats');
     if (savedStats) {
-      setWeeklyStats(JSON.parse(savedStats));
-    } else {
-      // Initialize stats based on user profile
-      const totalWorkouts = profile.trainingDays?.length || 3;
+ setWeeklyStats(JSON.parse(savedStats));
+    } else if (profile) { // Initialize stats only if profile is available
+ const totalWorkouts = profile.trainingDays?.length || 3;
       setWeeklyStats({
-        workoutsCompleted: Math.floor(Math.random() * totalWorkouts),
-        totalWorkouts,
-        caloriesBurned: Math.floor(Math.random() * 2000) + 500,
-        waterIntake: Math.floor(Math.random() * 80) + 20,
-        streak: Math.floor(Math.random() * 14) + 1
+ workoutsCompleted: Math.floor(Math.random() * totalWorkouts),
+ totalWorkouts,
+        caloriesBurned: Math.floor(Math.random() * 2000) + 500, // Example random data
+        waterIntake: Math.floor(Math.random() * 80) + 20, // Example random data
+        streak: Math.floor(Math.random() * 14) + 1 // Example random data
       });
     }
-  }, [profile, navigate]);
+  }, [profile]); // Dependência no profile para inicializar stats
 
   const workoutProgress = (weeklyStats.workoutsCompleted / weeklyStats.totalWorkouts) * 100;
   const goalCalories = profile?.goal === 'perder-peso' ? 2200 : profile?.goal === 'ganhar-massa' ? 2800 : 2500;
@@ -111,18 +87,6 @@ const HomePage = () => {
       action: () => navigate('/profile')
     }
   ];
-
-  if (!profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-corpoideal-purple mx-auto mb-4"></div>
-          <h1 className="text-4xl font-bold text-corpoideal-purple mb-2">CorpoIdeal AI</h1>
-          <p className="text-gray-600">Carregando seu dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="pb-16 pt-14 bg-background min-h-screen">

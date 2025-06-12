@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,7 +25,9 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
       
       // In a real app, you would use Firebase Auth here
       localStorage.setItem('userLoggedIn', 'true');
-      window.location.href = '/home';
+      
+      // Redirect to the root path for the 'gatekeeper' (Index.tsx) to handle navigation
+      navigate('/');
     } else {
       toast({
         title: "Erro no login",

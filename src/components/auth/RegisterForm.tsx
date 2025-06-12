@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const { toast } = useToast();
@@ -43,7 +45,9 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
     
     // In a real app, you would use Firebase Auth here
     localStorage.setItem('userLoggedIn', 'true');
-    window.location.href = '/home';
+    
+    // Redirect to the root route to let Index.tsx handle the navigation flow
+    navigate('/');
   };
 
   return (

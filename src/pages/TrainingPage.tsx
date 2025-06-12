@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { WorkoutPlan } from "@/components/training/WorkoutPlan";
 import { LoadProgress } from "@/components/training/LoadProgress";
 import { WorkoutCustomizer } from "@/components/training/WorkoutCustomizer";
+import { ScientificWorkoutPlan } from "@/components/training/ScientificWorkoutPlan";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -45,6 +46,7 @@ const TrainingPage = () => {
         profile.sex,
         profile.healthIssues || [],
         profile.trainingDays || ['segunda', 'quarta', 'sexta'],
+        profile.trainingDays?.length || 0, // Adicionado daysPerWeek
         userPhotos
       );
       setWorkoutDays(generatedWorkout);
@@ -123,10 +125,11 @@ const TrainingPage = () => {
           </TabsContent>
           
           <TabsContent value="customizer" className="mt-4">
-            <WorkoutCustomizer 
-              initialWorkout={customWorkout}
-              onSaveWorkout={handleSaveCustomWorkout}
-              isVisible={true}
+            <ScientificWorkoutPlan
+              goal={profile.goal || 'ganhar-massa'}
+              trainingLocation={profile.trainingLocation || 'academia'}
+              experience={profile.trainingExperience || 'avancado'}
+              daysPerWeek={profile.trainingDays?.length || 5}
             />
           </TabsContent>
           
