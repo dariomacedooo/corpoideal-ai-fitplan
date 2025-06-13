@@ -15,7 +15,7 @@ export interface NutritionValues {
   fat: number;
 }
 
-import { getNutritionalInfo } from '../services/foodApi';
+import { getUsdaNutritionalInfo } from '../services/foodApi';
 // Macronutrient ratios based on scientific evidence
 export interface MacronutrientPrescription {
   proteinPerKg: number;
@@ -143,7 +143,7 @@ export const estimateNutritionValues = async (foodName: string, portion: string)
   const normalizedName = foodName.toLowerCase();
 
   // Attempt to fetch nutritional data from Open Food Facts API
-  const apiNutrition = await getNutritionalInfo(foodName);
+  const apiNutrition = await getUsdaNutritionalInfo(foodName);
 
   let baseNutrition: NutritionValues | null = null;
 

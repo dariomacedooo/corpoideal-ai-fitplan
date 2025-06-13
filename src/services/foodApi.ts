@@ -1,70 +1,79 @@
-// src/services/foodApi.ts
+export interface NutritionValues {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
 
-export interface NutritionalInfo {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    productName?: string;
+// Chave de API do USDA vinda do arquivo .env
+const USDA_API_KEY = import.meta.env.VITE_USDA_API_KEY;
+const API_URL = 'https://api.nal.usda.gov/fdc/v1/foods/search';
+
+/**
+ * Busca informações nutricionais de um alimento usando a API do USDA FoodData Central.
+ * @param foodName O nome do alimento a ser pesquisado.
+ * @returns Um objeto com os valores nutricionais ou null se não for encontrado.
+ */
+export async function getUsdaNutritionalInfo(foodName: string): Promise<NutritionValues | null> {
+  if (!USDA_API_KEY) {
+    console.error("Chave da API do USDA não encontrada. Verifique o arquivo .env");
+    return null;
   }
+
+  // Codifica o nome do alimento para ser usado na URL
+  const query = encodeURIComponent(foodName);
   
-  // Cache em memória para evitar chamadas repetidas na mesma sessão
-  const apiCache = new Map<string, NutritionalInfo>();
+  // Incluímos os tipos de dados mais comuns para uma busca abrangente
+  const dataTypes = "Foundation,SR Legacy,Branded";
   
-  /**
-   * Busca informações nutricionais de um produto na API do Open Food Facts.
-   * @param foodName O nome do alimento a ser pesquisado.
-   * @returns Uma promessa com as informações nutricionais ou null se não encontrado.
-   */
-  export async function getNutritionalInfo(foodName: string): Promise<NutritionalInfo | null> {
-    const query = foodName.toLowerCase().trim();
-  
-    if (apiCache.has(query)) {
-      console.log(`Cache hit for: ${query}`);
-      return apiCache.get(query)!;
-    }
-  
-    console.log(`API call for: ${query}`);
-    const url = `https://br.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=1`;
-  
-    try {
-      const response = await fetch(url, {
-        headers: {
-          // É uma boa prática identificar sua aplicação no User-Agent
-          'User-Agent': 'CorpoIdeal-AI-Fitplan - Web App - v1.0'
-        }
-      });
-  
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
-  
-      const data = await response.json();
-  
-      if (data.products && data.products.length > 0) {
-        const product = data.products[0];
-        const nutriments = product.nutriments;
-  
-        // A API retorna valores por 100g.
-        // O campo de calorias pode variar (energy-kcal_100g ou energy_100g em kJ)
-        const calories = nutriments['energy-kcal_100g'] 
-                      || (nutriments.energy_100g ? nutriments.energy_100g / 4.184 : 0);
-  
-        const nutritionalInfo: NutritionalInfo = {
-          calories: calories || 0,
-          protein: nutriments.proteins_100g || 0,
-          carbs: nutriments.carbohydrates_100g || 0,
-          fat: nutriments.fat_100g || 0,
-          productName: product.product_name_pt || product.product_name || foodName,
-        };
-  
-        apiCache.set(query, nutritionalInfo);
-        return nutritionalInfo;
-      }
-  
+  const url = `${API_URL}?api_key=${USDA_API_KEY}&query=${query}&dataType=${dataTypes}&pageSize=1`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      console.error(`Erro na API do USDA: ${response.status} ${response.statusText}`);
       return null;
-    } catch (error) {
-      console.error("Error fetching nutritional data:", error);
-      return null; // Retorna nulo em caso de erro de rede ou parsing
     }
+
+    const data = await response.json();
+
+    if (!data.foods || data.foods.length === 0) {
+      console.warn(`Nenhum resultado encontrado para "${foodName}" na API do USDA.`);
+      return null;
+    }
+
+    const food = data.foods[0];
+    const nutrients = food.foodNutrients;
+
+    // Função auxiliar para encontrar um nutriente específico pelo nome ou número
+    const findNutrient = (name: string, unit: string, numbers: number[]) => {
+      const nutrient = nutrients.find((n: any) => 
+        (n.nutrientName.toLowerCase().includes(name.toLowerCase()) && n.unitName.toUpperCase() === unit) || 
+        numbers.includes(n.nutrientNumber)
+      );
+      // Retorna o valor do nutriente encontrado ou 0
+      return nutrient ? parseFloat(nutrient.value) : 0;
+    }; // A função auxiliar termina aqui.
+
+    // Números de nutrientes padrão do USDA: Energia (kcal), Proteína, Gordura, Carboidrato
+    const calories = findNutrient('energy', 'KCAL', [1008, 2047]);
+    const protein = findNutrient('protein', 'G', [1003]);
+    const fat = findNutrient('total lipid (fat)', 'G', [1004]);
+    const carbs = findNutrient('carbohydrate, by difference', 'G', [1005]);
+
+    if (calories === 0 && protein === 0 && fat === 0 && carbs === 0) {
+        return null;
+    }
+
+    return {
+      calories,
+      protein,
+      carbs,
+      fat,
+    };
+  } catch (error) {
+    console.error(`Falha ao buscar dados nutricionais para "${foodName}":`, error);
+    return null;
   }
+}

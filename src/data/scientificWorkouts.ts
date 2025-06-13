@@ -191,42 +191,51 @@ export const scientificWorkouts: Record<string, Record<string, Record<string, an
     }
   },
   avancado: {
-    'ganhar-massa': {
+ 'bulking': {
       academia: {
         blocos: {
-          'push': {
-            focus: 'Empurrar (Peito, Ombros, Tríceps)',
-            exercises: [
-              { name: 'Supino Reto', sets: 5, reps: '6-8' },
-              { name: 'Desenvolvimento Militar', sets: 4, reps: '6-8' },
-              { name: 'Supino Inclinado com Halteres', sets: 4, reps: '8-10' },
-              { name: 'Tríceps Testa', sets: 4, reps: '8-10' },
-            ]
-          },
-          'pull': {
-            focus: 'Puxar (Costas e Bíceps)',
-            exercises: [
-              { name: 'Levantamento Terra', sets: 4, reps: '5-6' },
-              { name: 'Remada Curvada', sets: 5, reps: '6-8' },
-              { name: 'Barra Fixa', sets: 4, reps: 'Até a falha' },
-              { name: 'Rosca Scott', sets: 4, reps: '8-10' },
-            ]
-          },
-          'legs': {
-            focus: 'Pernas e Glúteos',
-            exercises: [
-              { name: 'Agachamento Livre', sets: 5, reps: '6-8' },
-              { name: 'Leg Press 45°', sets: 5, reps: '10-12' },
-              { name: 'Stiff', sets: 4, reps: '8-10' },
-              { name: 'Elevação Pélvica', sets: 4, reps: '8-10' },
-            ]
-          },
+          'A': { focus: 'Peito e Tríceps Pesado', exercises: [] },
+          'B': { focus: 'Costas e Bíceps (Largura e Densidade)',
+        exercises: [
+          { name: 'Levantamento Terra', sets: 4, reps: '4-6', rest: '120s', video: 'URL_VIDEO' },
+          { name: 'Remada Curvada com Barra', sets: 3, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+          { name: 'Puxada Frontal com Pegada Aberta', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Rosca Direta com Barra', sets: 4, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
+          { name: 'Rosca Martelo com Halteres', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+        ] },
+          'C': { focus: 'Pernas e Ombros (Construção de Base)',
+        exercises: [
+          { name: 'Agachamento Livre com Barra', sets: 4, reps: '6-8', rest: '120s', video: 'URL_VIDEO' },
+          { name: 'Leg Press 45°', sets: 3, reps: '8-10', rest: '90s', video: 'URL_VIDEO' },
+          { name: 'Cadeira Extensora', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+          { name: 'Desenvolvimento com Halteres (Sentado)', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+          { name: 'Elevação Lateral com Halteres', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
+        ] },
+          'D': { focus: 'Full Body (Técnica e Estímulo Adicional)',
+        exercises: [
+          { name: 'Agachamento Taça (Goblet Squat)', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Remada na Polia Baixa (Pegada Neutra)', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Supino Reto com Halteres', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Elevação Pélvica com Barra', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
+          { name: 'Prancha Abdominal', sets: 3, reps: '60s', rest: '60s', video: 'URL_VIDEO' },
+        ] },
+        'A': {
+        focus: 'Peito e Tríceps (Volume e Força)',
+        exercises: [
+          { name: 'Supino Reto com Barra', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+          { name: 'Supino Inclinado com Halteres', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Crucifixo na Polia Alta', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+          { name: 'Paralelas (Foco no Tríceps)', sets: 3, reps: 'até a falha', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Tríceps Testa com Barra EZ', sets: 3, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
+        ]
+      },
         },
         divisoes: {
-          '3': ['push', 'pull', 'legs'],
-          '4': ['push', 'pull', 'legs', 'push'],
-          '5': ['push', 'pull', 'legs', 'push', 'pull'],
-          '6': ['push', 'pull', 'legs', 'push', 'pull', 'legs'],
+          3: ['A', 'B', 'C'],
+          4: ['A', 'B', 'A', 'C'],
+          5: ['A', 'B', 'C', 'D', 'A'],
+          6: ['A', 'B', 'C', 'A', 'B', 'D'],
+          7: ['A', 'B', 'C', 'A', 'B', 'C', 'D']
         }
       }
     }

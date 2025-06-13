@@ -29,23 +29,23 @@ export function GoalSelector({ onSelect }: GoalSelectorProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <RadioGroup onValueChange={handleGoalChange} value={selectedGoal}>
-          <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
-            <RadioGroupItem value="perder-peso" id="perder-peso" />
-            <Label htmlFor="perder-peso" className="flex-1 cursor-pointer">
-              <div className="font-medium">Perder Peso</div>
+          <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer hover:bg-corpoideal-lightpurple/20">
+            <RadioGroupItem value="cutting" id="cutting" />
+            <Label htmlFor="cutting" className="flex-1 cursor-pointer">
+              <div className="font-medium">Cutting</div>
               <div className="text-sm text-gray-500">Reduzir gordura corporal e melhorar o condicionamento</div>
             </Label>
           </div>
           
-          <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
-            <RadioGroupItem value="ganhar-massa" id="ganhar-massa" />
-            <Label htmlFor="ganhar-massa" className="flex-1 cursor-pointer">
-              <div className="font-medium">Ganhar Massa Muscular</div>
+          <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer hover:bg-corpoideal-lightpurple/20">
+            <RadioGroupItem value="bulking" id="bulking" />
+            <Label htmlFor="bulking" className="flex-1 cursor-pointer">
+              <div className="font-medium">Bulking</div>
               <div className="text-sm text-gray-500">Aumentar a massa muscular e força</div>
             </Label>
           </div>
           
-          <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer hover:bg-gray-50">
+          <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer hover:bg-corpoideal-lightpurple/20">
             <RadioGroupItem value="corrigir-postura" id="corrigir-postura" />
             <Label htmlFor="corrigir-postura" className="flex-1 cursor-pointer">
               <div className="font-medium">Corrigir Postura</div>

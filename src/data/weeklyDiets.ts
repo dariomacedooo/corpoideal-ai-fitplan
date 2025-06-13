@@ -25,8 +25,8 @@ export interface WeeklyDiet {
 
 export const weeklyDiets: WeeklyDiet[] = [
   {
-    type: 'Ganho de Massa',
-    budget: '301-500',
+ type: 'Bulking',
+ budget: '80-150',
     goal: 'ganhar-massa',
     days: {
       segunda: {
@@ -440,7 +440,7 @@ export const weeklyDiets: WeeklyDiet[] = [
     }
   },
   {
-    type: 'Perda de Peso',
+ type: 'Cutting',
     budget: '301-500',
     goal: 'perder-peso',
     days: {
@@ -770,5 +770,140 @@ export const weeklyDiets: WeeklyDiet[] = [
       ],
       instructions: 'Misture todos os ingredientes e tempere com azeite e limão.'
     }
+  }
+  ,
+ {
+ type: 'Manutenção Equilibrada',
+ budget: '80-150',
+ goal: 'manter-peso',
+    days: {
+      segunda: {
+        meals: [
+          {
+            name: 'Café da manhã',
+ time: '7:00 - 8:30',
+ foods: [
+ { name: 'Iogurte natural com frutas', portion: '1 pote com 1/2 xícara de frutas' },
+ { name: 'Granola', portion: '2 colheres de sopa' },
+ { name: 'Café ou chá', portion: '1 xícara' }
+ ]
+          },
+          {
+            name: 'Lanche da manhã',
+ time: '10:00 - 10:30',
+ foods: [
+ { name: 'Uma fruta média', portion: '1 unidade' }
+ ]
+          },
+          {
+            name: 'Almoço',
+ time: '12:00 - 13:30',
+ foods: [
+ { name: 'Peito de frango ou peixe grelhado', portion: '120g' },
+ { name: 'Arroz integral', portion: '4 colheres de sopa' },
+ { name: 'Feijão', portion: '3 colheres de sopa' },
+ { name: 'Salada variada', portion: 'à vontade' },
+ { name: 'Legumes cozidos ou refogados', portion: '1 xícara' }
+ ]
+          },
+          {
+            name: 'Lanche da tarde',
+ time: '15:30 - 16:30',
+ foods: [
+ { name: 'Um punhado de castanhas ou amêndoas', portion: '30g' }
+ ]
+          },
+          {
+            name: 'Jantar',
+ time: '19:00 - 20:00',
+ foods: [
+ { name: 'Sopa de legumes com frango desfiado', portion: '1 prato fundo' },
+ { name: 'Torrada integral', portion: '1 fatia' }
+ ]
+          },
+ {
+            name: 'Ceia (opcional)',
+ time: '22:00 - 22:30',
+ foods: [
+ { name: 'Um copo de leite desnatado', portion: '200ml' }
+ ]
+          }
+ ]
+      },
+ terça: {
+        meals: [
+          {
+            name: 'Café da manhã',
+ time: '7:00 - 8:30',
+ foods: [
+ { name: 'Ovos mexidos', portion: '2 unidades' },
+ { name: 'Pão integral', portion: '1 fatia' },
+ { name: 'Queijo branco', portion: '1 fatia média' },
+ { name: 'Suco natural (sem açúcar)', portion: '1 copo pequeno' }
+ ]
+          },
+          {
+            name: 'Lanche da manhã',
+ time: '10:00 - 10:30',
+ foods: [
+ { name: 'Iogurte natural', portion: '1 pote' }
+ ]
+          },
+          {
+            name: 'Almoço',
+ time: '12:00 - 13:30',
+ foods: [
+ { name: 'Carne magra grelhada', portion: '120g' },
+ { name: 'Batata doce', portion: '1 média' },
+ { name: 'Salada variada', portion: 'à vontade' },
+ { name: 'Legumes cozidos', portion: '1 xícara' }
+ ]
+          },
+          {
+            name: 'Lanche da tarde',
+ time: '15:30 - 16:30',
+ foods: [
+ { name: 'Mix de frutas secas', portion: '30g' }
+ ]
+          },
+          {
+            name: 'Jantar',
+ time: '19:00 - 20:00',
+ foods: [
+ { name: 'Wrap integral com recheio de atum ou frango', portion: '1 unidade' },
+ { name: 'Salada pequena', portion: '1 porção' }
+ ]
+          }
+ ]
+      },
+ quarta: { meals: [] },
+ quinta: { meals: [] },
+ sexta: { meals: [] },
+ sabado: { meals: [] },
+ domingo: { meals: [] }
+    },
+ recipe: {
+ name: 'Salada de Grão de Bico com Legumes',
+ ingredients: [
+ '1 xícara de grão de bico cozido',
+ '1/2 pepino picado',
+ '1 tomate picado',
+ '1/4 cebola roxa picada',
+ 'Salsinha picada a gosto',
+ 'Azeite de oliva extra virgem',
+ 'Suco de limão',
+ 'Sal e pimenta do reino a gosto'
+ ],
+ instructions: 'Em uma tigela, misture o grão de bico cozido, o pepino, o tomate e a cebola roxa. Adicione a salsinha picada. Tempere com azeite, suco de limão, sal e pimenta a gosto. Misture bem e sirva.'
+    }
+  },
+ {
+ type: 'Manutenção Equilibrada',
+ budget: '151-300',
+ goal: 'manter-peso',
+ days: {
+ quarta: { meals: [] }, quinta: { meals: [] }, sexta: { meals: [] }, sabado: { meals: [] }, domingo: { meals: [] }, segunda: { meals: [] }, terca: { meals: [] }
+ },
+ recipe: { name: '', ingredients: [], instructions: '' }
   }
 ];

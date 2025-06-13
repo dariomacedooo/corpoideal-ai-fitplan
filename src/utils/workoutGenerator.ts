@@ -20,10 +20,13 @@ export const generateWorkoutPlan = (
 ): WorkoutDay[] => {
   
   const daysPerWeek = trainingDays.length;
+  let effectiveGoal = goal;
+
+  // Ajusta o objetivo para 'bulking' ou 'cutting' para a lógica principal
+  if (goal === 'ganhar-massa') effectiveGoal = 'bulking';
+  if (goal === 'perder-peso') effectiveGoal = 'cutting';
 
   // Manter a lógica de treino feminino se for o caso
-  if (sex === 'feminino' && experience !== 'iniciante') {
-     // A lógica para femaleWorkoutPlans pode ser mais elaborada aqui,
      // mas por enquanto vamos focar na geração principal.
      // Esta é uma simplificação.
      const plan = femaleWorkoutPlans[experience as keyof typeof femaleWorkoutPlans]?.[0];
@@ -34,12 +37,11 @@ export const generateWorkoutPlan = (
          exercises: plan.exercises,
        }));
      }
-  }
 
-  // Acessa a configuração de treino com base no perfil do usuário
-  // @ts-ignore
-  const trainingConfig = scientificWorkouts[experience]?.[goal]?.[location];
-
+  // Acessa a configuração de treino científico com base no perfil do usuário e no objetivo ajustado
+  const trainingConfig = scientificWorkouts[experience as keyof typeof scientificWorkouts]?.[effectiveGoal as keyof typeof scientificWorkouts[typeof experience]]?.[location as keyof typeof scientificWorkouts[typeof experience][typeof effectiveGoal]];
+  
+  
   // Se não houver uma configuração específica, retorna um plano vazio para evitar erros
   if (!trainingConfig || !trainingConfig.divisoes || !trainingConfig.blocos) {
     console.warn(`Nenhuma configuração de treino científico encontrada para: ${experience}, ${goal}, ${location}`);
@@ -58,7 +60,7 @@ export const generateWorkoutPlan = (
   const weeklyPlan = trainingDays.map((day, index) => {
     // Pega a letra do bloco para o dia atual (ex: 'A', 'B', 'C')
     // O operador '%' garante que a divisão se repita se houver mais dias de treino do que blocos (ex: ABCABC)
-    const blocoKey = divisaoSemanal[index % divisaoSemanal.length];
+    const blocoKey = divisaoSemanal[index % divisaoSemanal.length] as keyof typeof trainingConfig.blocos;
     
     // Pega os detalhes do bloco de treino (foco e exercícios)
     const workoutBlock = trainingConfig.blocos[blocoKey];
@@ -81,14 +83,3 @@ export const generateWorkoutPlan = (
 
   return weeklyPlan;
 };
-
-// As funções antigas abaixo NÃO SÃO MAIS NECESSÁRIAS e podem ser APAGADAS:
-// analyzeBodyFromPhotos
-// getDayFocus
-// generateMondayWorkout
-// generateTuesdayWorkout
-// generateWednesdayWorkout
-// generateThursdayWorkout
-// generateFridayWorkout
-// generateSaturdayWorkout
-// generateSundayWorkout
