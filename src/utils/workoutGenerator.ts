@@ -1,85 +1,106 @@
-import { scientificWorkouts } from '@/data/scientificWorkouts'; // Supondo que esta seja a nova fonte de dados
-import { femaleWorkoutPlans } from '@/data/femaleWorkouts'; // Mantendo a lógica para treinos femininos
+import { scientificWorkouts } from '@/data/scientificWorkouts';
+import { femaleWorkoutPlans, femaleExercises } from '@/data/femaleWorkouts';
 
-// A interface para um dia de treino permanece a mesma
 interface WorkoutDay {
   day: string;
   focus: string;
-  exercises: any[]; // Use 'any' por enquanto para flexibilidade
+  exercises: any[];
 }
 
-// A NOVA FUNÇÃO DINÂMICA
 export const generateWorkoutPlan = (
   goal: string,
   experience: string,
   location: string,
   sex: string,
-  healthIssues: string[],
-  trainingDays: string[],
-  userPhotos?: any // Mantido para compatibilidade, mas não usado na lógica principal
+  age: number,
+  trainingDays: string[]
 ): WorkoutDay[] => {
-  
-  const daysPerWeek = trainingDays.length;
-  let effectiveGoal = goal;
 
-  // Ajusta o objetivo para 'bulking' ou 'cutting' para a lógica principal
-  if (goal === 'ganhar-massa') effectiveGoal = 'bulking';
-  if (goal === 'perder-peso') effectiveGoal = 'cutting';
-
-  // Manter a lógica de treino feminino se for o caso
-     // mas por enquanto vamos focar na geração principal.
-     // Esta é uma simplificação.
-     const plan = femaleWorkoutPlans[experience as keyof typeof femaleWorkoutPlans]?.[0];
-     if (plan) {
-       return trainingDays.map((day, index) => ({
-         day: day,
-         focus: plan.name,
-         exercises: plan.exercises,
-       }));
-     }
-
-  // Acessa a configuração de treino científico com base no perfil do usuário e no objetivo ajustado
-  const trainingConfig = scientificWorkouts[experience as keyof typeof scientificWorkouts]?.[effectiveGoal as keyof typeof scientificWorkouts[typeof experience]]?.[location as keyof typeof scientificWorkouts[typeof experience][typeof effectiveGoal]];
-  
-  
-  // Se não houver uma configuração específica, retorna um plano vazio para evitar erros
-  if (!trainingConfig || !trainingConfig.divisoes || !trainingConfig.blocos) {
-    console.warn(`Nenhuma configuração de treino científico encontrada para: ${experience}, ${goal}, ${location}`);
-    return []; // Retorna vazio para que a UI possa mostrar uma mensagem de "plano não disponível"
-  }
-
-  // Pega a divisão semanal correta com base no número de dias
-  const divisaoSemanal = trainingConfig.divisoes[daysPerWeek] || trainingConfig.divisoes[Object.keys(trainingConfig.divisoes)[0]];
-
-  if (!divisaoSemanal) {
-    console.error(`Nenhuma divisão semanal encontrada para ${daysPerWeek} dias.`);
-    return [];
-  }
-
-  // Mapeia os dias selecionados pelo usuário para os blocos de treino da divisão
-  const weeklyPlan = trainingDays.map((day, index) => {
-    // Pega a letra do bloco para o dia atual (ex: 'A', 'B', 'C')
-    // O operador '%' garante que a divisão se repita se houver mais dias de treino do que blocos (ex: ABCABC)
-    const blocoKey = divisaoSemanal[index % divisaoSemanal.length] as keyof typeof trainingConfig.blocos;
-    
-    // Pega os detalhes do bloco de treino (foco e exercícios)
-    const workoutBlock = trainingConfig.blocos[blocoKey];
-
-    if (!workoutBlock) {
-      console.error(`Bloco de treino '${blocoKey}' não encontrado.`);
-      return {
-        day,
-        focus: 'Dia de Descanso (Erro)',
-        exercises: [],
-      };
-    }
-
-    return {
-      day: day, // O dia que o usuário selecionou (ex: 'segunda')
-      focus: workoutBlock.focus,
-      exercises: workoutBlock.exercises,
+  // 1. LÓGICA ESPECÍFICA PARA O SEXO FEMININO
+  if (sex === 'feminino') {
+    const getAgeGroup = (age: number): string => {
+      if (age >= 17 && age <= 25) return '17-25';
+      if (age >= 26 && age <= 39) return '26-39';
+      if (age >= 40 && age <= 59) return '40-59';
+      if (age >= 60) return '60+';
+      return '17-25'; // Default
     };
-  });
 
-  return weeklyPlan;
-};
+    const ageGroup = getAgeGroup(age);
+    const plansForAge = femaleWorkoutPlans[ageGroup as keyof typeof femaleWorkoutPlans];
+
+    if (plansForAge) {
+      const mainPlanTemplate = plansForAge.find(p => p.objective.includes(goal)) || plansForAge[0];
+
+      const workoutBlocks: { [key: string]: Omit<WorkoutDay, 'day'> } = {
+        'A': {
+          focus: `${mainPlanTemplate.name}`,
+          exercises: mainPlanTemplate.exercises,
+        },
+        'B': {
+          focus: 'Superiores e Core',
+          exercises: [
+            ...femaleExercises.superiores.filter(ex => ex.difficulty !== (experience === 'iniciante' ? 'avancado' : 'iniciante')).slice(0, 3),
+            ...femaleExercises.abdomen.filter(ex => ex.difficulty !== (experience === 'iniciante' ? 'avancado' : 'iniciante')).slice(0, 2),
+          ],
+        },
+        'C': {
+          focus: 'Cardio e Funcional',
+          exercises: [
+            ...femaleExercises.cardio.slice(0, 2),
+            ...femaleExercises.abdomen.slice(0, 1),
+          ],
+        },
+      };
+
+      const splitMap: { [key: number]: string[] } = {
+        1: ['A'],
+        2: ['A', 'B'],
+        3: ['A', 'B', 'A'],
+        4: ['A', 'B', 'A', 'C'],
+        5: ['A', 'B', 'A', 'B', 'C'],
+        6: ['A', 'B', 'A', 'C', 'A', 'B'],
+        7: ['A', 'B', 'C', 'A', 'B', 'A', 'C'],
+      };
+
+      const weeklySplit = splitMap[trainingDays.length] || ['A', 'B', 'C'];
+
+      return trainingDays.map((day, index) => {
+        const blockKey = weeklySplit[index];
+        const workoutDay = workoutBlocks[blockKey];
+        return {
+          ...workoutDay,
+          day: day,
+        };
+      });
+    }
+  }
+
+  // 2. LÓGICA PARA O SEXO MASCULINO E FALLBACK
+  const effectiveGoal = goal === 'ganhar-massa' ? 'bulking' : goal;
+  const trainingConfig = scientificWorkouts[experience as keyof typeof scientificWorkouts]?.[effectiveGoal as keyof typeof scientificWorkouts[typeof experience]]?.[location as keyof typeof scientificWorkouts[typeof experience][typeof effectiveGoal]];
+  const daysPerWeek = trainingDays.length;
+
+  if (trainingConfig?.divisoes?.[daysPerWeek] && trainingConfig?.blocos) {
+    const divisaoSemanal = trainingConfig.divisoes[daysPerWeek];
+    return trainingDays.map((day, index) => {
+      const blocoKey = divisaoSemanal[index % divisaoSemanal.length] as keyof typeof trainingConfig.blocos;
+      const workoutBlock = trainingConfig.blocos[blocoKey];
+      return {
+        day: day,
+        focus: workoutBlock.focus,
+        exercises: workoutBlock.exercises,
+      };
+    });
+  }
+
+  // 3. PLANO PADRÃO DE FALLBACK PARA EVITAR TELA EM BRANCO
+  console.warn(`Nenhuma configuração de treino encontrada para: ${sex}, ${experience}, ${goal}, ${location}, ${daysPerWeek} dias. Usando plano padrão.`);
+  const fallbackPlan = scientificWorkouts.iniciante['ganhar-massa'].academia;
+  const fallbackDivisao = fallbackPlan.divisoes[3]; 
+  return trainingDays.map((day, index) => ({
+    day: day,
+    focus: "Full Body - Padrão",
+    exercises: fallbackPlan.blocos[fallbackDivisao[index % fallbackDivisao.length]].exercises,
+  }));
+}; // <<== A função termina aqui corretamente.

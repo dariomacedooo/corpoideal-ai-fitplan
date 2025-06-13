@@ -20,6 +20,13 @@ export interface AnthropometricData {
   rightCalf?: number;
 }
 
+// Adicione esta interface para tipar os landmarks do MediaPipe
+interface Landmark {
+  x: number;
+  y: number;
+  z: number;
+  visibility?: number;
+}
 export interface TMBResult {
   mifflinStJeor: number;
   cunningham?: number;
@@ -45,6 +52,33 @@ export interface AnthropometricResults {
   recommendations: string[];
   overallScore: number;
 }
+
+/**
+ * Calcula o ângulo entre três pontos (landmarks) em um espaço 2D ou 3D.
+ * @param a - O primeiro ponto (ex: ombro).
+ * @param b - O ponto do vértice do ângulo (ex: cotovelo).
+ * @param c - O terceiro ponto (ex: pulso).
+ * @returns O ângulo em graus.
+ */
+export const calculateJointAngle = (a: Landmark, b: Landmark, c: Landmark): number => {
+  // Cria os vetores BA e BC
+  const vectorAB = { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+  const vectorCB = { x: c.x - b.x, y: c.y - b.y, z: c.z - b.z };
+
+  // Calcula o produto escalar
+  const dotProduct = vectorAB.x * vectorCB.x + vectorAB.y * vectorCB.y + vectorAB.z * vectorCB.z;
+
+  // Calcula a magnitude (comprimento) de cada vetor
+  const magnitudeAB = Math.sqrt(vectorAB.x ** 2 + vectorAB.y ** 2 + vectorAB.z ** 2);
+  const magnitudeCB = Math.sqrt(vectorCB.x ** 2 + vectorCB.y ** 2 + vectorCB.z ** 2);
+
+  // Calcula o cosseno do ângulo e o ângulo em graus
+  const cosAngle = dotProduct / (magnitudeAB * magnitudeCB);
+  const angleRad = Math.acos(Math.min(Math.max(cosAngle, -1), 1)); // Clamp para evitar NaN com imprecisão de ponto flutuante
+  const angleDeg = angleRad * (180 / Math.PI);
+
+  return angleDeg;
+};
 
 // Cálculo TMB usando Fórmula Mifflin-St Jeor
 export const calculateMifflinStJeor = (weight: number, height: number, age: number, sex: string): number => {

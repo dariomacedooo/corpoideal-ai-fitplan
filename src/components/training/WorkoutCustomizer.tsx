@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { RestTimer } from './RestTimer';
+import { LoadManager } from './LoadManager'; // Importação correta do LoadManager
 import { 
   Dumbbell, 
   Plus, 
@@ -546,6 +547,9 @@ export function WorkoutCustomizer({
                         </>
                       )}
                     </div>
+
+                    {/* ADIÇÃO DO LOADMANAGER AQUI */}
+                    {!exercise.isStretch && <LoadManager exerciseName={exercise.name} />}
 
                     {exercise.weight && (
                       <div className="text-sm mb-3">

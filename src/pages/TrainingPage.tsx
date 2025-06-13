@@ -130,11 +130,10 @@ const TrainingPage = () => {
           </TabsContent>
           
           <TabsContent value="customizer" className="mt-4">
-            <ScientificWorkoutPlan
-               goal={profile.goal || 'ganhar-massa'}
-              trainingLocation={profile.trainingLocation || 'academia'}
-              experience={profile.trainingExperience || 'avancado'}
-              daysPerWeek={profile.trainingDays?.length || 5}
+            <WorkoutCustomizer
+ initialWorkout={customWorkout}
+ onSaveWorkout={handleSaveCustomWorkout}
+ isVisible={true}
             />
           </TabsContent>
           
