@@ -15,6 +15,7 @@ export interface NutritionValues {
   fat: number;
 }
 
+import { getNutritionalInfo } from '../services/foodApi';
 // Macronutrient ratios based on scientific evidence
 export interface MacronutrientPrescription {
   proteinPerKg: number;
@@ -137,70 +138,72 @@ export const calculateMealNutrition = (
   };
 };
 
-export const estimateNutritionValues = (foodName: string, portion: string): NutritionValues => {
+export const estimateNutritionValues = async (foodName: string, portion: string): Promise<NutritionValues | null> => {
   // Normalize food name for lookup
   const normalizedName = foodName.toLowerCase();
-  
-  // Extract quantity from portion
-  let quantity = 1;
-  let unit = 'unidade';
-  
-  // Parse portion string
-  const portionMatch = portion.match(/(\d+(?:\.\d+)?)\s*(\w+)/);
-  if (portionMatch) {
-    quantity = parseFloat(portionMatch[1]);
-    unit = portionMatch[2].toLowerCase();
-  }
-  
-  // Find matching food in database
-  let baseNutrition: NutritionValues = { calories: 100, protein: 5, carbs: 10, fat: 5 };
-  
-  for (const [key, nutrition] of Object.entries(FOOD_DATABASE)) {
-    if (normalizedName.includes(key)) {
-      baseNutrition = nutrition;
-      break;
+
+  // Attempt to fetch nutritional data from Open Food Facts API
+  const apiNutrition = await getNutritionalInfo(foodName);
+
+  let baseNutrition: NutritionValues | null = null;
+
+  if (apiNutrition) {
+    baseNutrition = apiNutrition;
+  } else {
+    // If API fails or no data, fall back to local FOOD_DATABASE
+    for (const [key, nutrition] of Object.entries(FOOD_DATABASE)) {
+      if (normalizedName.includes(key)) {
+        baseNutrition = nutrition;
+        break;
+      }
     }
   }
-  
-  // Convert portion to grams
-  let gramsMultiplier = 1;
-  
-  switch (unit) {
-    case 'g':
-    case 'gramas':
-      gramsMultiplier = quantity / 100; // Database is per 100g
-      break;
-    case 'unidade':
-    case 'unidades':
-      // Estimate weight based on food type
-      if (normalizedName.includes('ovo')) gramsMultiplier = (quantity * 50) / 100;
-      else if (normalizedName.includes('banana')) gramsMultiplier = (quantity * 120) / 100;
-      else if (normalizedName.includes('maçã')) gramsMultiplier = (quantity * 150) / 100;
-      else if (normalizedName.includes('pão')) gramsMultiplier = (quantity * 50) / 100;
-      else gramsMultiplier = (quantity * 100) / 100;
-      break;
-    case 'colher':
-    case 'colheres':
-      gramsMultiplier = (quantity * 15) / 100; // 15g per tablespoon
-      break;
-    case 'xícara':
-    case 'xícaras':
-      gramsMultiplier = (quantity * 200) / 100; // 200g per cup
-      break;
-    case 'copo':
-    case 'copos':
-      gramsMultiplier = (quantity * 240) / 100; // 240ml per glass
-      break;
-    case 'scoop':
-      gramsMultiplier = (quantity * 30) / 100; // 30g per scoop
-      break;
-    case 'punhado':
-      gramsMultiplier = (quantity * 30) / 100; // 30g per handful
-      break;
-    default:
-      gramsMultiplier = quantity / 100;
+
+  // If no nutritional data is found from either source, return null
+  if (!baseNutrition) {
+    return null;
   }
-  
+
+  // Extract quantity and unit from portion
+  let quantity = 1;
+  let unit = 'g'; // Assume grams by default if not specified
+
+  const portionMatch = portion.match(/(\d+(?:\.\d+)?)\s*(\w+)?/);
+  if (portionMatch) {
+    quantity = parseFloat(portionMatch[1]);
+    if (portionMatch[2]) {
+      unit = portionMatch[2].toLowerCase();
+    }
+  }
+
+  // Convert portion to grams multiplier based on 100g data
+  let gramsMultiplier = 1;
+
+  if (unit === 'g' || unit === 'gramas') {
+    gramsMultiplier = quantity / 100;
+  } else {
+    // For other units, we still rely on estimation or average weights per unit.
+    // This part could be further improved by using API data if available for units.
+    switch (unit) {
+      case 'unidade':
+      case 'unidades':
+        // Simple estimation for common items if no API data had unit info
+        if (normalizedName.includes('ovo')) gramsMultiplier = (quantity * 50) / 100;
+        else if (normalizedName.includes('banana')) gramsMultiplier = (quantity * 120) / 100;
+        else if (normalizedName.includes('maçã')) gramsMultiplier = (quantity * 150) / 100;
+        else if (normalizedName.includes('pão')) gramsMultiplier = (quantity * 50) / 100;
+        else gramsMultiplier = (quantity * 100) / 100; // Default estimation if unit is 'unidade'
+        break;
+      case 'colher':
+      case 'colheres':
+        gramsMultiplier = (quantity * 15) / 100; // 15g per tablespoon estimation
+        break;
+      // Add more unit conversions as needed
+      default:
+        gramsMultiplier = quantity / 100; // Fallback to assuming quantity is in grams per 100g
+    }
+  }
+
   // Calculate final nutrition values
   return {
     calories: Math.round(baseNutrition.calories * gramsMultiplier),

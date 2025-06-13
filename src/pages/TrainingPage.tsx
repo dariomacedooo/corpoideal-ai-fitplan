@@ -46,7 +46,6 @@ const TrainingPage = () => {
         profile.sex,
         profile.healthIssues || [],
         profile.trainingDays || ['segunda', 'quarta', 'sexta'],
-        profile.trainingDays?.length || 0, // Adicionado daysPerWeek
         userPhotos
       );
       setWorkoutDays(generatedWorkout);
@@ -93,8 +92,8 @@ const TrainingPage = () => {
           {profile.sex === 'feminino' && ` • Foco Feminino`} • Dias: {profile.trainingDays?.join(', ') || 'Seg/Qua/Sex'}
         </p>
         
-        <Tabs defaultValue={usePersonalizedPlan ? "generated" : "customizer"} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-card-soft rounded-2xl p-1 shadow-subtle">
+        <Tabs defaultValue="generated" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 bg-card-soft rounded-2xl p-1 shadow-subtle">
             <TabsTrigger 
               value="generated"
               className="rounded-xl font-medium text-xs lg:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
@@ -102,6 +101,12 @@ const TrainingPage = () => {
               {usePersonalizedPlan ? 'Treino IA' : 'Treino Base'}
             </TabsTrigger>
             <TabsTrigger 
+              value="scientific" 
+              className="rounded-xl font-medium text-xs lg:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
+            >
+              Plano Científico
+            </TabsTrigger>
+             <TabsTrigger 
               value="customizer" 
               className="rounded-xl font-medium text-xs lg:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-vibrant data-[state=active]:to-purple-deep data-[state=active]:text-white data-[state=active]:shadow-modern transition-all duration-200"
             >
@@ -126,7 +131,7 @@ const TrainingPage = () => {
           
           <TabsContent value="customizer" className="mt-4">
             <ScientificWorkoutPlan
-              goal={profile.goal || 'ganhar-massa'}
+               goal={profile.goal || 'ganhar-massa'}
               trainingLocation={profile.trainingLocation || 'academia'}
               experience={profile.trainingExperience || 'avancado'}
               daysPerWeek={profile.trainingDays?.length || 5}

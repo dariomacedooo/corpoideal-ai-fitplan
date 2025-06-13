@@ -1,13 +1,27 @@
+// src/components/nutrition/WeeklyDietPlan.tsx
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Apple, AlertTriangle } from "lucide-react";
-import { estimateNutritionValues } from "@/utils/nutritionCalculator";
+
+// A interface para os dados que o componente espera receber
+interface CalculatedMeal {
+  name: string;
+  time: string;
+  foods: Array<{
+    name: string;
+    portion: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  }>;
+}
 
 interface WeeklyDietPlanProps {
-  dietData: any;
+  dietData: any; // Agora ele recebe os dados JÁ PROCESSADOS
   userGoal: string;
 }
 
@@ -24,27 +38,25 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
     { key: 'domingo', label: 'Dom', fullName: 'Domingo' }
   ];
 
-  const calculateDayTotals = (meals: any[]) => {
-    let totalCalories = 0;
-    let totalProtein = 0;
-    let totalCarbs = 0;
-    let totalFat = 0;
+  // Esta função agora é muito mais simples, apenas soma os valores que já vêm prontos
+  const calculateDayTotals = (meals: CalculatedMeal[]) => {
+    let totals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    if (!meals) return totals;
 
     meals.forEach(meal => {
-      meal.foods.forEach((food: any) => {
-        const nutrition = estimateNutritionValues(food.name, food.portion);
-        totalCalories += nutrition.calories;
-        totalProtein += nutrition.protein;
-        totalCarbs += nutrition.carbs;
-        totalFat += nutrition.fat;
+      meal.foods.forEach(food => {
+        totals.calories += food.calories || 0;
+        totals.protein += food.protein || 0;
+        totals.carbs += food.carbs || 0;
+        totals.fat += food.fat || 0;
       });
     });
 
     return {
-      calories: Math.round(totalCalories),
-      protein: Math.round(totalProtein * 10) / 10,
-      carbs: Math.round(totalCarbs * 10) / 10,
-      fat: Math.round(totalFat * 10) / 10
+      calories: Math.round(totals.calories),
+      protein: Math.round(totals.protein),
+      carbs: Math.round(totals.carbs),
+      fat: Math.round(totals.fat)
     };
   };
 
@@ -73,10 +85,11 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
             ))}
           </TabsList>
           
-          {daysOfWeek.map((day) => (
-            <TabsContent key={day.key} value={day.key} className="space-y-6 mt-0">
+            <TabsContent value={selectedDay} className="space-y-6 mt-0">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white">{day.fullName}</h3>
+                <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+                  {daysOfWeek.find(d => d.key === selectedDay)?.fullName}
+                </h3>
                 {dayTotals && (
                   <Badge className="bg-corpoideal-purple/10 text-corpoideal-purple border-0 px-4 py-2 text-sm font-medium self-start sm:self-center">
                     {dayTotals.calories} kcal
@@ -91,42 +104,31 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
                     Resumo Nutricional do Dia
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.calories}</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">kcal</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.protein}g</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Proteínas</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.carbs}g</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Carbos</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.fat}g</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Gorduras</span>
-                    </div>
+                      <div className="text-center">
+                        <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.calories}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">kcal</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.protein}g</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">Proteínas</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.carbs}g</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">Carbos</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="text-lg font-bold block text-gray-900 dark:text-white">{dayTotals.fat}g</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">Gorduras</span>
+                      </div>
                   </div>
                 </div>
               )}
               
               <div className="space-y-4">
-                {currentDayData?.meals.length === 0 && (
-                  <div className="text-center py-8">
-                    <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Algumas refeições foram filtradas devido às suas restrições alimentares.
-                    </p>
-                  </div>
-                )}
-                
-                {currentDayData?.meals.map((meal: any, index: number) => {
+                {currentDayData?.meals.map((meal: CalculatedMeal, index: number) => {
                   if (meal.foods.length === 0) return null;
                   
-                  const mealCalories = meal.foods.reduce((total: number, food: any) => {
-                    return total + estimateNutritionValues(food.name, food.portion).calories;
-                  }, 0);
+                  const mealCalories = meal.foods.reduce((total: number, food: any) => total + (food.calories || 0), 0);
 
                   return (
                     <div key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-4 shadow-subtle">
@@ -143,25 +145,21 @@ export function WeeklyDietPlan({ dietData, userGoal }: WeeklyDietPlanProps) {
                       </div>
                       
                       <ul className="text-sm space-y-2">
-                        {meal.foods.map((food: any, idx: number) => {
-                          const nutrition = estimateNutritionValues(food.name, food.portion);
-                          return (
-                            <li key={idx} className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                              <span className="text-gray-900 dark:text-white font-medium">{food.name}</span>
-                              <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-500 dark:text-gray-400">{food.portion}</span>
-                                <span className="text-xs text-corpoideal-purple font-medium">{nutrition.calories} kcal</span>
-                              </div>
-                            </li>
-                          );
-                        })}
+                        {meal.foods.map((food, idx) => (
+                          <li key={idx} className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                            <span className="text-gray-900 dark:text-white font-medium">{food.name}</span>
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="text-gray-500 dark:text-gray-400">{food.portion}</span>
+                              <span className="text-xs text-corpoideal-purple font-medium">{food.calories} kcal</span>
+                            </div>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   );
                 })}
               </div>
             </TabsContent>
-          ))}
         </Tabs>
       </CardContent>
     </Card>
