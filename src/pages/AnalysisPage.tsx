@@ -64,14 +64,20 @@ const AnalysisPage = () => {
     }
 
     try {
+      // Parse age as a number
+      const parsedAge =
+        typeof profile.age === "string" && profile.age.trim() !== ""
+          ? parseInt(profile.age, 10)
+          : 25;
+
       // Generate complete workout plan based on profile and photos
       const workoutPlan = generateWorkoutPlan(
-        profile.goal || 'manter-peso',
-        profile.trainingExperience || 'iniciante',
-        profile.trainingLocation || 'casa',
-        profile.sex || 'masculino',
-        profile.age || 25,
-        profile.trainingDays || ['segunda', 'quarta', 'sexta']
+        profile.goal || "manter-peso",
+        profile.trainingExperience || "iniciante",
+        profile.trainingLocation || "casa",
+        profile.sex || "masculino",
+        parsedAge,
+        profile.trainingDays || ["segunda", "quarta", "sexta"]
       );
 
       // Save generated workout plan

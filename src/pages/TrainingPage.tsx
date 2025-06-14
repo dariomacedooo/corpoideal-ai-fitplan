@@ -30,13 +30,19 @@ const TrainingPage = () => {
     if (savedGeneratedWorkout) {
       setWorkoutDays(JSON.parse(savedGeneratedWorkout));
     } else if (profile?.goal && profile?.trainingExperience && profile?.trainingLocation && profile?.trainingDays) {
+      // Parse age as a number
+      const parsedAge =
+        typeof profile.age === "string" && profile.age.trim() !== ""
+          ? parseInt(profile.age, 10)
+          : 25;
+
       // Generate workout if not already generated
       const generatedWorkout = generateWorkoutPlan(
         profile.goal,
         profile.trainingExperience,
         profile.trainingLocation,
         profile.sex,
-        profile.age,
+        parsedAge,
         profile.trainingDays || ['segunda', 'quarta', 'sexta']
       );
       setWorkoutDays(generatedWorkout);
