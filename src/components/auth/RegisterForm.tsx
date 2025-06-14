@@ -52,6 +52,8 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
         return;
       }
       
+      console.log('Attempting signup for:', email, 'as', role);
+      
       // Sign up without email confirmation
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -65,6 +67,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
       });
 
       if (error) {
+        console.error('Signup error:', error);
         toast({
           title: "Erro no cadastro",
           description: error.message,
@@ -74,25 +77,28 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
       }
 
       if (data.user) {
+        console.log('Signup successful for user:', data.user.id);
+        
         // Update the profile with the selected role
-        await supabase
+        const { error: profileError } = await supabase
           .from('profiles')
           .update({ role, name })
           .eq('id', data.user.id);
+
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+        }
 
         toast({
           title: "Cadastro realizado com sucesso",
           description: "Bem-vindo ao CorpoIdeal AI!",
         });
         
-        // Direct navigation based on role
-        if (role === 'professor') {
-          navigate('/coach/dashboard');
-        } else {
-          navigate('/profile');
-        }
+        // Let Index component handle the navigation flow
+        navigate('/');
       }
     } catch (error) {
+      console.error('Unexpected signup error:', error);
       toast({
         title: "Erro no cadastro",
         description: "Ocorreu um erro ao criar sua conta. Tente novamente.",

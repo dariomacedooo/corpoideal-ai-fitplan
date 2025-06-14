@@ -29,12 +29,15 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
         return;
       }
 
+      console.log('Attempting login for:', email);
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        console.error('Login error:', error);
         toast({
           title: "Erro no login",
           description: error.message,
@@ -44,6 +47,7 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
       }
 
       if (data.user) {
+        console.log('Login successful for user:', data.user.id);
         toast({
           title: "Login bem-sucedido",
           description: "Bem-vindo ao CorpoIdeal AI!",
@@ -53,6 +57,7 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
         navigate('/');
       }
     } catch (error) {
+      console.error('Unexpected login error:', error);
       toast({
         title: "Erro no login",
         description: "Ocorreu um erro inesperado. Tente novamente.",

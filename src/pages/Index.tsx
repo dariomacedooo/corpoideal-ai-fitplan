@@ -8,25 +8,45 @@ const Index = () => {
   const { user, profile, loading } = useAuth();
   
   useEffect(() => {
-    if (loading) return; // Wait for auth to load
+    if (loading) {
+      console.log('Auth still loading...');
+      return; // Wait for auth to load
+    }
+    
+    console.log('Auth loaded - User:', user?.id, 'Profile role:', profile?.role);
     
     if (!user) {
-      // Not logged in, redirect to auth page
+      console.log('No user found, redirecting to auth');
+      navigate('/auth');
+      return;
+    }
+
+    if (!profile) {
+      console.log('User exists but no profile found, redirecting to auth');
       navigate('/auth');
       return;
     }
 
     // User is logged in, check their role
-    if (profile?.role === 'professor') {
+    if (profile.role === 'professor') {
+      console.log('Professor detected, redirecting to coach dashboard');
       navigate('/coach/dashboard');
       return;
     }
 
-    // For students, follow the correct flow
-    if (profile?.role === 'aluno') {
+    // For students, follow the step-by-step flow
+    if (profile.role === 'aluno') {
       // 1. Check if profile is completed
       const userProfile = localStorage.getItem('userProfile');
-      if (!userProfile || !JSON.parse(userProfile).profileCompleted) {
+      if (!userProfile) {
+        console.log('No profile data found, redirecting to profile');
+        navigate('/profile');
+        return;
+      }
+
+      const parsedProfile = JSON.parse(userProfile);
+      if (!parsedProfile.profileCompleted) {
+        console.log('Profile not completed, redirecting to profile');
         navigate('/profile');
         return;
       }
@@ -34,6 +54,7 @@ const Index = () => {
       // 2. Check if photos are uploaded
       const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
       if (!frontPhotoUrl) {
+        console.log('No photos found, redirecting to upload');
         navigate('/upload');
         return;
       }
@@ -41,11 +62,13 @@ const Index = () => {
       // 3. Check if plan selection is completed
       const planSelection = localStorage.getItem('planSelection');
       if (!planSelection) {
+        console.log('No plan selection found, redirecting to plan selection');
         navigate('/plan-selection');
         return;
       }
 
       // 4. All steps completed, go to dashboard
+      console.log('All steps completed, redirecting to home');
       navigate('/home');
     }
   }, [user, profile, loading, navigate]);

@@ -23,16 +23,21 @@ export const useAuth = () => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state change:', event, session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
           // Fetch user profile
-          const { data: profileData } = await supabase
+          const { data: profileData, error } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
             .single();
+          
+          if (error) {
+            console.error('Error fetching profile:', error);
+          }
           
           setProfile(profileData);
         } else {
@@ -45,6 +50,7 @@ export const useAuth = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -54,7 +60,10 @@ export const useAuth = () => {
           .select('*')
           .eq('id', session.user.id)
           .single()
-          .then(({ data: profileData }) => {
+          .then(({ data: profileData, error }) => {
+            if (error) {
+              console.error('Error fetching profile:', error);
+            }
             setProfile(profileData);
             setLoading(false);
           });
@@ -68,6 +77,14 @@ export const useAuth = () => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    // Clear localStorage
+    localStorage.removeItem('userProfile');
+    localStorage.removeItem('frontPhotoUrl');
+    localStorage.removeItem('backPhotoUrl');
+    localStorage.removeItem('leftSidePhotoUrl');
+    localStorage.removeItem('rightSidePhotoUrl');
+    localStorage.removeItem('sidePhotoUrl');
+    localStorage.removeItem('planSelection');
     setUser(null);
     setSession(null);
     setProfile(null);

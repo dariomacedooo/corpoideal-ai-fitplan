@@ -16,11 +16,31 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!loading) {
+      console.log('HomePage - Profile:', profile?.role, 'IsCoach:', isCoach);
+      
       if (!profile) {
+        console.log('No profile in HomePage, redirecting to auth');
         navigate("/auth");
-      } else if (isCoach) {
-        // Redirect coaches to their dashboard
+        return;
+      }
+      
+      if (isCoach) {
+        console.log('Coach detected in HomePage, redirecting to dashboard');
         navigate("/coach/dashboard");
+        return;
+      }
+
+      // Additional validation for students
+      if (profile.role === 'aluno') {
+        const userProfile = localStorage.getItem('userProfile');
+        const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+        const planSelection = localStorage.getItem('planSelection');
+
+        if (!userProfile || !frontPhotoUrl || !planSelection) {
+          console.log('Student missing required data, redirecting to index for flow check');
+          navigate('/');
+          return;
+        }
       }
     }
   }, [profile, loading, isCoach, navigate]);
@@ -28,7 +48,10 @@ const HomePage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-corpoideal-purple"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-corpoideal-purple mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando dashboard...</p>
+        </div>
       </div>
     );
   }
