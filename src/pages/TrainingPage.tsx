@@ -1,4 +1,3 @@
-
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { WorkoutPlan } from "@/components/training/WorkoutPlan";
@@ -32,21 +31,13 @@ const TrainingPage = () => {
       setWorkoutDays(JSON.parse(savedGeneratedWorkout));
     } else if (profile?.goal && profile?.trainingExperience && profile?.trainingLocation && profile?.trainingDays) {
       // Generate workout if not already generated
-      const userPhotos = {
-        front: localStorage.getItem('frontPhotoUrl'),
-        back: localStorage.getItem('backPhotoUrl'),
-        leftSide: localStorage.getItem('leftSidePhotoUrl'),
-        rightSide: localStorage.getItem('rightSidePhotoUrl')
-      };
-      
       const generatedWorkout = generateWorkoutPlan(
         profile.goal,
         profile.trainingExperience,
         profile.trainingLocation,
         profile.sex,
         profile.healthIssues || [],
-        profile.trainingDays || ['segunda', 'quarta', 'sexta'],
-        userPhotos
+        profile.trainingDays || ['segunda', 'quarta', 'sexta']
       );
       setWorkoutDays(generatedWorkout);
       

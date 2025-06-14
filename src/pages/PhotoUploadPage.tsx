@@ -35,9 +35,7 @@ const PhotoUploadPage = () => {
     }
   }, [navigate, toast]);
   
-  // CORREÇÃO APLICADA AQUI
   const handlePhotoUploaded = (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => {
-    // Para a análise de Múltiplas Fotos
     if (type === 'front') {
       setFrontPhoto(file);
     } else if (type === 'back') {
@@ -45,10 +43,9 @@ const PhotoUploadPage = () => {
     } else if (type === 'leftSide') {
       setLeftSidePhoto(file);
     } else if (type === 'rightSide') {
-      setRightSidePhoto(file); // Esta linha foi adicionada
+      setRightSidePhoto(file);
     }
 
-    // Para a análise com MediaPipe (que usa apenas uma foto por vez)
     const reader = new FileReader();
     reader.onloadend = () => {
         setUploadedImageSrc(reader.result as string);
@@ -153,7 +150,9 @@ const PhotoUploadPage = () => {
       
         <div className="mt-8">
           {uploadedImageSrc && (
-            <BodyAnalysis imageSrc={uploadedImageSrc} />
+            <div className="flex flex-col items-center">
+              <img src={uploadedImageSrc} alt="Prévia da foto enviada" className="rounded-lg max-w-xs mb-3 shadow" />
+            </div>
           )}
         </div>
       </div>
