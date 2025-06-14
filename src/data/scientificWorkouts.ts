@@ -191,44 +191,46 @@ export const scientificWorkouts: Record<string, Record<string, Record<string, an
     }
   },
   avancado: {
- 'bulking': {
+    'bulking': {
       academia: {
         blocos: {
-          'A': { focus: 'Peito e Tríceps Pesado', exercises: [] },
+          'A': {
+            focus: 'Peito e Tríceps (Volume e Força)',
+            exercises: [
+              { name: 'Supino Reto com Barra', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+              { name: 'Supino Inclinado com Halteres', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
+              { name: 'Crucifixo na Polia Alta', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+              { name: 'Paralelas (Foco no Tríceps)', sets: 3, reps: 'até a falha', rest: '75s', video: 'URL_VIDEO' },
+              { name: 'Tríceps Testa com Barra EZ', sets: 3, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
+            ]
+          },
           'B': { focus: 'Costas e Bíceps (Largura e Densidade)',
-        exercises: [
-          { name: 'Levantamento Terra', sets: 4, reps: '4-6', rest: '120s', video: 'URL_VIDEO' },
-          { name: 'Remada Curvada com Barra', sets: 3, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
-          { name: 'Puxada Frontal com Pegada Aberta', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Rosca Direta com Barra', sets: 4, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
-          { name: 'Rosca Martelo com Halteres', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
-        ] },
+            exercises: [
+              { name: 'Levantamento Terra', sets: 4, reps: '4-6', rest: '120s', video: 'URL_VIDEO' },
+              { name: 'Remada Curvada com Barra', sets: 3, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+              { name: 'Puxada Frontal com Pegada Aberta', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
+              { name: 'Rosca Direta com Barra', sets: 4, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
+              { name: 'Rosca Martelo com Halteres', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+            ]
+          },
           'C': { focus: 'Pernas e Ombros (Construção de Base)',
-        exercises: [
-          { name: 'Agachamento Livre com Barra', sets: 4, reps: '6-8', rest: '120s', video: 'URL_VIDEO' },
-          { name: 'Leg Press 45°', sets: 3, reps: '8-10', rest: '90s', video: 'URL_VIDEO' },
-          { name: 'Cadeira Extensora', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
-          { name: 'Desenvolvimento com Halteres (Sentado)', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
-          { name: 'Elevação Lateral com Halteres', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
-        ] },
+            exercises: [
+              { name: 'Agachamento Livre com Barra', sets: 4, reps: '6-8', rest: '120s', video: 'URL_VIDEO' },
+              { name: 'Leg Press 45°', sets: 3, reps: '8-10', rest: '90s', video: 'URL_VIDEO' },
+              { name: 'Cadeira Extensora', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+              { name: 'Desenvolvimento com Halteres (Sentado)', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+              { name: 'Elevação Lateral com Halteres', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
+            ]
+          },
           'D': { focus: 'Full Body (Técnica e Estímulo Adicional)',
-        exercises: [
-          { name: 'Agachamento Taça (Goblet Squat)', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Remada na Polia Baixa (Pegada Neutra)', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Supino Reto com Halteres', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Elevação Pélvica com Barra', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
-          { name: 'Prancha Abdominal', sets: 3, reps: '60s', rest: '60s', video: 'URL_VIDEO' },
-        ] },
-        'A': {
-        focus: 'Peito e Tríceps (Volume e Força)',
-        exercises: [
-          { name: 'Supino Reto com Barra', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
-          { name: 'Supino Inclinado com Halteres', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Crucifixo na Polia Alta', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
-          { name: 'Paralelas (Foco no Tríceps)', sets: 3, reps: 'até a falha', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Tríceps Testa com Barra EZ', sets: 3, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
-        ]
-      },
+            exercises: [
+              { name: 'Agachamento Taça (Goblet Squat)', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
+              { name: 'Remada na Polia Baixa (Pegada Neutra)', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
+              { name: 'Supino Reto com Halteres', sets: 3, reps: '10-12', rest: '75s', video: 'URL_VIDEO' },
+              { name: 'Elevação Pélvica com Barra', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
+              { name: 'Prancha Abdominal', sets: 3, reps: '60s', rest: '60s', video: 'URL_VIDEO' },
+            ]
+          }
         },
         divisoes: {
           3: ['A', 'B', 'C'],
@@ -253,10 +255,10 @@ const adjustRepsForLevel = (reps: string, level: typeof trainingLevels.iniciante
   if (level.name === 'Iniciante') return reps;
   if (level.name === 'Intermediário') return reps;
   if (level.name === 'Avançado') {
-    const match = reps.match(/(\d+)-(\d+)/);
+    const match = reps.match(/(\d+)-?(\d+)?/);
     if (match) {
       const min = parseInt(match[1], 10);
-      const max = parseInt(match[2], 10);
+      const max = repsMatch[2] ? parseInt(repsMatch[2], 10) : min;
       return `${Math.max(min - 2, 4)}-${Math.max(max - 2, 6)}`;
     }
     return reps;
@@ -488,4 +490,3 @@ const expandToWeeklySchedule = (plan: any, daysPerWeek: number, ageGroup: string
   }
   return result;
 };
-

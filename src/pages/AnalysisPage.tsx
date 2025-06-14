@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -72,8 +71,7 @@ const AnalysisPage = () => {
         profile.trainingLocation || 'casa',
         profile.sex || 'masculino',
         profile.healthIssues || [],
-        profile.trainingDays || ['segunda', 'quarta', 'sexta'],
-        userPhotos
+        profile.trainingDays || ['segunda', 'quarta', 'sexta']
       );
 
       // Save generated workout plan
