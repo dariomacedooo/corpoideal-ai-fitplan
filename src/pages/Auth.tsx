@@ -40,16 +40,22 @@ const Auth = () => {
       <Footer />
       
       {showAuthForm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="relative bg-gray-900 border border-white/10 rounded-lg shadow-lg w-full max-w-md">
-             <button onClick={handleCloseAuth} aria-label="Fechar" className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
-                <X size={24} />
-             </button>
-            {isLogin ? (
-              <LoginForm onToggleForm={toggleForm} />
-            ) : (
-              <RegisterForm onToggleForm={toggleForm} />
-            )}
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative bg-gray-900/95 border border-white/20 rounded-xl shadow-2xl w-full max-w-md mx-auto">
+            <button 
+              onClick={handleCloseAuth} 
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
+              aria-label="Fechar"
+            >
+              <X size={24} />
+            </button>
+            <div className="p-6">
+              {isLogin ? (
+                <LoginForm onToggleForm={toggleForm} />
+              ) : (
+                <RegisterForm onToggleForm={toggleForm} />
+              )}
+            </div>
           </div>
         </div>
       )}
