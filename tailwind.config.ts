@@ -20,7 +20,6 @@ export default {
 		},
 		extend: {
 			colors: {
-				'neon-lime': '#CCFF00',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -53,7 +52,7 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
-					soft: 'hsl(var(--card))' // Use variable instead of hardcoded color
+					soft: '#FAFAFA'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -92,7 +91,6 @@ export default {
 				}
 			},
 			fontFamily: {
-				playfair: ['Playfair Display', 'serif'],
 				montserrat: ['Montserrat', 'sans-serif'],
 				inter: ['Inter', 'sans-serif'],
 				sans: ['Inter', 'sans-serif'],

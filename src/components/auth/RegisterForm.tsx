@@ -4,198 +4,110 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
-import { supabase } from "@/integrations/supabase/client";
 
 export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'aluno' | 'professor'>('aluno');
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
-    try {
-      // Validation
-      if (!name || !email || !password || !confirmPassword) {
-        toast({
-          title: "Erro no cadastro",
-          description: "Por favor, preencha todos os campos.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (password !== confirmPassword) {
-        toast({
-          title: "Erro no cadastro",
-          description: "As senhas não coincidem.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (password.length < 6) {
-        toast({
-          title: "Erro no cadastro",
-          description: "A senha deve ter pelo menos 6 caracteres.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      console.log('Attempting signup for:', email, 'as', role);
-      
-      // Sign up without email confirmation
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name,
-            role
-          }
-        }
-      });
-
-      if (error) {
-        console.error('Signup error:', error);
-        toast({
-          title: "Erro no cadastro",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (data.user) {
-        console.log('Signup successful for user:', data.user.id);
-        
-        // Update the profile with the selected role
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ role, name })
-          .eq('id', data.user.id);
-
-        if (profileError) {
-          console.error('Profile update error:', profileError);
-        }
-
-        toast({
-          title: "Cadastro realizado com sucesso",
-          description: "Bem-vindo ao CorpoIdeal AI!",
-        });
-        
-        // Let Index component handle the navigation flow
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Unexpected signup error:', error);
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
       toast({
         title: "Erro no cadastro",
-        description: "Ocorreu um erro ao criar sua conta. Tente novamente.",
+        description: "Por favor, preencha todos os campos.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
+      return;
     }
+    
+    if (password !== confirmPassword) {
+      toast({
+        title: "Erro no cadastro",
+        description: "As senhas não coincidem.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Simulate registration
+    toast({
+      title: "Cadastro realizado com sucesso",
+      description: "Bem-vindo ao CorpoIdeal AI!",
+    });
+    
+    // In a real app, you would use Firebase Auth here
+    localStorage.setItem('userLoggedIn', 'true');
+    
+    // Redirect to the root route to let Index.tsx handle the navigation flow
+    navigate('/');
   };
 
   return (
-    <Card className="w-full border-0 shadow-none bg-transparent">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold text-white mb-2">Cadastre-se</CardTitle>
-        <CardDescription className="text-gray-300">
-          Crie sua conta e comece sua transformação
+    <Card className="w-full max-w-md mx-auto animate-fade-in">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center text-corpoideal-purple">Cadastre-se</CardTitle>
+        <CardDescription className="text-center">
+          Crie sua conta para começar sua jornada
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-white">Nome completo</Label>
-            <Input
-              id="name"
-              placeholder="Seu nome completo"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-neon-lime"
-              required
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                placeholder="Seu nome"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Confirme sua senha</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+            <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
+              Cadastrar
+            </Button>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-neon-lime"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-white">Tipo de conta</Label>
-            <RadioGroup value={role} onValueChange={(value: 'aluno' | 'professor') => setRole(value)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="aluno" id="aluno" className="border-white text-neon-lime" />
-                <Label htmlFor="aluno" className="text-white">Aluno</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="professor" id="professor" className="border-white text-neon-lime" />
-                <Label htmlFor="professor" className="text-white">Professor</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-white">Senha</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-neon-lime"
-              required
-              minLength={6}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-white">Confirme sua senha</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-neon-lime"
-              required
-              minLength={6}
-            />
-          </div>
-          <Button 
-            type="submit" 
-            disabled={isLoading}
-            className="w-full bg-neon-lime text-black font-bold hover:bg-neon-lime/90 disabled:opacity-50"
-          >
-            {isLoading ? "Criando conta..." : "Criar Conta"}
-          </Button>
         </form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button 
-          variant="link" 
-          onClick={onToggleForm} 
-          className="text-neon-lime hover:text-neon-lime/80"
-        >
+        <Button variant="link" onClick={onToggleForm}>
           Já possui uma conta? Entre
         </Button>
       </CardFooter>

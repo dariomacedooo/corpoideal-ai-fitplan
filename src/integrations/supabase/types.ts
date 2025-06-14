@@ -9,137 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      diet_plans: {
-        Row: {
-          author_id: string
-          client_id: string
-          created_at: string | null
-          description: string | null
-          id: string
-          meals: Json | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          author_id: string
-          client_id: string
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          meals?: Json | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          author_id?: string
-          client_id?: string
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          meals?: Json | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      invitations: {
-        Row: {
-          created_at: string | null
-          id: string
-          invitee_email: string
-          inviter_id: string
-          status: Database["public"]["Enums"]["invitation_status"] | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          invitee_email: string
-          inviter_id: string
-          status?: Database["public"]["Enums"]["invitation_status"] | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          invitee_email?: string
-          inviter_id?: string
-          status?: Database["public"]["Enums"]["invitation_status"] | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          coach_id: string | null
-          created_at: string | null
-          email: string | null
-          id: string
-          name: string | null
-          role: Database["public"]["Enums"]["user_role"] | null
-          updated_at: string | null
-        }
-        Insert: {
-          coach_id?: string | null
-          created_at?: string | null
-          email?: string | null
-          id: string
-          name?: string | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          updated_at?: string | null
-        }
-        Update: {
-          coach_id?: string | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          name?: string | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_coach_id_fkey"
-            columns: ["coach_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      workout_plans: {
-        Row: {
-          author_id: string
-          client_id: string
-          created_at: string | null
-          description: string | null
-          exercises: Json | null
-          id: string
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          author_id: string
-          client_id: string
-          created_at?: string | null
-          description?: string | null
-          exercises?: Json | null
-          id?: string
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          author_id?: string
-          client_id?: string
-          created_at?: string | null
-          description?: string | null
-          exercises?: Json | null
-          id?: string
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
@@ -148,8 +18,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      invitation_status: "pending" | "accepted" | "declined"
-      user_role: "aluno" | "professor"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -264,9 +133,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      invitation_status: ["pending", "accepted", "declined"],
-      user_role: ["aluno", "professor"],
-    },
+    Enums: {},
   },
 } as const

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -64,14 +65,15 @@ const AnalysisPage = () => {
     }
 
     try {
-      // Corrected order below:
+      // Generate complete workout plan based on profile and photos
       const workoutPlan = generateWorkoutPlan(
         profile.goal || 'manter-peso',
         profile.trainingExperience || 'iniciante',
         profile.trainingLocation || 'casa',
         profile.sex || 'masculino',
-        Number(profile.age || 25),  // ensure age is a number
-        profile.trainingDays || ['segunda', 'quarta', 'sexta'] // trainingDays as last arg
+        profile.healthIssues || [],
+        profile.trainingDays || ['segunda', 'quarta', 'sexta'],
+        userPhotos
       );
 
       // Save generated workout plan

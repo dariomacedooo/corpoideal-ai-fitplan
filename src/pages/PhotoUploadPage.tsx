@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PhotoUpload } from "@/components/photo/PhotoUpload";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { BodyAnalysis } from '@/components/analysis/BodyAnalysis';
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, XCircle } from 'lucide-react';
 
@@ -35,7 +35,9 @@ const PhotoUploadPage = () => {
     }
   }, [navigate, toast]);
   
+  // CORREÇÃO APLICADA AQUI
   const handlePhotoUploaded = (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => {
+    // Para a análise de Múltiplas Fotos
     if (type === 'front') {
       setFrontPhoto(file);
     } else if (type === 'back') {
@@ -43,9 +45,10 @@ const PhotoUploadPage = () => {
     } else if (type === 'leftSide') {
       setLeftSidePhoto(file);
     } else if (type === 'rightSide') {
-      setRightSidePhoto(file);
+      setRightSidePhoto(file); // Esta linha foi adicionada
     }
 
+    // Para a análise com MediaPipe (que usa apenas uma foto por vez)
     const reader = new FileReader();
     reader.onloadend = () => {
         setUploadedImageSrc(reader.result as string);
@@ -53,11 +56,11 @@ const PhotoUploadPage = () => {
     reader.readAsDataURL(file);
   };
   
-  const handleContinueClick = () => {
+  const handleAnalyzeClick = () => {
     if (!frontPhoto || !backPhoto || !leftSidePhoto || !rightSidePhoto) {
       toast({
         title: "Fotos necessárias",
-        description: "Por favor, envie todas as quatro fotos para continuar.",
+        description: "Por favor, envie todas as quatro fotos para análise.",
         variant: "destructive",
       });
       return;
@@ -74,8 +77,7 @@ const PhotoUploadPage = () => {
     localStorage.setItem('rightSidePhotoUrl', rightSidePhotoUrl);
     localStorage.setItem('sidePhotoUrl', leftSidePhotoUrl);
     
-    // Go to plan selection instead of analysis
-    navigate('/plan-selection');
+    navigate('/analysis');
   };
 
   return (
@@ -142,18 +144,16 @@ const PhotoUploadPage = () => {
         </div>
         
         <Button 
-          onClick={handleContinueClick}
+          onClick={handleAnalyzeClick}
           disabled={!frontPhoto || !backPhoto || !leftSidePhoto || !rightSidePhoto}
           className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
         >
-          Continuar para Seleção de Planos
+          Analisar meu corpo
         </Button>
       
         <div className="mt-8">
           {uploadedImageSrc && (
-            <div className="flex flex-col items-center">
-              <img src={uploadedImageSrc} alt="Prévia da foto enviada" className="rounded-lg max-w-xs mb-3 shadow" />
-            </div>
+            <BodyAnalysis imageSrc={uploadedImageSrc} />
           )}
         </div>
       </div>

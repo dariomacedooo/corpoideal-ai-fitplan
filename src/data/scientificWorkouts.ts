@@ -194,17 +194,8 @@ export const scientificWorkouts: Record<string, Record<string, Record<string, an
  'bulking': {
       academia: {
         blocos: {
-        'A': {
-        focus: 'Peito e Tríceps (Volume e Força)',
-        exercises: [
-          { name: 'Supino Reto com Barra', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
-          { name: 'Supino Inclinado com Halteres', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Crucifixo na Polia Alta', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
-          { name: 'Paralelas (Foco no Tríceps)', sets: 3, reps: 'até a falha', rest: '75s', video: 'URL_VIDEO' },
-          { name: 'Tríceps Testa com Barra EZ', sets: 3, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
-        ]
-      },
-        'B': { focus: 'Costas e Bíceps (Largura e Densidade)',
+          'A': { focus: 'Peito e Tríceps Pesado', exercises: [] },
+          'B': { focus: 'Costas e Bíceps (Largura e Densidade)',
         exercises: [
           { name: 'Levantamento Terra', sets: 4, reps: '4-6', rest: '120s', video: 'URL_VIDEO' },
           { name: 'Remada Curvada com Barra', sets: 3, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
@@ -228,6 +219,16 @@ export const scientificWorkouts: Record<string, Record<string, Record<string, an
           { name: 'Elevação Pélvica com Barra', sets: 3, reps: '12-15', rest: '60s', video: 'URL_VIDEO' },
           { name: 'Prancha Abdominal', sets: 3, reps: '60s', rest: '60s', video: 'URL_VIDEO' },
         ] },
+        'A': {
+        focus: 'Peito e Tríceps (Volume e Força)',
+        exercises: [
+          { name: 'Supino Reto com Barra', sets: 4, reps: '6-8', rest: '90s', video: 'URL_VIDEO' },
+          { name: 'Supino Inclinado com Halteres', sets: 3, reps: '8-10', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Crucifixo na Polia Alta', sets: 3, reps: '10-12', rest: '60s', video: 'URL_VIDEO' },
+          { name: 'Paralelas (Foco no Tríceps)', sets: 3, reps: 'até a falha', rest: '75s', video: 'URL_VIDEO' },
+          { name: 'Tríceps Testa com Barra EZ', sets: 3, reps: '8-10', rest: '60s', video: 'URL_VIDEO' },
+        ]
+      },
         },
         divisoes: {
           3: ['A', 'B', 'C'],
@@ -487,3 +488,4 @@ const expandToWeeklySchedule = (plan: any, daysPerWeek: number, ageGroup: string
   }
   return result;
 };
+
