@@ -258,7 +258,7 @@ const adjustRepsForLevel = (reps: string, level: typeof trainingLevels.iniciante
     const match = reps.match(/(\d+)-?(\d+)?/);
     if (match) {
       const min = parseInt(match[1], 10);
-      const max = repsMatch[2] ? parseInt(repsMatch[2], 10) : min;
+      const max = match[2] ? parseInt(match[2], 10) : min;
       return `${Math.max(min - 2, 4)}-${Math.max(max - 2, 6)}`;
     }
     return reps;

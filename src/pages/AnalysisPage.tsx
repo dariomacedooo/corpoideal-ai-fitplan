@@ -70,7 +70,7 @@ const AnalysisPage = () => {
         profile.trainingExperience || 'iniciante',
         profile.trainingLocation || 'casa',
         profile.sex || 'masculino',
-        profile.healthIssues || [],
+        profile.age || 25,
         profile.trainingDays || ['segunda', 'quarta', 'sexta']
       );
 
