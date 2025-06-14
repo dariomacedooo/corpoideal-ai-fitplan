@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -18,6 +17,9 @@ import { TrainingDaysForm } from "@/components/profile/TrainingDaysForm";
 import { HealthIssuesForm } from "@/components/profile/HealthIssuesForm";
 import { AdditionalInfoForm } from "@/components/profile/AdditionalInfoForm";
 import { BudgetForm } from "@/components/profile/BudgetForm";
+import { ProfileProgressBar } from "@/components/profile/ProfileProgressBar";
+import { ProfileAvatarUpload } from "@/components/profile/ProfileAvatarUpload";
+import { ProfileDailyRoutine } from "@/components/profile/ProfileDailyRoutine";
 
 const ProfilePage = () => {
   // Nome do usuário - primeira informação
@@ -180,13 +182,59 @@ const ProfilePage = () => {
     navigate('/upload');
   };
 
+  // Determinar campos preenchidos para progresso do perfil
+  const totalFields = 12; // Ajuste conforme desejar considerar obrigatórios
+  let completedFields = 0;
+  if (name?.trim()) completedFields++;
+  if (goal) completedFields++;
+  if (height) completedFields++;
+  if (weight) completedFields++;
+  if (age) completedFields++;
+  if (sex) completedFields++;
+  if (lifestyle) completedFields++;
+  if (trainingExperience) completedFields++;
+  if (trainingDays && trainingDays.length > 0) completedFields++;
+  if (budget) completedFields++;
+  if (chest || leftArm || rightArm || waist || hips || leftThigh || rightThigh || leftCalf || rightCalf) completedFields++;
+  if (healthIssues && healthIssues.length > 0) completedFields++;
+
+  // Determinar próximo dia de treino
+  const weekDaysPt: Record<string, string> = {
+    segunda: "Segunda-feira",
+    terca: "Terça-feira",
+    quarta: "Quarta-feira",
+    quinta: "Quinta-feira",
+    sexta: "Sexta-feira",
+    sabado: "Sábado",
+    domingo: "Domingo",
+  };
+  const getNextTrainingDay = () => {
+    if (!trainingDays?.length) return null;
+    const todayIdx = new Date().getDay(); // 0 = domingo
+    const trainingIdxs = trainingDays.map(d => Object.keys(weekDaysPt).indexOf(d));
+    const sorted = trainingIdxs.filter(i => i >= todayIdx).sort((a, b) => a - b);
+    const nextIdx = sorted.length > 0 ? sorted[0] : trainingIdxs[0];
+    const nextDayKey = Object.keys(weekDaysPt)[nextIdx];
+    return weekDaysPt[nextDayKey] || null;
+  };
+
   return (
-    <div className="pb-16 pt-14">
+    <div className="pb-16 pt-14 bg-gradient-to-t from-zinc-900 via-zinc-900 to-black min-h-screen">
       <AppHeader />
-      
-      <div className="px-4 py-6">
-        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Complete Seu Perfil</h1>
-        <p className="text-gray-600 mb-6">
+      <div className="px-4 py-6 max-w-2xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-6 items-center mb-2">
+          <ProfileAvatarUpload name={name} />
+          <div className="flex-1 w-full">
+            <ProfileProgressBar completedFields={completedFields} totalFields={totalFields} />
+            <ProfileDailyRoutine
+              name={name}
+              goal={goal}
+              nextWorkoutDay={getNextTrainingDay()}
+            />
+          </div>
+        </div>
+        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4 mt-2">Complete Seu Perfil</h1>
+        <p className="text-gray-400 mb-6">
           Vamos personalizar sua experiência! Quanto mais informações você fornecer, melhor será seu plano.
         </p>
         
