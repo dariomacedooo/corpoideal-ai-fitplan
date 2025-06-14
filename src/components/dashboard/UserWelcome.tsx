@@ -1,9 +1,9 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "@/hooks/useAuth";
 
 export function UserWelcome() {
-  const { profile } = useUserProfile();
+  const { profile } = useAuth();
   
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -40,6 +40,11 @@ export function UserWelcome() {
             <p className="text-white/90 text-sm">
               {getMotivationalMessage()}
             </p>
+            {profile?.role === 'professor' && (
+              <p className="text-xs text-white/80 mt-1">
+                👨‍🏫 Modo Professor
+              </p>
+            )}
           </div>
         </div>
       </CardContent>

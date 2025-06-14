@@ -1,5 +1,5 @@
 
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "@/hooks/useAuth";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ProgressStatsCard } from "@/components/dashboard/ProgressStatsCard";
@@ -11,15 +11,31 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const HomePage = () => {
-  // Checa se usuário está autenticado
-  const { profile } = useUserProfile();
+  const { profile, loading, isCoach } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!profile) {
-      navigate("/auth");
+    if (!loading) {
+      if (!profile) {
+        navigate("/auth");
+      } else if (isCoach) {
+        // Redirect coaches to their dashboard
+        navigate("/coach/dashboard");
+      }
     }
-  }, [profile, navigate]);
+  }, [profile, loading, isCoach, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-corpoideal-purple"></div>
+      </div>
+    );
+  }
+
+  if (!profile || isCoach) {
+    return null; // Will redirect in useEffect
+  }
 
   return (
     <div className="pb-16 pt-14 bg-background min-h-screen font-playfair">

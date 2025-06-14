@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,10 @@ import NutritionPage from "./pages/NutritionPage";
 import ProgressPage from "./pages/ProgressPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import ImportExportPage from "./pages/ImportExportPage";
+import CoachDashboard from "./pages/CoachDashboard";
+import CoachInvites from "./pages/CoachInvites";
+import StudentCoachPage from "./pages/StudentCoachPage";
+import CoachStudentView from "./pages/CoachStudentView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +43,15 @@ const App = () => (
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/features" element={<FeaturesPage />} />
             <Route path="/import-export" element={<ImportExportPage />} />
+            
+            {/* Coach Routes */}
+            <Route path="/coach/dashboard" element={<CoachDashboard />} />
+            <Route path="/coach/invites" element={<CoachInvites />} />
+            <Route path="/coach/student/:studentId" element={<CoachStudentView />} />
+            
+            {/* Student Coach Management */}
+            <Route path="/profile/coach" element={<StudentCoachPage />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

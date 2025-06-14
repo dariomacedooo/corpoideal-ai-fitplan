@@ -1,50 +1,45 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, profile, loading } = useAuth();
   
   useEffect(() => {
-    // Wrap localStorage access in try-catch to handle security errors
-    try {
-      // Check if user is logged in
-      const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-      
-      if (isLoggedIn) {
-        // Check if profile is completed
-        const userProfile = localStorage.getItem('userProfile');
-        
-        if (userProfile) {
-          const profile = JSON.parse(userProfile);
-          if (profile.profileCompleted) {
-            // Check if photos are uploaded
-            const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
-            if (frontPhotoUrl) {
-              // Everything is complete, go to home dashboard
-              navigate('/home');
-            } else {
-              // Profile complete but no photos, go to photo upload
-              navigate('/upload');
-            }
+    if (loading) return; // Wait for auth to load
+    
+    if (!user) {
+      // Not logged in, redirect to auth page
+      navigate('/auth');
+      return;
+    }
+
+    // User is logged in, check their role
+    if (profile?.role === 'professor') {
+      navigate('/coach/dashboard');
+    } else {
+      // Check if profile is completed for students
+      const userProfile = localStorage.getItem('userProfile');
+      if (userProfile) {
+        const parsedProfile = JSON.parse(userProfile);
+        if (parsedProfile.profileCompleted) {
+          // Check if photos are uploaded
+          const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+          if (frontPhotoUrl) {
+            navigate('/home');
           } else {
-            // Profile incomplete, go to profile page
-            navigate('/profile');
+            navigate('/upload');
           }
         } else {
-          // No profile, go to profile page
           navigate('/profile');
         }
       } else {
-        // Not logged in, redirect to auth page
-        navigate('/auth');
+        navigate('/profile');
       }
-    } catch (error) {
-      console.error('Error accessing localStorage:', error);
-      // Fallback to auth page on error
-      navigate('/auth');
     }
-  }, [navigate]);
+  }, [user, profile, loading, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

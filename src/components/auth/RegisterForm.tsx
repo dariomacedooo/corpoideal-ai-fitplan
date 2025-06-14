@@ -4,14 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
+import { supabase } from "@/integrations/supabase/client";
 
 export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState<'aluno' | 'professor'>('aluno');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -49,16 +52,45 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
         return;
       }
       
-      // Simulate registration
-      toast({
-        title: "Cadastro realizado com sucesso",
-        description: "Bem-vindo ao CorpoIdeal AI!",
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name,
+            role
+          },
+          emailRedirectTo: `${window.location.origin}/`
+        }
       });
-      
-      localStorage.setItem('userLoggedIn', 'true');
-      
-      // For new registration, always go to profile page to complete setup
-      navigate('/profile');
+
+      if (error) {
+        toast({
+          title: "Erro no cadastro",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.user) {
+        // Update the profile with the selected role
+        await supabase
+          .from('profiles')
+          .update({ role, name })
+          .eq('id', data.user.id);
+
+        toast({
+          title: "Cadastro realizado com sucesso",
+          description: "Bem-vindo ao CorpoIdeal AI!",
+        });
+        
+        if (role === 'professor') {
+          navigate('/coach/dashboard');
+        } else {
+          navigate('/profile');
+        }
+      }
     } catch (error) {
       toast({
         title: "Erro no cadastro",
@@ -102,6 +134,19 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
               className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-neon-lime"
               required
             />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-white">Tipo de conta</Label>
+            <RadioGroup value={role} onValueChange={(value: 'aluno' | 'professor') => setRole(value)}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="aluno" id="aluno" className="border-white text-neon-lime" />
+                <Label htmlFor="aluno" className="text-white">Aluno</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="professor" id="professor" className="border-white text-neon-lime" />
+                <Label htmlFor="professor" className="text-white">Professor</Label>
+              </div>
+            </RadioGroup>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password" className="text-white">Senha</Label>

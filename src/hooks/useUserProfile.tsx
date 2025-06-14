@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface UserProfile {
   name?: string;
@@ -12,7 +13,7 @@ export interface UserProfile {
   lifestyle: string;
   trainingExperience: string;
   trainingLocation: string;
-  trainingDays: string[]; // Dias de treino selecionados
+  trainingDays: string[];
   healthIssues: string[];
   additionalInfo: string;
   budget: string;
@@ -31,8 +32,11 @@ export interface UserProfile {
 
 export const useUserProfile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const { profile: authProfile } = useAuth();
 
   useEffect(() => {
+    // For now, we'll continue using localStorage for the detailed profile
+    // while the auth profile provides basic info from Supabase
     const savedProfile = localStorage.getItem('userProfile');
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile);
@@ -44,9 +48,42 @@ export const useUserProfile = () => {
       if (!parsedProfile.trainingDays) {
         parsedProfile.trainingDays = ['segunda', 'quarta', 'sexta'];
       }
+      // Use name from auth profile if available
+      if (authProfile?.name && !parsedProfile.name) {
+        parsedProfile.name = authProfile.name;
+      }
       setProfile(parsedProfile);
+    } else if (authProfile?.name) {
+      // Create basic profile from auth data
+      setProfile({
+        name: authProfile.name,
+        height: '',
+        weight: '',
+        age: '',
+        sex: '',
+        gender: '',
+        bodyFat: '',
+        lifestyle: '',
+        trainingExperience: '',
+        trainingLocation: '',
+        trainingDays: ['segunda', 'quarta', 'sexta'],
+        healthIssues: [],
+        additionalInfo: '',
+        budget: '',
+        chest: '',
+        leftArm: '',
+        rightArm: '',
+        waist: '',
+        hips: '',
+        leftThigh: '',
+        rightThigh: '',
+        leftCalf: '',
+        rightCalf: '',
+        goal: '',
+        profileCompleted: false,
+      });
     }
-  }, []);
+  }, [authProfile]);
 
   const updateProfile = (newProfile: Partial<UserProfile>) => {
     const updatedProfile = { ...profile, ...newProfile };

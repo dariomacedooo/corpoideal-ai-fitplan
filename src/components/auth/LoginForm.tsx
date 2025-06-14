@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [email, setEmail] = useState('');
@@ -28,41 +29,43 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
         return;
       }
 
-      // Simulate login
-      toast({
-        title: "Login bem-sucedido",
-        description: "Bem-vindo ao CorpoIdeal AI!",
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      
-      localStorage.setItem('userLoggedIn', 'true');
-      
-      // Check if user profile exists to determine where to redirect
-      const userProfile = localStorage.getItem('userProfile');
-      
-      if (userProfile) {
-        const profile = JSON.parse(userProfile);
-        if (profile.profileCompleted) {
-          // Profile is complete, check for photos
-          const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
-          if (frontPhotoUrl) {
-            // Everything complete, go to home
-            navigate('/home');
-          } else {
-            // Profile complete but no photos
-            navigate('/upload');
-          }
+
+      if (error) {
+        toast({
+          title: "Erro no login",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Login bem-sucedido",
+          description: "Bem-vindo ao CorpoIdeal AI!",
+        });
+        
+        // Fetch user profile to determine redirect
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, name')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profile?.role === 'professor') {
+          navigate('/coach/dashboard');
         } else {
-          // Profile incomplete, go to profile page
-          navigate('/profile');
+          navigate('/home');
         }
-      } else {
-        // No profile exists, go to profile page for first-time setup
-        navigate('/profile');
       }
     } catch (error) {
       toast({
         title: "Erro no login",
-        description: "Ocorreu um erro ao fazer login. Tente novamente.",
+        description: "Ocorreu um erro inesperado. Tente novamente.",
         variant: "destructive",
       });
     } finally {
