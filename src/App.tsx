@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import PhotoUploadPage from "./pages/PhotoUploadPage";
+import PlanSelectionPage from "./pages/PlanSelectionPage";
 import AnalysisPage from "./pages/AnalysisPage";
 import TrainingPage from "./pages/TrainingPage";
 import NutritionPage from "./pages/NutritionPage";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/home" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/upload" element={<PhotoUploadPage />} />
+            <Route path="/plan-selection" element={<PlanSelectionPage />} />
             <Route path="/analysis" element={<AnalysisPage />} />
             <Route path="/training" element={<TrainingPage />} />
             <Route path="/nutrition" element={<NutritionPage />} />

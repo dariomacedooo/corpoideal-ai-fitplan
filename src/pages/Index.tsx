@@ -19,25 +19,34 @@ const Index = () => {
     // User is logged in, check their role
     if (profile?.role === 'professor') {
       navigate('/coach/dashboard');
-    } else {
-      // Check if profile is completed for students
+      return;
+    }
+
+    // For students, follow the correct flow
+    if (profile?.role === 'aluno') {
+      // 1. Check if profile is completed
       const userProfile = localStorage.getItem('userProfile');
-      if (userProfile) {
-        const parsedProfile = JSON.parse(userProfile);
-        if (parsedProfile.profileCompleted) {
-          // Check if photos are uploaded
-          const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
-          if (frontPhotoUrl) {
-            navigate('/home');
-          } else {
-            navigate('/upload');
-          }
-        } else {
-          navigate('/profile');
-        }
-      } else {
+      if (!userProfile || !JSON.parse(userProfile).profileCompleted) {
         navigate('/profile');
+        return;
       }
+
+      // 2. Check if photos are uploaded
+      const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+      if (!frontPhotoUrl) {
+        navigate('/upload');
+        return;
+      }
+
+      // 3. Check if plan selection is completed
+      const planSelection = localStorage.getItem('planSelection');
+      if (!planSelection) {
+        navigate('/plan-selection');
+        return;
+      }
+
+      // 4. All steps completed, go to dashboard
+      navigate('/home');
     }
   }, [user, profile, loading, navigate]);
 

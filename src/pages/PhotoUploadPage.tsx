@@ -1,10 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { AppHeader } from "@/components/layout/AppHeader";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PhotoUpload } from "@/components/photo/PhotoUpload";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { BodyAnalysis } from '@/components/analysis/BodyAnalysis';
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, XCircle } from 'lucide-react';
 
@@ -53,11 +53,11 @@ const PhotoUploadPage = () => {
     reader.readAsDataURL(file);
   };
   
-  const handleAnalyzeClick = () => {
+  const handleContinueClick = () => {
     if (!frontPhoto || !backPhoto || !leftSidePhoto || !rightSidePhoto) {
       toast({
         title: "Fotos necessárias",
-        description: "Por favor, envie todas as quatro fotos para análise.",
+        description: "Por favor, envie todas as quatro fotos para continuar.",
         variant: "destructive",
       });
       return;
@@ -74,7 +74,8 @@ const PhotoUploadPage = () => {
     localStorage.setItem('rightSidePhotoUrl', rightSidePhotoUrl);
     localStorage.setItem('sidePhotoUrl', leftSidePhotoUrl);
     
-    navigate('/analysis');
+    // Go to plan selection instead of analysis
+    navigate('/plan-selection');
   };
 
   return (
@@ -141,11 +142,11 @@ const PhotoUploadPage = () => {
         </div>
         
         <Button 
-          onClick={handleAnalyzeClick}
+          onClick={handleContinueClick}
           disabled={!frontPhoto || !backPhoto || !leftSidePhoto || !rightSidePhoto}
           className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
         >
-          Analisar meu corpo
+          Continuar para Seleção de Planos
         </Button>
       
         <div className="mt-8">

@@ -49,18 +49,8 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
           description: "Bem-vindo ao CorpoIdeal AI!",
         });
         
-        // Fetch user profile to determine redirect
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, name')
-          .eq('id', data.user.id)
-          .single();
-
-        if (profile?.role === 'professor') {
-          navigate('/coach/dashboard');
-        } else {
-          navigate('/home');
-        }
+        // Let the Index component handle the redirect logic
+        navigate('/');
       }
     } catch (error) {
       toast({
