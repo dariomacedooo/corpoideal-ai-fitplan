@@ -36,7 +36,7 @@ const TrainingPage = () => {
         profile.trainingExperience,
         profile.trainingLocation,
         profile.sex,
-        profile.healthIssues || [],
+        Number(profile.age || 25),  // ensure age is a number
         profile.trainingDays || ['segunda', 'quarta', 'sexta']
       );
       setWorkoutDays(generatedWorkout);

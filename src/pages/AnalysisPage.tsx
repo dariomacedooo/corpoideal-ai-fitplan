@@ -64,14 +64,14 @@ const AnalysisPage = () => {
     }
 
     try {
-      // Generate complete workout plan based on profile and photos
+      // Corrected order below:
       const workoutPlan = generateWorkoutPlan(
         profile.goal || 'manter-peso',
         profile.trainingExperience || 'iniciante',
         profile.trainingLocation || 'casa',
         profile.sex || 'masculino',
-        profile.healthIssues || [],
-        profile.trainingDays || ['segunda', 'quarta', 'sexta']
+        Number(profile.age || 25),  // ensure age is a number
+        profile.trainingDays || ['segunda', 'quarta', 'sexta'] // trainingDays as last arg
       );
 
       // Save generated workout plan
