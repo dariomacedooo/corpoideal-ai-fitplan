@@ -1,82 +1,86 @@
 
 import { Button } from "@/components/ui/button";
 
-export function Plans() {
+export function Plans({ onSelectPlan }: { onSelectPlan: () => void }) {
   const plans = [
     {
-      name: "Essencial",
-      price: "Grátis",
-      color: "from-purple-soft to-purple-light",
+      name: "Starter",
+      price: "R$ 29",
+      period: "/mês",
       features: [
-        "Avaliação corporal com IA",
-        "Treino personalizado (básico)",
-        "Monitoramento de progresso",
-        "Acesso parcial a dicas premium"
+        "Acesso básico a treinos",
+        "Dietas padrão",
+        "Suporte via comunidade",
+        "Acompanhamento básico",
       ],
       highlight: false,
     },
     {
       name: "Pro",
-      price: "R$ 19/mês",
-      color: "from-orange-soft to-orange-light",
+      price: "R$ 59",
+      period: "/mês",
       features: [
-        "Tudo do Essencial",
-        "Planos de treino avançados",
-        "Plano nutricional completo",
-        "Acesso ilimitado a IA",
-        "Dicas premium exclusivas"
+        "Tudo do Starter",
+        "Personalização completa",
+        "Suporte prioritário",
+        "Acesso a todas as receitas",
       ],
       highlight: true,
     },
     {
-      name: "Premium",
-      price: "R$ 39/mês",
-      color: "from-purple-vibrant to-corpoideal-purple",
+      name: "VIP",
+      price: "R$ 99",
+      period: "/mês",
       features: [
         "Tudo do Pro",
-        "Consultoria individual",
-        "Avaliações ilimitadas",
-        "Prioridade no suporte"
+        "Consultor fitness dedicado",
+        "Lives e aulas exclusivas",
+        "Plano de suplementação",
       ],
       highlight: false,
     },
   ];
 
   return (
-    <section className="bg-gradient-to-b from-card-soft to-white py-12 px-2">
-      <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-corpoideal-dark text-center mb-5">
-        Planos e preços
-      </h2>
-      <div className="flex flex-col md:flex-row md:justify-center gap-8 max-w-4xl mx-auto">
-        {plans.map((plan, idx) => (
-          <div
-            key={idx}
-            className={`flex-1 rounded-2xl p-8 shadow-modern border-2 border-purple-border bg-gradient-to-br ${plan.color} ${
-              plan.highlight ? "scale-105 ring-4 ring-orange-300" : ""
-            }`}
-          >
-            <h3 className="font-bold text-lg text-corpoideal-purple mb-2 uppercase tracking-wide">{plan.name}</h3>
-            <div className="text-3xl font-extrabold mb-4 text-corpoideal-dark">{plan.price}</div>
-            <ul className="mb-6 text-left space-y-2 text-corpoideal-dark">
-              {plan.features.map((f, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 bg-corpoideal-purple rounded-full"></span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Button
-              className={`w-full ${
-                plan.highlight
-                  ? "modern-button bg-gradient-to-r from-orange-soft to-orange-400 text-white"
-                  : "modern-button"
-              }`}
-              disabled
+    <section id="plans" className="py-20 bg-black">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-montserrat font-bold text-center mb-12">
+          Escolha o plano ideal para você
+        </h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {plans.map((plan, idx) => (
+            <div
+              key={idx}
+              className={`flex flex-col rounded-xl p-8 border ${
+                plan.highlight ? "border-neon-lime ring-2 ring-neon-lime shadow-neon-lime/20 shadow-lg" : "border-white/10"
+              } bg-gray-900/50 hover:border-neon-lime/50 transition-all duration-300 ${plan.highlight ? 'scale-105' : 'hover:scale-105'}`}
             >
-              {plan.highlight ? "Assinar (em breve)" : "Em breve"}
-            </Button>
-          </div>
-        ))}
+              <h3 className="font-bold text-xl text-white font-montserrat mb-2 uppercase tracking-wide">{plan.name}</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-extrabold text-white">{plan.price}</span>
+                <span className="text-muted-foreground">{plan.period}</span>
+              </div>
+              <ul className="mb-8 text-left space-y-3 flex-grow">
+                {plan.features.map((f, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-neon-lime"></div>
+                    <span className="text-muted-foreground">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                onClick={onSelectPlan}
+                className={`w-full mt-auto font-bold py-3 ${
+                  plan.highlight
+                    ? "bg-neon-lime text-black hover:bg-neon-lime/90"
+                    : "bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                Quero Esse Plano
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

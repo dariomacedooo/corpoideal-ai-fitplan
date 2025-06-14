@@ -51,9 +51,9 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto animate-fade-in">
+    <Card className="w-full max-w-md mx-auto border-0 shadow-none bg-transparent">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center text-corpoideal-purple">Cadastre-se</CardTitle>
+        <CardTitle className="text-center text-white">Cadastre-se</CardTitle>
         <CardDescription className="text-center">
           Crie sua conta para começar sua jornada
         </CardDescription>
@@ -68,6 +68,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
                 placeholder="Seu nome"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="bg-white/5"
               />
             </div>
             <div className="grid gap-2">
@@ -78,6 +79,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="bg-white/5"
               />
             </div>
             <div className="grid gap-2">
@@ -88,6 +90,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="bg-white/5"
               />
             </div>
             <div className="grid gap-2">
@@ -98,16 +101,17 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-white/5"
               />
             </div>
-            <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
+            <Button type="submit" className="w-full bg-neon-lime text-black font-bold hover:bg-neon-lime/90">
               Cadastrar
             </Button>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button variant="link" onClick={onToggleForm}>
+        <Button variant="link" onClick={onToggleForm} className="text-neon-lime hover:text-neon-lime/80">
           Já possui uma conta? Entre
         </Button>
       </CardFooter>
