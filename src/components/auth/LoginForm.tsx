@@ -26,8 +26,29 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
       // In a real app, you would use Firebase Auth here
       localStorage.setItem('userLoggedIn', 'true');
       
-      // Redirect to the root path for the 'gatekeeper' (Index.tsx) to handle navigation
-      navigate('/');
+      // Check if user profile exists to determine where to redirect
+      const userProfile = localStorage.getItem('userProfile');
+      
+      if (userProfile) {
+        const profile = JSON.parse(userProfile);
+        if (profile.profileCompleted) {
+          // Profile is complete, check for photos
+          const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
+          if (frontPhotoUrl) {
+            // Everything complete, go to home
+            navigate('/home');
+          } else {
+            // Profile complete but no photos
+            navigate('/upload');
+          }
+        } else {
+          // Profile incomplete, go to profile page
+          navigate('/profile');
+        }
+      } else {
+        // No profile exists, go to profile page for first-time setup
+        navigate('/profile');
+      }
     } else {
       toast({
         title: "Erro no login",

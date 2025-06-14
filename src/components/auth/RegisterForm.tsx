@@ -46,8 +46,8 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
     // In a real app, you would use Firebase Auth here
     localStorage.setItem('userLoggedIn', 'true');
     
-    // Redirect to the root route to let Index.tsx handle the navigation flow
-    navigate('/');
+    // For new registration, always go to profile page to complete setup
+    navigate('/profile');
   };
 
   return (
