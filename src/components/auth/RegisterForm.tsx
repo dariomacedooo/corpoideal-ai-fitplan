@@ -52,6 +52,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
         return;
       }
       
+      // Sign up without email confirmation
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -59,8 +60,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
           data: {
             name,
             role
-          },
-          emailRedirectTo: `${window.location.origin}/`
+          }
         }
       });
 
@@ -85,6 +85,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
           description: "Bem-vindo ao CorpoIdeal AI!",
         });
         
+        // Direct navigation based on role
         if (role === 'professor') {
           navigate('/coach/dashboard');
         } else {

@@ -49,7 +49,7 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
           description: "Bem-vindo ao CorpoIdeal AI!",
         });
         
-        // Let the Index component handle the redirect logic
+        // Redirect to index, which will handle the flow logic
         navigate('/');
       }
     } catch (error) {
