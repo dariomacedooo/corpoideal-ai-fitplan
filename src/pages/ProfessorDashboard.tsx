@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppHeader } from "@/components/layout/AppHeader";
@@ -99,7 +98,7 @@ const ProfessorDashboard = () => {
                       className="bg-corpoideal-purple text-white"
                       onClick={() => navigate(`/professor/student/${student.id}/workout`)}
                     >
-                      <FileText className="w-4 h-4 mr-1" /> Treino/Dieta
+                      Criar Treino/Dieta
                     </Button>
                     <Button
                       size="sm"
