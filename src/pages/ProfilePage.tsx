@@ -20,34 +20,33 @@ import { BudgetForm } from "@/components/profile/BudgetForm";
 import { ProfileProgressBar } from "@/components/profile/ProfileProgressBar";
 import { ProfileAvatarUpload } from "@/components/profile/ProfileAvatarUpload";
 import { ProfileDailyRoutine } from "@/components/profile/ProfileDailyRoutine";
-
 const ProfilePage = () => {
   // Nome do usuário - primeira informação
   const [name, setName] = useState('');
-  
+
   // Objetivo - segunda informação mais importante
   const [goal, setGoal] = useState('');
-  
+
   // Dados básicos
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [age, setAge] = useState('');
   const [sex, setSex] = useState('');
-  const [bodyFat, setBodyFat] = useState(''); 
-  
+  const [bodyFat, setBodyFat] = useState('');
+
   // Estilo de vida e experiência
   const [lifestyle, setLifestyle] = useState('');
   const [trainingExperience, setTrainingExperience] = useState('');
   const [trainingLocation, setTrainingLocation] = useState('');
   const [trainingDays, setTrainingDays] = useState<string[]>(['segunda', 'quarta', 'sexta']);
-  
+
   // Orçamento
   const [budget, setBudget] = useState('');
-  
+
   // Problemas de saúde e informações adicionais
   const [healthIssues, setHealthIssues] = useState<string[]>([]);
   const [additionalInfo, setAdditionalInfo] = useState('');
-  
+
   // Medidas corporais
   const [chest, setChest] = useState('');
   const [leftArm, setLeftArm] = useState('');
@@ -58,10 +57,11 @@ const ProfilePage = () => {
   const [rightThigh, setRightThigh] = useState('');
   const [leftCalf, setLeftCalf] = useState('');
   const [rightCalf, setRightCalf] = useState('');
-  
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
-  
+
   // Load any existing profile data
   useEffect(() => {
     const savedProfile = localStorage.getItem('userProfile');
@@ -92,33 +92,26 @@ const ProfilePage = () => {
       setRightCalf(profile.rightCalf || '');
     }
   }, []);
-  
   const toggleHealthIssue = (value: string) => {
-    setHealthIssues(current => 
-      current.includes(value)
-        ? current.filter(issue => issue !== value)
-        : [...current, value]
-    );
+    setHealthIssues(current => current.includes(value) ? current.filter(issue => issue !== value) : [...current, value]);
   };
-  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validação essencial: nome e objetivo são obrigatórios
     if (!name.trim()) {
       toast({
         title: "Nome obrigatório",
         description: "Por favor, informe seu nome para personalizar a experiência.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-
     if (!goal) {
       toast({
         title: "Objetivo obrigatório",
         description: "Por favor, selecione seu objetivo fitness para continuar.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
@@ -128,7 +121,7 @@ const ProfilePage = () => {
       toast({
         title: "Dados básicos obrigatórios",
         description: "Por favor, preencha altura, peso, idade e sexo.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
@@ -138,11 +131,11 @@ const ProfilePage = () => {
       toast({
         title: "Dias de treino obrigatórios",
         description: "Por favor, selecione pelo menos um dia para treinar.",
-        variant: "destructive",
+        variant: "destructive"
       });
       return;
     }
-    
+
     // Save profile data
     const profileData = {
       name: name.trim(),
@@ -168,16 +161,14 @@ const ProfilePage = () => {
       rightThigh,
       leftCalf,
       rightCalf,
-      profileCompleted: true,
+      profileCompleted: true
     };
-    
     localStorage.setItem('userProfile', JSON.stringify(profileData));
-    
     toast({
       title: "Perfil salvo!",
-      description: `Olá ${name}! Seus dados foram salvos com sucesso.`,
+      description: `Olá ${name}! Seus dados foram salvos com sucesso.`
     });
-    
+
     // Navigate to the photo upload page
     navigate('/upload');
   };
@@ -206,7 +197,7 @@ const ProfilePage = () => {
     quinta: "Quinta-feira",
     sexta: "Sexta-feira",
     sabado: "Sábado",
-    domingo: "Domingo",
+    domingo: "Domingo"
   };
   const getNextTrainingDay = () => {
     if (!trainingDays?.length) return null;
@@ -217,20 +208,14 @@ const ProfilePage = () => {
     const nextDayKey = Object.keys(weekDaysPt)[nextIdx];
     return weekDaysPt[nextDayKey] || null;
   };
-
-  return (
-    <div className="pb-16 pt-14 bg-gradient-to-t from-zinc-900 via-zinc-900 to-black min-h-screen">
+  return <div className="pb-16 pt-14 bg-gradient-to-t from-zinc-900 via-zinc-900 to-black min-h-screen">
       <AppHeader />
-      <div className="px-4 py-6 max-w-2xl mx-auto">
+      <div className="px-4 py-6 max-w-2xl mx-auto bg-slate-50">
         <div className="flex flex-col md:flex-row gap-6 items-center mb-2">
           <ProfileAvatarUpload name={name} />
           <div className="flex-1 w-full">
             <ProfileProgressBar completedFields={completedFields} totalFields={totalFields} />
-            <ProfileDailyRoutine
-              name={name}
-              goal={goal}
-              nextWorkoutDay={getNextTrainingDay()}
-            />
+            <ProfileDailyRoutine name={name} goal={goal} nextWorkoutDay={getNextTrainingDay()} />
           </div>
         </div>
         <h1 className="text-2xl font-bold text-corpoideal-purple mb-4 mt-2">Complete Seu Perfil</h1>
@@ -244,14 +229,7 @@ const ProfilePage = () => {
             <Label htmlFor="name" className="flex items-center gap-2 text-corpoideal-purple font-medium">
               <User className="h-4 w-4" /> Como você gostaria de ser chamado?
             </Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Digite seu nome"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="border-corpoideal-purple/20 focus:border-corpoideal-purple"
-            />
+            <Input id="name" type="text" placeholder="Digite seu nome" value={name} onChange={e => setName(e.target.value)} className="border-corpoideal-purple/20 focus:border-corpoideal-purple" />
           </div>
 
           {/* 2. Objetivo fitness - SEGUNDA INFORMAÇÃO MAIS IMPORTANTE */}
@@ -260,17 +238,10 @@ const ProfilePage = () => {
               <Dumbbell className="h-5 w-5" /> Qual é o seu objetivo principal?
             </h3>
             <p className="text-sm text-gray-600">Esta informação define todo seu plano de treino e nutrição</p>
-            <RadioGroup 
-              value={goal} 
-              onValueChange={setGoal}
-              className="grid grid-cols-1 gap-3"
-            >
+            <RadioGroup value={goal} onValueChange={setGoal} className="grid grid-cols-1 gap-3">
               <div>
                 <RadioGroupItem value="perder-peso" id="perder-peso" className="peer sr-only" />
-                <Label
-                  htmlFor="perder-peso"
-                  className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer"
-                >
+                <Label htmlFor="perder-peso" className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer">
                   <div className="w-full">
                     <p className="text-base font-medium leading-none">🔥 Perda de Peso</p>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -281,10 +252,7 @@ const ProfilePage = () => {
               </div>
               <div>
                 <RadioGroupItem value="ganhar-massa" id="ganhar-massa" className="peer sr-only" />
-                <Label
-                  htmlFor="ganhar-massa"
-                  className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer"
-                >
+                <Label htmlFor="ganhar-massa" className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer">
                   <div className="w-full">
                     <p className="text-base font-medium leading-none">💪 Ganho de Massa Muscular</p>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -295,10 +263,7 @@ const ProfilePage = () => {
               </div>
               <div>
                 <RadioGroupItem value="ganhar-peso" id="ganhar-peso" className="peer sr-only" />
-                <Label
-                  htmlFor="ganhar-peso"
-                  className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer"
-                >
+                <Label htmlFor="ganhar-peso" className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer">
                   <div className="w-full">
                     <p className="text-base font-medium leading-none">📈 Ganho de Peso</p>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -309,10 +274,7 @@ const ProfilePage = () => {
               </div>
               <div>
                 <RadioGroupItem value="manter-peso" id="manter-peso" className="peer sr-only" />
-                <Label
-                  htmlFor="manter-peso"
-                  className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer"
-                >
+                <Label htmlFor="manter-peso" className="flex flex-col items-start justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-corpoideal-purple [&:has([data-state=checked])]:border-corpoideal-purple cursor-pointer">
                   <div className="w-full">
                     <p className="text-base font-medium leading-none">⚖️ Manter Peso</p>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -325,87 +287,33 @@ const ProfilePage = () => {
           </div>
           
           {/* 3. Dados básicos */}
-          <BasicMeasurementsForm 
-            height={height}
-            setHeight={setHeight}
-            weight={weight}
-            setWeight={setWeight}
-            age={age}
-            setAge={setAge}
-            sex={sex}
-            setSex={setSex}
-            bodyFat={bodyFat}
-            setBodyFat={setBodyFat}
-            chest={chest}
-            setChest={setChest}
-            leftArm={leftArm}
-            setLeftArm={setLeftArm}
-            rightArm={rightArm}
-            setRightArm={setRightArm}
-            waist={waist}
-            setWaist={setWaist}
-            hips={hips}
-            setHips={setHips}
-            leftThigh={leftThigh}
-            setLeftThigh={setLeftThigh}
-            rightThigh={rightThigh}
-            setRightThigh={setRightThigh}
-            leftCalf={leftCalf}
-            setLeftCalf={setLeftCalf}
-            rightCalf={rightCalf}
-            setRightCalf={setRightCalf}
-          />
+          <BasicMeasurementsForm height={height} setHeight={setHeight} weight={weight} setWeight={setWeight} age={age} setAge={setAge} sex={sex} setSex={setSex} bodyFat={bodyFat} setBodyFat={setBodyFat} chest={chest} setChest={setChest} leftArm={leftArm} setLeftArm={setLeftArm} rightArm={rightArm} setRightArm={setRightArm} waist={waist} setWaist={setWaist} hips={hips} setHips={setHips} leftThigh={leftThigh} setLeftThigh={setLeftThigh} rightThigh={rightThigh} setRightThigh={setRightThigh} leftCalf={leftCalf} setLeftCalf={setLeftCalf} rightCalf={rightCalf} setRightCalf={setRightCalf} />
           
           {/* 4. Estilo de vida */}
-          <LifestyleForm 
-            lifestyle={lifestyle}
-            setLifestyle={setLifestyle}
-          />
+          <LifestyleForm lifestyle={lifestyle} setLifestyle={setLifestyle} />
           
           {/* 5. Experiência de treino */}
-          <TrainingExperienceForm
-            trainingExperience={trainingExperience}
-            setTrainingExperience={setTrainingExperience}
-            trainingLocation={trainingLocation}
-            setTrainingLocation={setTrainingLocation}
-          />
+          <TrainingExperienceForm trainingExperience={trainingExperience} setTrainingExperience={setTrainingExperience} trainingLocation={trainingLocation} setTrainingLocation={setTrainingLocation} />
 
           {/* 6. Dias de treino */}
-          <TrainingDaysForm
-            trainingDays={trainingDays}
-            setTrainingDays={setTrainingDays}
-          />
+          <TrainingDaysForm trainingDays={trainingDays} setTrainingDays={setTrainingDays} />
           
           {/* 7. Orçamento */}
-          <BudgetForm
-            budget={budget}
-            setBudget={setBudget}
-          />
+          <BudgetForm budget={budget} setBudget={setBudget} />
           
           {/* 8. Problemas de saúde */}
-          <HealthIssuesForm
-            healthIssues={healthIssues}
-            toggleHealthIssue={toggleHealthIssue}
-          />
+          <HealthIssuesForm healthIssues={healthIssues} toggleHealthIssue={toggleHealthIssue} />
           
           {/* 9. Informações adicionais */}
-          <AdditionalInfoForm
-            additionalInfo={additionalInfo}
-            setAdditionalInfo={setAdditionalInfo}
-          />
+          <AdditionalInfoForm additionalInfo={additionalInfo} setAdditionalInfo={setAdditionalInfo} />
           
-          <Button 
-            type="submit"
-            className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple text-lg py-3"
-          >
+          <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple text-lg py-3">
             Salvar e Continuar
           </Button>
         </form>
       </div>
       
       <BottomNav />
-    </div>
-  );
+    </div>;
 };
-
 export default ProfilePage;
