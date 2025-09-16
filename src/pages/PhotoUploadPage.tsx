@@ -153,7 +153,11 @@ const PhotoUploadPage = () => {
       
         <div className="mt-8">
           {uploadedImageSrc && (
-            <BodyAnalysis imageSrc={uploadedImageSrc} />
+            <BodyAnalysis 
+              posture="Análise pendente"
+              fatPercentage="Calculando..."
+              symmetry="Em análise"
+            />
           )}
         </div>
       </div>

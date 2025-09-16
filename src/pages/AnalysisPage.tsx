@@ -71,9 +71,8 @@ const AnalysisPage = () => {
         profile.trainingExperience || 'iniciante',
         profile.trainingLocation || 'casa',
         profile.sex || 'masculino',
-        profile.healthIssues || [],
-        profile.trainingDays || ['segunda', 'quarta', 'sexta'],
-        userPhotos
+        profile.age ? Number(profile.age) : 25,
+        profile.trainingDays || ['segunda', 'quarta', 'sexta']
       );
 
       // Save generated workout plan

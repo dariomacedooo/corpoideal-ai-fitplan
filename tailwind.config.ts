@@ -51,8 +51,7 @@ export default {
 				},
 				card: {
 					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))',
-					soft: '#FAFAFA'
+					foreground: 'hsl(var(--card-foreground))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -64,30 +63,15 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom modern colors
-				corpoideal: {
-					purple: '#8B5CF6',
-					darkpurple: '#6E59A5',
-					lightpurple: '#D6BCFA',
-					gray: '#6B7280',
-					dark: '#1F2937',
-				},
-				// New enhanced color palette
-				purple: {
-					soft: '#D5BFFF',
-					light: '#E5D4FF',
-					vibrant: '#7D3CFF',
-					deep: '#6B2FDD',
-					darker: '#5A25BB',
-					border: '#C4B5FD'
-				},
+				// Clean modern palette
 				orange: {
-					soft: '#FFD199',
-					light: '#FFE4B3',
-					border: '#FED7AA'
-				},
-				border: {
-					soft: '#E5E7EB'
+					50: '#FFF7ED',
+					100: '#FFEDD5',
+					200: '#FED7AA',
+					300: '#FDBA74',
+					400: '#FB923C',
+					500: '#F97316',
+					600: '#EA580C'
 				}
 			},
 			fontFamily: {
@@ -102,12 +86,17 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
+				xl: '0.75rem',
 				'2xl': '1rem'
 			},
 			boxShadow: {
-				subtle: '0px 2px 8px rgba(0, 0, 0, 0.05)',
-				modern: '0px 4px 20px rgba(0, 0, 0, 0.08)',
-				'modern-hover': '0px 8px 32px rgba(0, 0, 0, 0.12)'
+				soft: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+				medium: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+				large: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+			},
+			spacing: {
+				18: '4.5rem',
+				22: '5.5rem'
 			},
 			keyframes: {
 				'accordion-down': {
