@@ -181,7 +181,7 @@ export function NutritionPlan({ diets }: NutritionPlanProps) {
       setFilteredDiets(dietsToConsider);
 
       // Set selected diet if none is selected or current selection is no longer in filtered diets
-      if (!selectedDiet || !dietsToConsider.find(d => d.type === selectedDiet)) {
+      if (!selectedDiet || !dietsToConsider.find(d => d.type === selectedDiet))) {
         setSelectedDiet(dietsToConsider[0]?.type || ''); // Select first available diet or empty
       }
     } else {

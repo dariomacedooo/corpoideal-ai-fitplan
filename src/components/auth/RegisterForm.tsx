@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,7 +6,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [name, setName] = useState('');
@@ -13,7 +13,6 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'aluno' | 'professor'>('aluno');
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,6 +27,7 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
       });
       return;
     }
+    
     if (password !== confirmPassword) {
       toast({
         title: "Erro no cadastro",
@@ -42,25 +42,12 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
       title: "Cadastro realizado com sucesso",
       description: "Bem-vindo ao CorpoIdeal AI!",
     });
-
-    // Salva os dados de cadastro no localStorage, incluindo o papel (role)
+    
+    // In a real app, you would use Firebase Auth here
     localStorage.setItem('userLoggedIn', 'true');
-    localStorage.setItem(
-      'userProfile',
-      JSON.stringify({
-        name,
-        email,
-        role, // salva o papel
-        profileCompleted: false,
-      })
-    );
-
-    // Redireciona conforme o papel
-    if (role === 'professor') {
-      navigate('/professor/dashboard');
-    } else {
-      navigate('/');
-    }
+    
+    // Redirect to the root route to let Index.tsx handle the navigation flow
+    navigate('/');
   };
 
   return (
@@ -112,25 +99,6 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-            </div>
-            <div className="grid gap-2">
-              <Label>Você é:</Label>
-              <RadioGroup value={role} onValueChange={v => setRole(v as 'aluno' | 'professor')} className="flex gap-4">
-                <div>
-                  <RadioGroupItem value="aluno" id="aluno" className="peer sr-only" />
-                  <Label htmlFor="aluno" className="flex items-center gap-2 cursor-pointer">
-                    <span className="block w-3 h-3 rounded-full border border-corpoideal-purple bg-white peer-data-[state=checked]:bg-corpoideal-purple mr-1"></span>
-                    Aluno
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem value="professor" id="professor" className="peer sr-only" />
-                  <Label htmlFor="professor" className="flex items-center gap-2 cursor-pointer">
-                    <span className="block w-3 h-3 rounded-full border border-corpoideal-purple bg-white peer-data-[state=checked]:bg-corpoideal-purple mr-1"></span>
-                    Professor
-                  </Label>
-                </div>
-              </RadioGroup>
             </div>
             <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
               Cadastrar

@@ -150,14 +150,12 @@ const PhotoUploadPage = () => {
         >
           Analisar meu corpo
         </Button>
-
-        {/* Removed erroneous BodyAnalysis preview for imageSrc - this prop does not exist. */}
       
-        {/* <div className="mt-8">
+        <div className="mt-8">
           {uploadedImageSrc && (
             <BodyAnalysis imageSrc={uploadedImageSrc} />
           )}
-        </div> */}
+        </div>
       </div>
       <BottomNav />
     </div>
