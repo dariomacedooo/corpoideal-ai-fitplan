@@ -4,50 +4,41 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from 'react-router-dom';
 
 export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
     if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: "Erro no cadastro",
-        description: "Por favor, preencha todos os campos.",
-        variant: "destructive",
-      });
       return;
     }
     
     if (password !== confirmPassword) {
-      toast({
-        title: "Erro no cadastro",
-        description: "As senhas não coincidem.",
-        variant: "destructive",
-      });
       return;
     }
+
+    setLoading(true);
     
-    // Simulate registration
-    toast({
-      title: "Cadastro realizado com sucesso",
-      description: "Bem-vindo ao CorpoIdeal AI!",
-    });
+    const { error } = await signUp(email, password, name);
     
-    // In a real app, you would use Firebase Auth here
-    localStorage.setItem('userLoggedIn', 'true');
+    if (error) {
+      console.error('Registration error:', error);
+    } else {
+      // Note: User will need to verify email before being fully authenticated
+      navigate('/');
+    }
     
-    // Redirect to the root route to let Index.tsx handle the navigation flow
-    navigate('/');
+    setLoading(false);
   };
 
   return (
@@ -100,8 +91,12 @@ export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
-              Cadastrar
+            <Button 
+              type="submit" 
+              className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
+              disabled={loading || !name || !email || !password || !confirmPassword || password !== confirmPassword}
+            >
+              {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </div>
         </form>

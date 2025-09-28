@@ -4,37 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulate login
-    if (email && password) {
-      toast({
-        title: "Login bem-sucedido",
-        description: "Bem-vindo ao CorpoIdeal AI!",
-      });
-      
-      // In a real app, you would use Firebase Auth here
-      localStorage.setItem('userLoggedIn', 'true');
-      
-      // Redirect to the root path for the 'gatekeeper' (Index.tsx) to handle navigation
-      navigate('/');
-    } else {
-      toast({
-        title: "Erro no login",
-        description: "Por favor, preencha todos os campos.",
-        variant: "destructive",
-      });
+    if (!email || !password) {
+      return;
     }
+
+    setLoading(true);
+    
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      console.error('Login error:', error);
+    } else {
+      navigate('/');
+    }
+    
+    setLoading(false);
   };
 
   return (
@@ -68,8 +65,12 @@ export function LoginForm({ onToggleForm }: { onToggleForm: () => void }) {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
-              Entrar
+            <Button 
+              type="submit" 
+              className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple"
+              disabled={loading || !email || !password}
+            >
+              {loading ? "Entrando..." : "Entrar"}
             </Button>
           </div>
         </form>
