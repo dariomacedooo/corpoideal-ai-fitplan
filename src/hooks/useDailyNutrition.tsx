@@ -3,6 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
 
+const sb = supabase as any;
+
 export interface MealEntry {
   id: string;
   user_id: string;
@@ -41,7 +43,7 @@ export const useDailyNutrition = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from('daily_nutrition')
       .select('*')
       .eq('user_id', user.id)
@@ -51,10 +53,11 @@ export const useDailyNutrition = () => {
     if (error) {
       console.error('Error fetching meals:', error);
     } else {
-      setTodayMeals(data || []);
+      const meals = (data as MealEntry[]) || [];
+      setTodayMeals(meals);
       
-      // Calculate totals
-      const totals = (data || []).reduce((acc, meal) => ({
+      // Calcular totais de forma segura
+      const totals = meals.reduce((acc, meal) => ({
         calories: acc.calories + (meal.calories || 0),
         protein: acc.protein + (meal.protein || 0),
         carbs: acc.carbs + (meal.carbs || 0),
@@ -90,7 +93,7 @@ export const useDailyNutrition = () => {
       return false;
     }
 
-    const { error } = await supabase
+    const { error } = await sb
       .from('daily_nutrition')
       .insert({
         user_id: user.id,

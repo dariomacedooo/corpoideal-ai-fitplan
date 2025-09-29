@@ -3,6 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/hooks/use-toast';
 
+const sb = supabase as any;
+
 export interface WorkoutSession {
   id: string;
   user_id: string;
@@ -31,7 +33,7 @@ export const useWorkoutSessions = () => {
     setIsLoading(true);
     
     // Fetch all sessions
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from('workout_sessions')
       .select('*')
       .eq('user_id', user.id)
@@ -41,13 +43,14 @@ export const useWorkoutSessions = () => {
     if (error) {
       console.error('Error fetching workout sessions:', error);
     } else {
-      setSessions(data || []);
+      const sessionsData = (data as WorkoutSession[]) || [];
+      setSessions(sessionsData);
       
       // Calculate weekly stats
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
       
-      const weeklySessions = (data || []).filter(session => 
+      const weeklySessions = sessionsData.filter(session => 
         new Date(session.completed_at) >= oneWeekAgo
       );
       
@@ -77,7 +80,7 @@ export const useWorkoutSessions = () => {
       return false;
     }
 
-    const { error } = await supabase
+    const { error } = await sb
       .from('workout_sessions')
       .insert({
         user_id: user.id,
