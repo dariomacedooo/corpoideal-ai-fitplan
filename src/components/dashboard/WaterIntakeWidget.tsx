@@ -1,21 +1,25 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Droplet, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
+
 export function WaterIntakeWidget() {
   const [consumed, setConsumed] = useState(0);
   const [dailyGoal] = useState(2000); // 2L em ml
-
-  const progress = consumed / dailyGoal * 100;
+  
+  const progress = (consumed / dailyGoal) * 100;
 
   // Carregar progresso salvo
   useEffect(() => {
     const savedAmount = localStorage.getItem('waterConsumed');
     const lastUpdate = localStorage.getItem('waterLastUpdate');
+    
     if (savedAmount && lastUpdate) {
       const lastUpdateDate = new Date(lastUpdate);
       const today = new Date();
+      
       if (lastUpdateDate.toDateString() === today.toDateString()) {
         setConsumed(parseInt(savedAmount));
       } else {
@@ -26,12 +30,15 @@ export function WaterIntakeWidget() {
       }
     }
   }, []);
+
   const addWater = (amount: number) => {
     const newAmount = Math.min(consumed + amount, dailyGoal);
     setConsumed(newAmount);
+    
     localStorage.setItem('waterConsumed', newAmount.toString());
     localStorage.setItem('waterLastUpdate', new Date().toISOString());
   };
+
   const getMotivationalMessage = () => {
     if (progress >= 100) return "Parabéns! Meta atingida! 🎉";
     if (progress >= 75) return "Quase lá! Continue assim! 💪";
@@ -39,9 +46,11 @@ export function WaterIntakeWidget() {
     if (progress >= 25) return "Bom começo! Continue! 👍";
     return "Vamos começar! 💧";
   };
-  return <Card>
+
+  return (
+    <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center text-corpoideal-purple text-lg text-slate-50">
+        <CardTitle className="flex items-center text-corpoideal-purple text-lg">
           <Droplet className="h-5 w-5 mr-2" />
           Hidratação
         </CardTitle>
@@ -64,20 +73,35 @@ export function WaterIntakeWidget() {
           </div>
           
           <div className="grid grid-cols-3 gap-2">
-            <Button size="sm" variant="outline" onClick={() => addWater(250)} className="text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => addWater(250)}
+              className="text-xs"
+            >
               <Plus className="h-3 w-3 mr-1" />
               250ml
             </Button>
-            <Button size="sm" variant="outline" onClick={() => addWater(500)} className="text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => addWater(500)}
+              className="text-xs"
+            >
               <Plus className="h-3 w-3 mr-1" />
               500ml
             </Button>
-            <Button size="sm" onClick={() => addWater(1000)} className="text-xs bg-blue-500 hover:bg-blue-600">
+            <Button
+              size="sm"
+              onClick={() => addWater(1000)}
+              className="text-xs bg-blue-500 hover:bg-blue-600"
+            >
               <Plus className="h-3 w-3 mr-1" />
               1L
             </Button>
           </div>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 }

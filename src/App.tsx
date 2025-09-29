@@ -4,12 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
-import SupabasePhotoUploadPage from "./pages/SupabasePhotoUploadPage";
+import PhotoUploadPage from "./pages/PhotoUploadPage";
 import AnalysisPage from "./pages/AnalysisPage";
 import TrainingPage from "./pages/TrainingPage";
 import NutritionPage from "./pages/NutritionPage";
@@ -24,25 +23,23 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <BrowserRouter>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/upload" element={<SupabasePhotoUploadPage />} />
-              <Route path="/analysis" element={<AnalysisPage />} />
-              <Route path="/training" element={<TrainingPage />} />
-              <Route path="/nutrition" element={<NutritionPage />} />
-              <Route path="/progress" element={<ProgressPage />} />
-              <Route path="/features" element={<FeaturesPage />} />
-              <Route path="/import-export" element={<ImportExportPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/upload" element={<PhotoUploadPage />} />
+            <Route path="/analysis" element={<AnalysisPage />} />
+            <Route path="/training" element={<TrainingPage />} />
+            <Route path="/nutrition" element={<NutritionPage />} />
+            <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/import-export" element={<ImportExportPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

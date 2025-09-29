@@ -1,45 +1,57 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
-export function RegisterForm({
-  onToggleForm
-}: {
-  onToggleForm: () => void;
-}) {
+
+export function RegisterForm({ onToggleForm }: { onToggleForm: () => void }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const {
-    signUp
-  } = useAuth();
-  const handleSubmit = async (e: React.FormEvent) => {
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
     if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "Erro no cadastro",
+        description: "Por favor, preencha todos os campos.",
+        variant: "destructive",
+      });
       return;
     }
+    
     if (password !== confirmPassword) {
+      toast({
+        title: "Erro no cadastro",
+        description: "As senhas não coincidem.",
+        variant: "destructive",
+      });
       return;
     }
-    setLoading(true);
-    const {
-      error
-    } = await signUp(email, password, name);
-    if (error) {
-      console.error('Registration error:', error);
-    } else {
-      // Note: User will need to verify email before being fully authenticated
-      navigate('/');
-    }
-    setLoading(false);
+    
+    // Simulate registration
+    toast({
+      title: "Cadastro realizado com sucesso",
+      description: "Bem-vindo ao CorpoIdeal AI!",
+    });
+    
+    // In a real app, you would use Firebase Auth here
+    localStorage.setItem('userLoggedIn', 'true');
+    
+    // Redirect to the root route to let Index.tsx handle the navigation flow
+    navigate('/');
   };
-  return <Card className="w-full max-w-md mx-auto animate-fade-in">
+
+  return (
+    <Card className="w-full max-w-md mx-auto animate-fade-in">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center text-corpoideal-purple">Cadastre-se</CardTitle>
         <CardDescription className="text-center">
@@ -51,22 +63,45 @@ export function RegisterForm({
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Nome</Label>
-              <Input id="name" placeholder="Seu nome" value={name} onChange={e => setName(e.target.value)} />
+              <Input
+                id="name"
+                placeholder="Seu nome"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="confirmPassword">Confirme sua senha</Label>
-              <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </div>
-            <Button type="submit" disabled={loading || !name || !email || !password || !confirmPassword || password !== confirmPassword} className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple bg-gray-950 hover:bg-gray-800">
-              {loading ? "Cadastrando..." : "Cadastrar"}
+            <Button type="submit" className="w-full bg-corpoideal-purple hover:bg-corpoideal-darkpurple">
+              Cadastrar
             </Button>
           </div>
         </form>
@@ -76,5 +111,6 @@ export function RegisterForm({
           Já possui uma conta? Entre
         </Button>
       </CardFooter>
-    </Card>;
+    </Card>
+  );
 }
