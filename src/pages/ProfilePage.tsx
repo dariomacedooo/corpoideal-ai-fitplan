@@ -210,7 +210,7 @@ const ProfilePage = () => {
   };
   return <div className="pb-16 pt-14 bg-gradient-to-t from-zinc-900 via-zinc-900 to-black min-h-screen bg-gray-950">
       <AppHeader />
-      <div className="px-4 py-6 max-w-2xl mx-auto bg-slate-950">
+      <div className="px-4 py-6 max-w-2xl mx-auto bg-sky-500">
         <div className="flex flex-col md:flex-row gap-6 items-center mb-2">
           <ProfileAvatarUpload name={name} />
           <div className="flex-1 w-full">
