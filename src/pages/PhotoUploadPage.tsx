@@ -25,15 +25,7 @@ const PhotoUploadPage = () => {
       const profile = JSON.parse(savedProfile);
       setProfileCompleted(!!profile.profileCompleted);
     }
-    
-    if (!savedProfile || !JSON.parse(savedProfile).profileCompleted) {
-      toast({
-        title: "Perfil incompleto",
-        description: "Por favor, complete seu perfil antes de enviar fotos.",
-      });
-      navigate('/profile');
-    }
-  }, [navigate, toast]);
+  }, []);
   
   // CORREÇÃO APLICADA AQUI
   const handlePhotoUploaded = (file: File, type: 'front' | 'back' | 'leftSide' | 'rightSide') => {
@@ -84,9 +76,9 @@ const PhotoUploadPage = () => {
     <div className="pb-16 pt-14">
       <AppHeader />
       <div className="px-4 py-6">
-        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4">Enviar Fotos</h1>
-        <p className="text-gray-600 mb-6">
-          Para uma análise precisa, tire fotos em um ambiente bem iluminado, 
+        <h1 className="text-2xl font-bold text-primary mb-4">Enviar Fotos (Opcional)</h1>
+        <p className="text-muted-foreground mb-6">
+          As fotos são opcionais. Para uma análise precisa do seu corpo, tire fotos em um ambiente bem iluminado, 
           com um fundo neutro e use roupas justas de academia.
         </p>
         

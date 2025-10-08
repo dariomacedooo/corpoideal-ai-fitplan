@@ -18,15 +18,8 @@ const Index = () => {
         if (userProfile) {
           const profile = JSON.parse(userProfile);
           if (profile.profileCompleted) {
-            // Check if photos are uploaded
-            const frontPhotoUrl = localStorage.getItem('frontPhotoUrl');
-            if (frontPhotoUrl) {
-              // Everything is complete, go to home dashboard
-              navigate('/home');
-            } else {
-              // Profile complete but no photos, go to photo upload
-              navigate('/upload');
-            }
+            // Profile complete, go to home dashboard
+            navigate('/home');
           } else {
             // Profile incomplete, go to profile page
             navigate('/profile');

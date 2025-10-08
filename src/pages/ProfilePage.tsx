@@ -169,8 +169,8 @@ const ProfilePage = () => {
       description: `Olá ${name}! Seus dados foram salvos com sucesso.`
     });
 
-    // Navigate to the photo upload page
-    navigate('/upload');
+    // Navigate to the home page
+    navigate('/home');
   };
 
   // Determinar campos preenchidos para progresso do perfil
