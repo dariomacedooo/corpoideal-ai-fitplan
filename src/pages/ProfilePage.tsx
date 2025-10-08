@@ -210,7 +210,7 @@ const ProfilePage = () => {
   };
   return <div className="pb-16 pt-14 bg-gradient-to-t from-zinc-900 via-zinc-900 to-black min-h-screen bg-sky-500">
       <AppHeader />
-      <div className="px-4 py-6 max-w-2xl mx-auto bg-sky-500">
+      <div className="px-4 py-6 max-w-2xl mx-auto bg-neutral-900">
         <div className="flex flex-col md:flex-row gap-6 items-center mb-2">
           <ProfileAvatarUpload name={name} />
           <div className="flex-1 w-full">
@@ -218,8 +218,8 @@ const ProfilePage = () => {
             <ProfileDailyRoutine name={name} goal={goal} nextWorkoutDay={getNextTrainingDay()} />
           </div>
         </div>
-        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4 mt-2">Complete Seu Perfil</h1>
-        <p className="text-gray-400 mb-6">
+        <h1 className="text-2xl font-bold text-corpoideal-purple mb-4 mt-2 text-orange-400">Complete Seu Perfil</h1>
+        <p className="mb-6 text-orange-400">
           Vamos personalizar sua experiência! Quanto mais informações você fornecer, melhor será seu plano.
         </p>
         
@@ -234,10 +234,10 @@ const ProfilePage = () => {
 
           {/* 2. Objetivo fitness - SEGUNDA INFORMAÇÃO MAIS IMPORTANTE */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-corpoideal-purple flex items-center gap-2">
+            <h3 className="text-lg font-medium text-corpoideal-purple flex items-center gap-2 text-orange-400">
               <Dumbbell className="h-5 w-5" /> Qual é o seu objetivo principal?
             </h3>
-            <p className="text-sm text-gray-600">Esta informação define todo seu plano de treino e nutrição</p>
+            <p className="text-sm text-orange-400">Esta informação define todo seu plano de treino e nutrição</p>
             <RadioGroup value={goal} onValueChange={setGoal} className="grid grid-cols-1 gap-3">
               <div>
                 <RadioGroupItem value="perder-peso" id="perder-peso" className="peer sr-only" />

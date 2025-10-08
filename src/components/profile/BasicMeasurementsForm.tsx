@@ -1,10 +1,8 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { User, Weight, Ruler, Calendar, Percent, User2 } from "lucide-react";
-
 interface BasicMeasurementsProps {
   height: string;
   setHeight: (value: string) => void;
@@ -35,7 +33,6 @@ interface BasicMeasurementsProps {
   rightCalf?: string;
   setRightCalf?: (value: string) => void;
 }
-
 export function BasicMeasurementsForm({
   height,
   setHeight,
@@ -66,48 +63,29 @@ export function BasicMeasurementsForm({
   rightCalf = '',
   setRightCalf = () => {}
 }: BasicMeasurementsProps) {
-  return (
-    <>
+  return <>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="height" className="flex items-center gap-2">
+          <Label htmlFor="height" className="flex items-center gap-2 text-orange-400">
             <Ruler className="h-4 w-4" /> Altura (cm)
           </Label>
-          <Input
-            id="height"
-            type="number"
-            placeholder="170"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-          />
+          <Input id="height" type="number" placeholder="170" value={height} onChange={e => setHeight(e.target.value)} />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="weight" className="flex items-center gap-2">
             <Weight className="h-4 w-4" /> Peso (kg)
           </Label>
-          <Input
-            id="weight"
-            type="number"
-            placeholder="70"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          />
+          <Input id="weight" type="number" placeholder="70" value={weight} onChange={e => setWeight(e.target.value)} />
         </div>
       </div>
       
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="age" className="flex items-center gap-2">
+          <Label htmlFor="age" className="flex items-center gap-2 text-orange-400">
             <Calendar className="h-4 w-4" /> Idade
           </Label>
-          <Input
-            id="age"
-            type="number"
-            placeholder="30"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-          />
+          <Input id="age" type="number" placeholder="30" value={age} onChange={e => setAge(e.target.value)} />
         </div>
         
         <div className="space-y-2">
@@ -126,35 +104,23 @@ export function BasicMeasurementsForm({
         </div>
       </div>
 
-      <h3 className="text-md font-medium text-corpoideal-purple mt-4 mb-3 flex items-center gap-2">
+      <h3 className="text-md font-medium text-corpoideal-purple mt-4 mb-3 flex items-center gap-2 text-orange-400">
         <User2 className="h-4 w-4" /> Medidas Corporais
       </h3>
       
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="chest" className="flex items-center gap-2">
+          <Label htmlFor="chest" className="flex items-center gap-2 text-orange-400">
             <User2 className="h-4 w-4" /> Tórax (cm)
           </Label>
-          <Input
-            id="chest"
-            type="number"
-            placeholder="100"
-            value={chest}
-            onChange={(e) => setChest(e.target.value)}
-          />
+          <Input id="chest" type="number" placeholder="100" value={chest} onChange={e => setChest(e.target.value)} />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="bodyFat" className="flex items-center gap-2">
             <Percent className="h-4 w-4" /> Gordura Corporal (%)
           </Label>
-          <Input
-            id="bodyFat"
-            type="number"
-            placeholder="15"
-            value={bodyFat}
-            onChange={(e) => setBodyFat(e.target.value)}
-          />
+          <Input id="bodyFat" type="number" placeholder="15" value={bodyFat} onChange={e => setBodyFat(e.target.value)} />
           <p className="text-xs text-gray-500">Opcional</p>
         </div>
       </div>
@@ -164,26 +130,14 @@ export function BasicMeasurementsForm({
           <Label htmlFor="leftArm" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Braço Esq. (cm)
           </Label>
-          <Input
-            id="leftArm"
-            type="number"
-            placeholder="32"
-            value={leftArm}
-            onChange={(e) => setLeftArm(e.target.value)}
-          />
+          <Input id="leftArm" type="number" placeholder="32" value={leftArm} onChange={e => setLeftArm(e.target.value)} />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="rightArm" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Braço Dir. (cm)
           </Label>
-          <Input
-            id="rightArm"
-            type="number"
-            placeholder="32"
-            value={rightArm}
-            onChange={(e) => setRightArm(e.target.value)}
-          />
+          <Input id="rightArm" type="number" placeholder="32" value={rightArm} onChange={e => setRightArm(e.target.value)} />
         </div>
       </div>
       
@@ -192,26 +146,14 @@ export function BasicMeasurementsForm({
           <Label htmlFor="waist" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Cintura (cm)
           </Label>
-          <Input
-            id="waist"
-            type="number"
-            placeholder="80"
-            value={waist}
-            onChange={(e) => setWaist(e.target.value)}
-          />
+          <Input id="waist" type="number" placeholder="80" value={waist} onChange={e => setWaist(e.target.value)} />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="hips" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Quadril (cm)
           </Label>
-          <Input
-            id="hips"
-            type="number"
-            placeholder="90"
-            value={hips}
-            onChange={(e) => setHips(e.target.value)}
-          />
+          <Input id="hips" type="number" placeholder="90" value={hips} onChange={e => setHips(e.target.value)} />
         </div>
       </div>
       
@@ -220,26 +162,14 @@ export function BasicMeasurementsForm({
           <Label htmlFor="leftThigh" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Coxa Esq. (cm)
           </Label>
-          <Input
-            id="leftThigh"
-            type="number"
-            placeholder="50"
-            value={leftThigh}
-            onChange={(e) => setLeftThigh(e.target.value)}
-          />
+          <Input id="leftThigh" type="number" placeholder="50" value={leftThigh} onChange={e => setLeftThigh(e.target.value)} />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="rightThigh" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Coxa Dir. (cm)
           </Label>
-          <Input
-            id="rightThigh"
-            type="number"
-            placeholder="50"
-            value={rightThigh}
-            onChange={(e) => setRightThigh(e.target.value)}
-          />
+          <Input id="rightThigh" type="number" placeholder="50" value={rightThigh} onChange={e => setRightThigh(e.target.value)} />
         </div>
       </div>
       
@@ -248,28 +178,15 @@ export function BasicMeasurementsForm({
           <Label htmlFor="leftCalf" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Panturrilha Esq. (cm)
           </Label>
-          <Input
-            id="leftCalf"
-            type="number"
-            placeholder="35"
-            value={leftCalf}
-            onChange={(e) => setLeftCalf(e.target.value)}
-          />
+          <Input id="leftCalf" type="number" placeholder="35" value={leftCalf} onChange={e => setLeftCalf(e.target.value)} />
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="rightCalf" className="flex items-center gap-2">
             <User2 className="h-4 w-4" /> Panturrilha Dir. (cm)
           </Label>
-          <Input
-            id="rightCalf"
-            type="number"
-            placeholder="35"
-            value={rightCalf}
-            onChange={(e) => setRightCalf(e.target.value)}
-          />
+          <Input id="rightCalf" type="number" placeholder="35" value={rightCalf} onChange={e => setRightCalf(e.target.value)} />
         </div>
       </div>
-    </>
-  );
+    </>;
 }

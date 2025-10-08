@@ -1,26 +1,23 @@
-
 import React from "react";
 import { Flame, Dumbbell, Clock } from "lucide-react";
-
 interface Props {
   name: string;
   goal: string;
   nextWorkoutDay: string | null;
 }
-
 const goalTips: Record<string, string> = {
   "perder-peso": "Consuma água, mantenha-se ativo e busque déficit calórico saudável.",
   "ganhar-massa": "Alimente-se bem, foque em proteína e mantenha constância nos treinos!",
   "ganhar-peso": "Aumente calorias de qualidade nas refeições! Priorize hidratação.",
-  "manter-peso": "Equilíbrio é a chave! Mantenha rotina e bons hábitos.",
+  "manter-peso": "Equilíbrio é a chave! Mantenha rotina e bons hábitos."
 };
-
-export function ProfileDailyRoutine({ name, goal, nextWorkoutDay }: Props) {
-  const tip =
-    goalTips[goal] ||
-    "Mantenha disciplina, organize treinos e refeições. Você está no caminho certo!";
-  return (
-    <div className="w-full flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-secondary to-secondary-hover rounded-xl p-4 mb-6 shadow-medium">
+export function ProfileDailyRoutine({
+  name,
+  goal,
+  nextWorkoutDay
+}: Props) {
+  const tip = goalTips[goal] || "Mantenha disciplina, organize treinos e refeições. Você está no caminho certo!";
+  return <div className="w-full flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-secondary to-secondary-hover rounded-xl p-4 mb-6 shadow-medium bg-neutral-950">
       <div className="flex-1">
         <h2 className="font-bold text-lg text-secondary-foreground mb-1">Olá, {name || "Atleta"}!</h2>
         <p className="text-secondary-foreground/90">
@@ -39,6 +36,5 @@ export function ProfileDailyRoutine({ name, goal, nextWorkoutDay }: Props) {
           </span>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }

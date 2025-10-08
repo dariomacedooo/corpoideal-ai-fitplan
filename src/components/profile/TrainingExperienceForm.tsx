@@ -1,24 +1,20 @@
-
 import React from 'react';
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dumbbell } from "lucide-react";
-
 interface TrainingExperienceFormProps {
   trainingExperience: string;
   setTrainingExperience: (value: string) => void;
   trainingLocation: string;
   setTrainingLocation: (value: string) => void;
 }
-
 export function TrainingExperienceForm({
   trainingExperience,
   setTrainingExperience,
   trainingLocation,
   setTrainingLocation
 }: TrainingExperienceFormProps) {
-  return (
-    <>
+  return <>
       <div className="space-y-2">
         <Label className="flex items-center gap-2">
           <Dumbbell className="h-4 w-4" /> Experiência em Treinos
@@ -43,7 +39,7 @@ export function TrainingExperienceForm({
         <Label className="flex items-center gap-2">
           Onde você costuma treinar?
         </Label>
-        <RadioGroup value={trainingLocation} onValueChange={setTrainingLocation} className="flex flex-col space-y-2">
+        <RadioGroup value={trainingLocation} onValueChange={setTrainingLocation} className="flex flex-col space-y-2 bg-zinc-950">
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="academia" id="academia" />
             <Label htmlFor="academia">Academia</Label>
@@ -62,6 +58,5 @@ export function TrainingExperienceForm({
           </div>
         </RadioGroup>
       </div>
-    </>
-  );
+    </>;
 }
