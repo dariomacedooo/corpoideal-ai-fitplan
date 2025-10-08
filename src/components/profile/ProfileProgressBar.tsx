@@ -11,11 +11,11 @@ export function ProfileProgressBar({ completedFields, totalFields }: ProfileProg
   const value = Math.round((completedFields / totalFields) * 100);
   return (
     <div className="space-y-1 mb-6">
-      <div className="flex justify-between items-center text-xs text-white/80">
+      <div className="flex justify-between items-center text-xs text-primary-foreground/90">
         <span>Progresso do perfil</span>
         <span>{value}% completo</span>
       </div>
-      <Progress value={value} className="h-2 bg-white/20">
+      <Progress value={value} className="h-2 bg-primary-foreground/20">
         <div />
       </Progress>
     </div>

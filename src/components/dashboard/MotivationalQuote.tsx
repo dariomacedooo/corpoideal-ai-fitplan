@@ -11,15 +11,15 @@ export function MotivationalQuote() {
   }
 
   return (
-    <Card className="bg-gradient-to-r from-purple-vibrant to-purple-deep text-white border-0">
+    <Card className="bg-gradient-to-r from-secondary to-secondary-hover text-secondary-foreground border-0">
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
-          <Quote className="h-8 w-8 text-white/80 flex-shrink-0 mt-1" />
+          <Quote className="h-8 w-8 text-secondary-foreground/80 flex-shrink-0 mt-1" />
           <div>
             <p className="text-lg font-medium leading-relaxed mb-2">
               "{motivationalQuote.text}"
             </p>
-            <p className="text-white/80 text-sm">
+            <p className="text-secondary-foreground/80 text-sm">
               — {motivationalQuote.author}
             </p>
           </div>

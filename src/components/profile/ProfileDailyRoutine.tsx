@@ -20,21 +20,21 @@ export function ProfileDailyRoutine({ name, goal, nextWorkoutDay }: Props) {
     goalTips[goal] ||
     "Mantenha disciplina, organize treinos e refeições. Você está no caminho certo!";
   return (
-    <div className="w-full flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-cyan-500/80 to-teal-400/80 rounded-xl p-4 mb-6 shadow-lg">
+    <div className="w-full flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-secondary to-secondary-hover rounded-xl p-4 mb-6 shadow-medium">
       <div className="flex-1">
-        <h2 className="font-bold text-lg text-white mb-1">Olá, {name || "Atleta"}!</h2>
-        <p className="text-white/90">
+        <h2 className="font-bold text-lg text-secondary-foreground mb-1">Olá, {name || "Atleta"}!</h2>
+        <p className="text-secondary-foreground/90">
           {tip}
         </p>
       </div>
       <div className="flex gap-6 items-center mt-4 md:mt-0">
         <div className="flex flex-col items-center">
-          <Flame className="text-white mb-0.5" />
-          <span className="text-white text-xs">Meta do dia</span>
+          <Flame className="text-secondary-foreground mb-0.5" />
+          <span className="text-secondary-foreground text-xs">Meta do dia</span>
         </div>
         <div className="flex flex-col items-center">
-          <Dumbbell className="text-white mb-0.5" />
-          <span className="text-white text-xs">Próx. treino:
+          <Dumbbell className="text-secondary-foreground mb-0.5" />
+          <span className="text-secondary-foreground text-xs">Próx. treino:
             <span className="ml-1 font-semibold">{nextWorkoutDay || "?"}</span>
           </span>
         </div>

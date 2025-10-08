@@ -25,11 +25,11 @@ export function UserWelcome() {
   };
 
   return (
-    <Card className="bg-gradient-to-r from-corpoideal-purple to-corpoideal-darkpurple text-white border-0 shadow-modern">
+    <Card className="bg-gradient-to-r from-primary to-primary-hover text-primary-foreground border-0 shadow-medium">
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center">
-            <span className="text-2xl font-bold text-white">
+          <div className="w-16 h-16 rounded-full bg-primary-foreground/20 backdrop-blur-sm border-2 border-primary-foreground/30 flex items-center justify-center">
+            <span className="text-2xl font-bold text-primary-foreground">
               {profile?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
@@ -37,7 +37,7 @@ export function UserWelcome() {
             <h1 className="text-2xl font-bold mb-1">
               {getGreeting()}, {profile?.name || 'Atleta'}! 👋
             </h1>
-            <p className="text-white/90 text-sm">
+            <p className="text-primary-foreground/90 text-sm">
               {getMotivationalMessage()}
             </p>
           </div>

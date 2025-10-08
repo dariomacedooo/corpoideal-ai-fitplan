@@ -45,15 +45,15 @@ export function AppHeader() {
   };
   
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white shadow-sm flex items-center justify-between px-4 py-2 z-10">
+    <header className="fixed top-0 left-0 right-0 bg-card shadow-sm flex items-center justify-between px-4 py-2 z-10 border-b border-border">
       <div className="flex items-center">
-        <h1 className="font-bold text-lg text-corpoideal-purple">CorpoIdeal AI</h1>
+        <h1 className="font-bold text-lg text-primary">CorpoIdeal AI</h1>
       </div>
       {isLoggedIn && (
         <Button 
           variant="ghost"
           onClick={handleLogout}
-          className="text-sm text-gray-600"
+          className="text-sm"
         >
           Sair
         </Button>
